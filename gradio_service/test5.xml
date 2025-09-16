@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             targetNamespace="http://bpmn.io/schema/bpmn">
+
+    <process id="pizza_margarita_process" name="Приготовление пиццы Маргарита" isExecutable="true">
+        
+        <startEvent id="StartEvent" name="Начало процесса"/>
+        <sequenceFlow id="flow1" sourceRef="StartEvent" targetRef="PrepareIngredients"/>
+        <task id="PrepareIngredients" name="Подготовка ингредиентов"/>
+        <sequenceFlow id="flow2" sourceRef="PrepareIngredients" targetRef="MixDough"/>
+        <task id="MixDough" name="Замешивание теста"/>
+        <sequenceFlow id="flow3" sourceRef="MixDough" targetRef="PrepareSauce"/>
+        <task id="PrepareSauce" name="Приготовление соуса"/>
+        <sequenceFlow id="flow4" sourceRef="PrepareSauce" targetRef="RollDough"/>
+        <task id="RollDough" name="Раскатка теста"/>
+        <sequenceFlow id="flow5" sourceRef="RollDough" targetRef="AssemblePizza"/>
+        <task id="AssemblePizza" name="Сборка пиццы (соус + начинка)"/>
+        <sequenceFlow id="flow6" sourceRef="AssemblePizza" targetRef="BakePizza"/>
+        <task id="BakePizza" name="Выпекание пиццы"/>
+        <sequenceFlow id="flow7" sourceRef="BakePizza" targetRef="ServePizza"/>
+        <task id="ServePizza" name="Подача пиццы"/>
+        <sequenceFlow id="flow8" sourceRef="ServePizza" targetRef="EndEvent"/>
+        <endEvent id="EndEvent" name="Конец процесса"/>
+    </process>
+
+    <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+        <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="pizza_margarita_process">
+            <bpmndi:BPMNShape id="StartEvent_di" bpmnElement="StartEvent">
+                <omgdc:Bounds x="100" y="100" width="36" height="36"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="PrepareIngredients_di" bpmnElement="PrepareIngredients">
+                <omgdc:Bounds x="200" y="100" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="MixDough_di" bpmnElement="MixDough">
+                <omgdc:Bounds x="350" y="100" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="PrepareSauce_di" bpmnElement="PrepareSauce">
+                <omgdc:Bounds x="500" y="100" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="RollDough_di" bpmnElement="RollDough">
+                <omgdc:Bounds x="650" y="100" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="AssemblePizza_di" bpmnElement="AssemblePizza">
+                <omgdc:Bounds x="800" y="100" width="120" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="BakePizza_di" bpmnElement="BakePizza">
+                <omgdc:Bounds x="970" y="100" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="ServePizza_di" bpmnElement="ServePizza">
+                <omgdc:Bounds x="1120" y="100" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="EndEvent_di" bpmnElement="EndEvent">
+                <omgdc:Bounds x="1300" y="100" width="36" height="36"/>
+            </bpmndi:BPMNShape>
+            
+            <bpmndi:BPMNEdge id="flow1_di" bpmnElement="flow1">
+                <omgdi:waypoint x="136" y="118"/>
+                <omgdi:waypoint x="200" y="140"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="flow2_di" bpmnElement="flow2">
+                <omgdi:waypoint x="300" y="140"/>
+                <omgdi:waypoint x="350" y="140"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="flow3_di" bpmnElement="flow3">
+                <omgdi:waypoint x="450" y="140"/>
+                <omgdi:waypoint x="500" y="140"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="flow4_di" bpmnElement="flow4">
+                <omgdi:waypoint x="600" y="140"/>
+                <omgdi:waypoint x="650" y="140"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="flow5_di" bpmnElement="flow5">
+                <omgdi:waypoint x="750" y="140"/>
+                <omgdi:waypoint x="800" y="140"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="flow6_di" bpmnElement="flow6">
+                <omgdi:waypoint x="920" y="140"/>
+                <omgdi:waypoint x="970" y="140"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="flow7_di" bpmnElement="flow7">
+                <omgdi:waypoint x="1070" y="140"/>
+                <omgdi:waypoint x="1120" y="140"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="flow8_di" bpmnElement="flow8">
+                <omgdi:waypoint x="1220" y="140"/>
+                <omgdi:waypoint x="1300" y="118"/>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>
+

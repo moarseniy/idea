@@ -1,0 +1,5 @@
+export OPENAI_API_KEY="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"
+export db_user="admin"
+export db_password="12345"
+source venv/bin/activate
+python app.py
