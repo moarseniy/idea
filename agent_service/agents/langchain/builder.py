@@ -1,10 +1,8 @@
 from abstract.singleton import Singleton
-from .agent_states import BaAgentState, SaAgentState, BpmnAgentState
+from .agent_states import DeAgentState, DarchAgentState
 from .agent_responses import ValidatorResponse
-from .base_blocks.ba_agent_base import BaAgentBuilder
-from .base_blocks.bpmn_agent_base import BpmnAgentBuilder
-from .base_blocks.sa_agent_base import SaAgentBuilder
-from .base_blocks.json_agent_base import JsonAgentBuilder
+from .base_blocks.de_agent_base import DeAgentBuilder
+from .base_blocks.darch_agent_base import DarchAgentBuilder
 from .base_blocks.corrector_agent_base import CorrectionAgentBuilder
 from settings import AgentSettings
 
@@ -14,7 +12,7 @@ from langgraph.graph import StateGraph
 from langchain.chat_models import ChatOpenAI
 from langchain_openai import ChatOpenAI as CH
 from langchain.schema import HumanMessage, SystemMessage, Document, AIMessage
-from langchain.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS
 from langchain.embeddings import SentenceTransformerEmbeddings
 from langchain.chains import RetrievalQA
 from langchain_community.tools import DuckDuckGoSearchRun
@@ -31,11 +29,9 @@ import os
 class LangChainBuilder(Singleton):
     def _setup(self):
         self.settings = AgentSettings()
-        self.ba_builder = BaAgentBuilder()
-        self.sa_builder = SaAgentBuilder()
-        self.bpmn_builder = BpmnAgentBuilder()
+        self.de_builder = DeAgentBuilder()
+        self.darch_builder = DarchAgentBuilder()
         self.corrector_builder = CorrectionAgentBuilder()
-        self.json_builder = JsonAgentBuilder()
         pass
 
     def make_graph(self, mapper, entry_point, state_schema):
@@ -47,55 +43,28 @@ class LangChainBuilder(Singleton):
         return graph
 
     def create_ba_chain(self):
-        ba_agent = self.ba_builder.create_ba_agent()
-        ba_agent_node = self.ba_builder.create_ba_agent_node(ba_agent)
-        ba_validator_node = self.ba_builder.create_ba_validator_node()
+        de_agent = self.de_builder.create_de_agent()
+        de_agent_node = self.de_builder.create_de_agent_node(de_agent)
+        de_validator_node = self.de_builder.create_de_validator_node()
 
         graph_mapper = {
-            "ba_agent": ba_agent_node,
-            "ba_validator": ba_validator_node
+            "de_agent": de_agent_node,
+            "de_validator": de_validator_node
         }
 
-        graph = self.make_graph(graph_mapper, "ba_agent", BaAgentState)
+        graph = self.make_graph(graph_mapper, "de_agent", DeAgentState)
         return graph
 
-    def create_sa_chain(self):
-        analitic_agent = self.sa_builder.create_sa_analitic_agent()
-        generator_agent = self.sa_builder.create_sa_generator_agent()
-        analitic_node = self.sa_builder.create_sa_analitic_node(analitic_agent)
-        generator_node = self.sa_builder.create_sa_generator_node(generator_agent)
-        validator_node = self.sa_builder.create_sa_validator_node()
+    def create_darch_chain(self):
+        darch_agent = self.darch_builder.create_darch_agent()
+        darch_agent_node = self.darch_builder.create_darch_agent_node(darch_agent)
+        darch_validator_node = self.darch_builder.create_darch_validator_node()
 
         graph_mapper = {
-            "analitic_agent": analitic_node,
-            "generator_agent": generator_node,
-            "validator_agent": validator_node
+            "darch_agent": darch_agent_node,
+            "darch_validator": darch_validator_node
         }
-        graph = self.make_graph(graph_mapper, "analitic_agent", SaAgentState)
+        graph = self.make_graph(graph_mapper, "darch_agent", DarchAgentState)
         return graph
-
-    def create_bpmn_chain(self):
-        describer_agent = self.bpmn_builder.create_describtion_agent()
-        bpmn_agent = self.bpmn_builder.create_bpmn_agent()
-        bpmn_describer_agent_node = self.bpmn_builder.create_bpmn_description_node(describer_agent)
-        bpmn_agent_node = self.bpmn_builder.create_bpmn_agent_node(bpmn_agent)
-        bpmn_validator_node = self.bpmn_builder.create_bpmn_validator_node()
-
-        graph_mapper = {
-            "describer": bpmn_describer_agent_node,
-            "bpmn_agent": bpmn_agent_node,
-            "bpmn_validator": bpmn_validator_node
-        }
-        graph = self.make_graph(mapper=graph_mapper, entry_point="describer", state_schema=BpmnAgentState)
-        return graph
-
-    def create_json_analitic_agent(self, memory=None):
-        analitic_agent = self.json_builder.create_json_analitic_agent(memory=memory)
-        return analitic_agent
-
-    def create_json_corrector_agent(self):
-        corrector_agent = self.json_builder.create_json_corrector_agent()
-        return corrector_agent
-
 
 

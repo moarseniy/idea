@@ -62,10 +62,10 @@ class AgentSettings(Singleton):
         self.DE_CORRECTOR_SYSTEM_TEMPLATE = self.__read_file("prompts/de/de_corrector_system_template.txt")
         self.DE_CORRECTOR_USER_TEMPLATE = self.__read_file("prompts/de/de_corrector_user_template.txt")
 
-        self.DE_TEMPLATE = self.__read_file("prompts/darch/darch_template.txt")
-        self.DE_VALIDATOR_TEMPLATE = self.__read_file("prompts/darch/darch_validator_template.txt")
-        self.DE_CORRECTOR_SYSTEM_TEMPLATE = self.__read_file("prompts/darch/darch_corrector_system_template.txt")
-        self.DE_CORRECTOR_USER_TEMPLATE = self.__read_file("prompts/darch/darch_corrector_user_template.txt")
+        self.DARCH_TEMPLATE = self.__read_file("prompts/darch/darch_template.txt")
+        self.DARCH_VALIDATOR_TEMPLATE = self.__read_file("prompts/darch/darch_validator_template.txt")
+        self.DARCH_CORRECTOR_SYSTEM_TEMPLATE = self.__read_file("prompts/darch/darch_corrector_system_template.txt")
+        self.DARCH_CORRECTOR_USER_TEMPLATE = self.__read_file("prompts/darch/darch_corrector_user_template.txt")
         
         self.DE_INSTRUCTION = self.__read_file("instructions/de_instruction.md")
         self.DARCH_INSTRUCTION = self.__read_file("instructions/darch_instruction.md")
@@ -171,7 +171,7 @@ class AgentSettings(Singleton):
 
     @property
     def de_instruction(self):
-        return self.BA_INSTRUCTION
+        return self.DE_INSTRUCTION
 
     @property
     def darch_instruction(self):

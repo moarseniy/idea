@@ -9,12 +9,13 @@ class AgentRequest(BaseModel):
     history: Optional[Dict] = None
     task: Optional[str] = None
     requestDateTime: datetime
+    deRequirements: Optional[bool] = None
+    darchRequirements: Optional[bool] = None
 
 class AgentResponse(BaseModel):
     needInfo: Optional[bool] = None
     message: Optional[str] = None
     history: Optional[Dict] = None
-    jsonAgentHistory: Optional[List] = None
 
     @computed_field(return_type=datetime)
     def responseDateTime(self):

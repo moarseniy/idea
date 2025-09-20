@@ -15,7 +15,7 @@ class App(FastAPI):
         @self.post("/llm_agents")
         async def agent_endpoint(request:AgentRequest)->AgentResponse:
             print(f"REQUEST: {request}")
-            agents = LangchainApp(memory_json=request.jsonAgentHistory)
+            agents = LangchainApp()
             response = dict()
             if not request.needFix:
                 task = request.task
@@ -26,7 +26,7 @@ class App(FastAPI):
                     if request.deRequirements:
                         response["deRequirements"] = deRequirements
                 if request.darchRequirements:
-                    darch_initial_state = {"task": task, "darch_requirements": darchRequirements}
+                    darch_initial_state = {"task": task, "darch_requirements": request.darchRequirements}
                     _, darch_requirements = await agents.darch_agent(darch_initial_state)
                     response["darchRequirements"] = darch_requirements
 

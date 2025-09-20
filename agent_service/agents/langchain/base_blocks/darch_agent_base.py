@@ -8,7 +8,7 @@ from langgraph.graph import StateGraph
 from langchain.chat_models import ChatOpenAI
 from langchain_openai import ChatOpenAI as CH
 from langchain.schema import HumanMessage, SystemMessage, Document, AIMessage
-from langchain.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS
 from langchain.embeddings import SentenceTransformerEmbeddings
 from langchain.chains import RetrievalQA
 from langchain_community.tools import DuckDuckGoSearchRun
