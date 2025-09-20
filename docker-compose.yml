@@ -5,16 +5,12 @@ services:
     build:
       context: ./gradio_service
     ports:
-      - "7860:7860"
+      - "7862:7862"
     restart: always
-
-    # Разрешаем Chromium в Puppeteer создавать namespace‑ы
-    security_opt:
-      - seccomp:unconfined
 
   agent_app:
     build:
       context: ./agent_service
     ports:
-      - "5000:5000"
+      - "7861:7861"
     restart: always
