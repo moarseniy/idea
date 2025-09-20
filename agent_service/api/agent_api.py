@@ -3,10 +3,6 @@ from typing import List, Dict, Optional
 from datetime import datetime
 
 class AgentRequest(BaseModel):
-    systemRequirements: Optional[bool] = None
-    jsonSchema: Optional[bool] = None
-    businessRequirements: Optional[bool] = None
-    bpmnSchema: Optional[bool] = None
     needFix: Optional[bool] = None
     needInfo: Optional[bool] = None
     jsonAgentHistory: Optional[List] = None
@@ -15,10 +11,6 @@ class AgentRequest(BaseModel):
     requestDateTime: datetime
 
 class AgentResponse(BaseModel):
-    systemRequirements: Optional[str] = None
-    jsonSchema: Optional[str] = None
-    businessRequirements: Optional[str] = None
-    bpmnSchema: Optional[str] = None
     needInfo: Optional[bool] = None
     message: Optional[str] = None
     history: Optional[Dict] = None

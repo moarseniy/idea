@@ -343,7 +343,7 @@ def run_web_interface(app):
         def process_llm_agent_request(user_data, is_logged_in, chat_history, llm_agent_request):
 
             if llm_agent_request["task"]:
-                llm_host = "http://agent_app:5000/llm_agents"
+                llm_host = "http://agent_app:7861/llm_agents"
                 headers = {"Content-Type": "application/json"}
                 print(f"REQUEST: {json.dumps(llm_agent_request)}")
                 response = requests.post(llm_host, data=json.dumps(llm_agent_request), verify=False, headers=headers) #timeout=120)
@@ -425,6 +425,6 @@ if __name__ == "__main__":
     # try:
     app_instance = AppInterface()
     demo = run_web_interface(app_instance)
-    demo.launch(server_name="0.0.0.0", server_port=7860)
+    demo.launch(server_name="0.0.0.0", server_port=7862)
     # except:
         # reboot_system()

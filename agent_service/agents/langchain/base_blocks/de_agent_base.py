@@ -1,5 +1,5 @@
 from abstract.singleton import Singleton
-from ..agent_states import BaAgentState
+from ..agent_states import DeAgentState
 from settings import AgentSettings
 
 from langchain.agents import initialize_agent, AgentType, Tool
@@ -21,38 +21,38 @@ from typing_extensions import TypedDict
 import warnings
 import os
 
-class BaAgentBuilder(Singleton):
+class DeAgentBuilder(Singleton):
     def _setup(self):
         self.settings = AgentSettings()
 
-    def create_ba_agent(self):
+    def create_de_agent(self):
         llm = self.settings.select_model()
 
-        memory_ba = ConversationBufferMemory(memory_key="chat_history")
+        memory_de = ConversationBufferMemory(memory_key="chat_history")
         tools = []
-        ba_agent = initialize_agent(
+        de_agent = initialize_agent(
             tools=tools,
             llm=llm,
-            memory=memory_ba,
+            memory=memory_de,
             agent=AgentType.CONVERSATIONAL_REACT_DESCRIPTION,
             verbose=True,
             handle_parsing_errors=True
         )
-        return ba_agent
+        return de_agent
 
-    def create_ba_agent_node(self, ba_agent):
-        def ba_agent_node(state: BaAgentState) -> Command[Literal["ba_validator"]]:
-            ba_prompt = self.settings.ba_template
-            ba_instruction = self.settings.ba_instruction
+    def create_de_agent_node(self, de_agent):
+        def de_agent_node(state: DeAgentState) -> Command[Literal["de_validator"]]:
+            de_prompt = self.settings.de_template
+            de_instruction = self.settings.de_instruction
 
             if "messages" in state and state["messages"]:
                 old_messages = state["messages"]
                 request = state["messages"][-1].content
             else:
                 old_messages = []
-                request = ba_prompt.format(task=state["task"], ba_instruction=ba_instruction)
+                request = de_prompt.format(task=state["task"], de_instruction=de_instruction)
 
-            response = ba_agent.run(request)
+            response = de_agent.run(request)
             if isinstance(response, dict):
                 result = response["output"]
             else:
@@ -60,21 +60,21 @@ class BaAgentBuilder(Singleton):
             return Command(
                 update={
                     "result": result,
-                    "messages": old_messages + [HumanMessage(content=result, name="Аналитик")]
+                    "messages": old_messages + [HumanMessage(content=result, name="Инженер")]
                 },
-                goto="ba_validator"
+                goto="de_validator"
             )
-        return ba_agent_node
+        return de_agent_node
 
-    def create_ba_validator_node(self):
+    def create_de_validator_node(self):
         llm_max = self.settings.select_model()
-        def ba_validator_node(state: BaAgentState) -> Command[Literal["ba_agent", END]]:
-            ba_validator_prompt = self.settings.ba_validator_prompt
-            return_node = "ba_agent"
+        def de_validator_node(state: DeAgentState) -> Command[Literal["de_agent", END]]:
+            de_validator_prompt = self.settings.de_validator_prompt
+            return_node = "de_agent"
             if not "messages" in state or not state["messages"]:
                 return Command(goto=return_node)
 
-            prompt = ba_validator_prompt.format(task=state["task"])
+            prompt = de_validator_prompt.format(task=state["task"])
             system = SystemMessage(content=prompt)
             request = [system] + state["messages"]
 
@@ -94,4 +94,4 @@ class BaAgentBuilder(Singleton):
                 },
                 goto=goto
             )
-        return ba_validator_node
+        return de_validator_node
