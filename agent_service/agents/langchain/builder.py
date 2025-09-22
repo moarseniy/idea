@@ -46,10 +46,16 @@ class LangChainBuilder(Singleton):
         de_agent = self.de_builder.create_de_agent()
         de_agent_node = self.de_builder.create_de_agent_node(de_agent)
         de_validator_node = self.de_builder.create_de_validator_node()
+        
+        de_corrector_agent = self.corrector_builder.create_de_corrector_agent()
+        de_corrector_node = self.corrector_builder.create_correction_de_node(de_corrector_agent)
+        de_corrector_validator_node = self.corrector_builder.create_correction_de_validator_node()
 
         graph_mapper = {
             "de_agent": de_agent_node,
-            "de_validator": de_validator_node
+            "de_validator": de_validator_node,
+            "de_corrector": de_corrector_node,
+            "de_corrector_validator": de_corrector_validator_node
         }
 
         graph = self.make_graph(graph_mapper, "de_agent", DeAgentState)
@@ -60,10 +66,17 @@ class LangChainBuilder(Singleton):
         darch_agent_node = self.darch_builder.create_darch_agent_node(darch_agent)
         darch_validator_node = self.darch_builder.create_darch_validator_node()
 
+        darch_corrector_agent = self.corrector_builder.create_darch_corrector_agent()
+        darch_corrector_node = self.corrector_builder.create_correction_darch_node(darch_corrector_agent)
+        darch_corrector_validator_node = self.corrector_builder.create_correction_darch_validator_node()
+
         graph_mapper = {
             "darch_agent": darch_agent_node,
-            "darch_validator": darch_validator_node
+            "darch_validator": darch_validator_node,
+            "darch_corrector": darch_corrector_node,
+            "darch_corrector_validator": darch_corrector_validator_node
         }
+        
         graph = self.make_graph(graph_mapper, "darch_agent", DarchAgentState)
         return graph
 

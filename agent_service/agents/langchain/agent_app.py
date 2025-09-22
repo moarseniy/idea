@@ -48,7 +48,7 @@ class LangchainApp:
             SystemMessage(content=system),
             HumanMessage(content=user, name="Пользователь")
         ]
-        result = await self.de_corrector_agent.ainvoke(request)
+        result = await self.de_agent_chain.ainvoke(request)
         print(f"DE_CORRECTOR_RESULT: {result}")
         return result.content
 
@@ -59,7 +59,7 @@ class LangchainApp:
             SystemMessage(content=system),
             HumanMessage(content=user, name="Пользователь")
         ]
-        result = await self.darch_corrector_agent.ainvoke(request)
+        result = await self.darch_agent_chain.ainvoke(request)
         print(f"SA_CORRECTOR_RESULT: {result}")
         return result.content
 
