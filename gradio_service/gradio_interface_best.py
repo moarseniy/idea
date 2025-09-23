@@ -1,13 +1,14 @@
 import gradio as gr
-import json
-import os
+import json, os, time
 import datetime
+import requests
 
 from gradio_utils import *
 
+from profile_csv import analyze_source_data
 from modules import DataProvider, UserData, PipeLine, Summarizer, TextSplitter
-
 from modules import customLogger
+
 _LOGGER = customLogger.getLogger(__name__)
 
 llm_host = "http://agent_app:7861/llm_agents"
@@ -50,20 +51,6 @@ class AppInterface:
         summary = self.data_provider.load_summary(username, filename)
         return summary
 
-    @log_execution_time
-    def process_llm_agent_request(self, llm_agent_response, user_data, is_logged_in):
-        response_json = llm_agent_response.json()
-        result = []
-        img_result = None
-        if "deRequirements" in response_json and response_json["deRequirements"]:
-            result.append(response_json["deRequirements"])
-        elif "darchRequirements" in response_json and response_json["darchRequirements"]:
-            result.append(response_json["darchRequirements"])
-        
-        markdown_content = "\n\n".join(result)
-
-        return markdown_content, img_result
-
 
 def run_web_interface(app):
     with gr.Blocks(title='MVP: Цифровой инженер данных') as demo:
@@ -84,7 +71,7 @@ def run_web_interface(app):
                 start_choice = gr.Radio(choices=['Создать новое хранилище','Подключиться к существующему хранилищу'], value=None, label='Что вы хотите сделать?')
 
                 new_source_choice = gr.Dropdown(choices=['Загрузить файлы (CSV/JSON/XML)','На основе существующего хранилища (указать ссылку)'], value='Загрузить файлы (CSV/JSON/XML)', label='Источник:', visible=False)
-                upload_file_new = gr.Textbox(label='Путь до директории с CSV/JSON/XML файлами', visible=False)
+                upload_file_new = gr.Textbox(label='Путь до директории с CSV/JSON/XML файлами', placeholder='Например: C:\\Users\\1\\data\\', visible=False)
                 new_base_conn = gr.Textbox(label='Ссылка на существующее хранилище (для создания на его основе)', placeholder='Например: postgres://user:pass@host:5432/db', visible=False)
 
                 existing_conn = gr.Textbox(label='Connection string для подключения к существующему хранилищу', placeholder='postgres://user:pass@host:5432/db', visible=False)
@@ -133,37 +120,51 @@ def run_web_interface(app):
             return gr.update(visible=bool(conn and str(conn).strip()))
 
 
-        @analytic_btn.click(inputs=[start_choice, new_source_choice, upload_file_new, new_base_conn, existing_conn, log_display, info_box], 
-                            outputs=[create_connect_btn, log_display, info_box, ddl_preview, dag_preview])
-        def on_analytic(start_choice_val, new_source_sel, upload_new_file, new_base_conn_val, existing_conn_val, log_text, info_text):
+        @analytic_btn.click(inputs=[start_choice, new_source_choice, upload_file_new, new_base_conn, existing_conn, log_display, info_box, llm_agent_request], 
+                            outputs=[create_connect_btn, log_display, info_box, ddl_preview, dag_preview, llm_agent_request])
+        def on_analytic(start_choice_val, new_source_sel, upload_new_file, new_base_conn_val, existing_conn_val, log_text, info_text, llm_agent_request):
             source_desc = 'unknown'
+
             if start_choice_val == 'Создать новое хранилище':
                 if new_source_sel == 'Загрузить файлы (CSV/JSON/XML)':
                     source_desc = upload_new_file
                 else:
                     source_desc = new_base_conn_val
             else:
-                conn_str = existing_conn_val
-                source_desc = conn_str
+                source_desc = existing_conn_val
 
             log_text += 'Данные успешно загружены.\n'
 
-            result = analyze_source_stub(new_source_sel, upload, conn_str)
+            # result = analyze_source_data(source_desc, ";", None, None, None)
             log_text += 'Аналитика данных завершена.\n'
+            with open("result.json") as f_json:
+                result = f_json.readlines()
+            
+            print("RESULT:", result)
 
-            rec = recommend_storage(result['schema'])
-            info_lines = [f"Рекоммендация: {rec['recommendation']}", f"Обоснование: {rec['rationale']}"]
-            if result.get('conn_info'):
-                info_lines.append('Parsed connection: ' + json.dumps(result['conn_info'], ensure_ascii=False))
-            info_text += '\n'.join(info_lines)
+            llm_agent_request["task"] = result
+            headers = {"Content-Type": "application/json"}
+            print(f"REQUEST: {json.dumps(llm_agent_request)}")
+            response = requests.post(llm_host, data=json.dumps(llm_agent_request), verify=False, headers=headers) #timeout=120)
+            print(f"RESPONSE: {response}")
+            response_json = response.json()
 
+            # rec = recommend_storage(result['schema'])
+
+            # info_lines = [f"Рекоммендация: {rec['recommendation']}", f"Обоснование: {rec['rationale']}"]
+            # if result.get('conn_info'):
+            #     info_lines.append('Parsed connection: ' + json.dumps(result['conn_info'], ensure_ascii=False))
+            # info_text += '\n'.join(info_lines)
+
+            # TODO: REPLACE TO VOVA CODE
             ddl = generate_ddl(result['schema'], table_name='my_table', target_db=rec['recommendation'])
             log_text += 'DDL сгенерирован.\n'
 
+            # TODO: REPLACE TO VOVA CODE
             dag = generate_airflow_dag_from_pipeline('example_pipeline', '@hourly', [], rec['recommendation'])
             log_text += 'DAG сгенерирован.\n'
 
-            return gr.update(visible=True), log_text, info_text, gr.update(value=ddl, visible=True), gr.update(value=dag, visible=True)
+            return gr.update(visible=True), log_text, info_text, gr.update(value=ddl, visible=True), gr.update(value=dag, visible=True), gr.update(value=llm_agent_request)
 
         
         @create_connect_btn.click(inputs=[start_choice, new_source_choice, upload_file_new, new_base_conn, existing_conn, log_display, info_box],
@@ -178,8 +179,7 @@ def run_web_interface(app):
 
                 log_text += "Новое хранилище успешно создано.\n"
             else:
-                conn_str = existing_conn_val
-                source_desc = conn_str
+                source_desc = existing_conn_val
                 
                 log_text += "Подключение к хранилищу успешно выполнено.\n"
 

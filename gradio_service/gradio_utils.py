@@ -47,13 +47,13 @@ def parse_connection_string(conn_str):
     return res
 
 # аналитика данных
-def analyze_source_stub(source_choice, upload_file, conn_str, sample_size=100):
-    conn_info = parse_connection_string(conn_str) if conn_str else None
+def analyze_source_stub(source_choice, upload_file):
+    conn_info = parse_connection_string(upload_file) if upload_file else None
     if upload_file is not None:
         try:
             fname = upload_file.name
             if fname.lower().endswith('.csv') or fname.lower().endswith('.json'):
-                df = pd.read_csv(upload_file.name, nrows=sample_size)
+                df = pd.read_csv(upload_file.name, nrows=100)
                 schema = [{'column': c, 'type': str(t)} for c,t in zip(df.columns, df.dtypes)]
                 preview = df.head(5).to_dict(orient='records')
                 return {'schema': schema, 'preview': preview, 'conn_info': conn_info}

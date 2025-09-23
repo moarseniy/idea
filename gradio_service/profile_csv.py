@@ -16,7 +16,7 @@ LIKELY_ID_PAT = re.compile(r"(?:^|_)(id|uuid|guid|hash|key)(?:$|_)", re.I)
 LIKELY_TIME_PAT = re.compile(r"(?:date|dt|time|timestamp|ts|created|updated|event_time)", re.I)
 
 def human_int(n):
-    return f"{n:,}".replace(",", " ")
+    return n # f"{n:,}".replace(",", " ")
 
 def human_bytes(n):
     units = ["B","KB","MB","GB","TB"]
@@ -128,17 +128,9 @@ def pick_candidate_time_column(col_summaries):
                    reverse=True)
     return cand_pool[0]
 
-# ---------- основная логика ----------
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("csv_path", help="Путь к CSV")
-    ap.add_argument("--rows", type=int, default=500_000, help="Сколько строк читать (sample)")
-    ap.add_argument("--sep", default=None, help="Разделитель (по умолчанию автоопределение)")
-    ap.add_argument("--encoding", default=None, help="Кодировка (по умолчанию utf-8)")
-    ap.add_argument("--no_header", action="store_true", help="Если в файле нет заголовка")
-    args = ap.parse_args()
 
-    path = args.csv_path
+def analyze_source_data(path, sep, header, enc, nrows):
+
     if not os.path.exists(path):
         print(f"Файл не найден: {path}", file=sys.stderr); sys.exit(2)
 
@@ -153,14 +145,6 @@ def main():
         total_lines = None
         print(f"Не удалось посчитать строки быстро: {e}")
 
-    sep = args.sep or sniff_delimiter(path)
-    print(f"Разделитель: {repr(sep)}")
-
-    header = 0 if not args.no_header else None
-    enc = args.encoding or "utf-8"
-
-    # читаем sample
-    nrows = args.rows
     print(f"\n=== ЧИТАЕМ SAMPLE: {human_int(nrows)} строк ===")
     df = pd.read_csv(path, nrows=nrows, sep=sep, header=header, encoding=enc, low_memory=False)
     if header is None:
@@ -245,22 +229,22 @@ def main():
             "total_lines_including_header": total_lines,
             "delimiter": sep,
             "header": header is not None,
-            "approx_avg_row_size_bytes": approx_avg_row_size,
+            "approx_avg_row_size_bytes": approx_avg_row_size
         },
         "sample": {
             "rows_read": n,
-            "columns": list(df.columns),
+            "columns": list(df.columns)
         },
         "columns": col_summaries,
         "candidates": {
             "primary_key_single": pk_single,
             "primary_key_pairs": pk_pairs,
-            "time_partition_candidate": time_cand["name"] if time_cand else None,
+            "time_partition_candidate": time_cand["name"] if time_cand else None
         },
         "cardinality": {
             "high_cardinality_columns": high_card_cols[:10],
-            "low_cardinality_columns": low_card_cols[:10],
-        },
+            "low_cardinality_columns": low_card_cols[:10]
+        }
     }
 
     # печать краткого резюме
@@ -280,6 +264,32 @@ def main():
     with open(out_json, "w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
     print(f"\nJSON-отчёт сохранён: {out_json}")
+
+    return summary
+
+# ---------- основная логика ----------
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("csv_path", help="Путь к CSV")
+    ap.add_argument("--rows", type=int, default=500_000, help="Сколько строк читать (sample)")
+    ap.add_argument("--sep", default=None, help="Разделитель (по умолчанию автоопределение)")
+    ap.add_argument("--encoding", default=None, help="Кодировка (по умолчанию utf-8)")
+    ap.add_argument("--no_header", action="store_true", help="Если в файле нет заголовка")
+    args = ap.parse_args()
+
+    path = args.csv_path
+
+    sep = args.sep or sniff_delimiter(path)
+    print(f"Разделитель: {repr(sep)}")
+
+    header = 0 if not args.no_header else None
+    enc = args.encoding or "utf-8"
+
+    # читаем sample
+    nrows = args.rows
+
+
+    summary = analyze_source_data(path, sep, header, enc, nrows)
 
 if __name__ == "__main__":
     main()
