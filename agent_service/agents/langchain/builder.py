@@ -42,7 +42,7 @@ class LangChainBuilder(Singleton):
         graph = builder.compile()
         return graph
 
-    def create_ba_chain(self):
+    def create_de_chain(self):
         de_agent = self.de_builder.create_de_agent()
         de_agent_node = self.de_builder.create_de_agent_node(de_agent)
         de_validator_node = self.de_builder.create_de_validator_node()
