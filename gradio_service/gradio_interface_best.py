@@ -101,6 +101,9 @@ def run_web_interface(app):
                 # DAG
                 dag_preview = gr.Code(label='Airflow DAG (preview)', language='python', visible=False)
 
+
+        @start_choice.change(inputs=[start_choice], 
+                            outputs=[new_source_choice, upload_file_new, existing_conn])
         def on_start(choice):
             if choice == 'Создать новое хранилище':
                 return gr.update(visible=True), gr.update(visible=True), gr.update(visible=False)
@@ -109,33 +112,29 @@ def run_web_interface(app):
             else:
                 return [gr.update(visible=False)]*3
 
-        start_choice.change(fn=on_start, 
-                            inputs=[start_choice], 
-                            outputs=[new_source_choice, upload_file_new, existing_conn])
-
+        
+        @new_source_choice.change(inputs=[new_source_choice], 
+                                 outputs=[upload_file_new, new_base_conn, analytic_btn])
         def on_new_source_change(sel):
             if sel == 'Загрузить файлы (CSV/JSON/XML)':
                 return gr.update(visible=True), gr.update(visible=False), gr.update(visible=True)
             return gr.update(visible=False), gr.update(visible=True), gr.update(visible=True)
 
-        new_source_choice.change(fn=on_new_source_change, 
-                                    inputs=[new_source_choice], 
-                                    outputs=[upload_file_new, new_base_conn, analytic_btn])
 
+        @upload_file_new.change(inputs=[upload_file_new], 
+                                outputs=[analytic_btn])
         def upload_files(dir_path):
             return gr.update(visible=True)
 
-        upload_file_new.change(fn=upload_files, 
-                                inputs=[upload_file_new], 
-                                outputs=[analytic_btn])
 
+        @existing_conn.change(inputs=[existing_conn], 
+                              outputs=[analytic_btn])
         def on_existing_conn_change(conn):
             return gr.update(visible=bool(conn and str(conn).strip()))
 
-        existing_conn.change(fn=on_existing_conn_change, 
-                                inputs=[existing_conn], 
-                                outputs=[analytic_btn])
 
+        @analytic_btn.click(inputs=[start_choice, new_source_choice, upload_file_new, new_base_conn, existing_conn, log_display, info_box], 
+                            outputs=[create_connect_btn, log_display, info_box, ddl_preview, dag_preview])
         def on_analytic(start_choice_val, new_source_sel, upload_new_file, new_base_conn_val, existing_conn_val, log_text, info_text):
             source_desc = 'unknown'
             if start_choice_val == 'Создать новое хранилище':
@@ -166,10 +165,9 @@ def run_web_interface(app):
 
             return gr.update(visible=True), log_text, info_text, gr.update(value=ddl, visible=True), gr.update(value=dag, visible=True)
 
-        analytic_btn.click(fn=on_analytic, 
-                            inputs=[start_choice, new_source_choice, upload_file_new, new_base_conn, existing_conn, log_display, info_box], 
-                            outputs=[create_connect_btn, log_display, info_box, ddl_preview, dag_preview])
-
+        
+        @create_connect_btn.click(inputs=[start_choice, new_source_choice, upload_file_new, new_base_conn, existing_conn, log_display, info_box],
+                                 outputs=[log_display])
         def on_create_connect(start_choice_val, new_source_sel, upload_new_file, new_base_conn_val, existing_conn_val, log_text, info_text):
             source_desc = 'unknown'
             if start_choice_val == 'Создать новое хранилище':
@@ -187,9 +185,6 @@ def run_web_interface(app):
 
             return log_text
 
-        create_connect_btn.click(fn=on_create_connect, 
-                                    inputs=[start_choice, new_source_choice, upload_file_new, new_base_conn, existing_conn, log_display, info_box],
-                                    outputs=[log_display])
 
     return demo
 
