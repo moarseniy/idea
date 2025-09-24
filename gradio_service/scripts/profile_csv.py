@@ -116,7 +116,7 @@ def build_compact(columns_out: dict, amb_thr: float):
             "chosen_type": prof.get("chosen_type"),
             "succ": prof.get("parse_success_frac"),
             "null": prof.get("null_frac"),
-            "distinct": d,
+            "distinct": d
         }
         if len(ambig) >= 2:
             columns_compact[name]["ambig"] = ambig
