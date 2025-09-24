@@ -1,0 +1,557 @@
+{
+  "input_id": "part-00000.csv",
+  "profile_time": "2025-09-24T11:15:53.985396+00:00",
+  "tool_version": "a2-profiler/0.3",
+  "file_meta": {
+    "path": "artifacts/part-00000.csv",
+    "format": "csv",
+    "size_bytes": 348245462,
+    "detected": {
+      "delimiter": ";",
+      "quotechar": "\"",
+      "encoding": "utf-8",
+      "header": true,
+      "row_count": 478615
+    }
+  },
+  "sample": {
+    "sample_rows": 200000,
+    "sample_fraction": null,
+    "seed": null
+  },
+  "candidate_keys": [
+    {
+      "columns": [
+        "ticket_number"
+      ],
+      "uniqueness_est": 1.0,
+      "conflicts": 0
+    },
+    {
+      "columns": [
+        "created",
+        "museum_inn"
+      ],
+      "uniqueness_est": 1.0,
+      "conflicts": 0
+    },
+    {
+      "columns": [
+        "created",
+        "order_number"
+      ],
+      "uniqueness_est": 1.0,
+      "conflicts": 0
+    },
+    {
+      "columns": [
+        "created",
+        "ticket_number"
+      ],
+      "uniqueness_est": 1.0,
+      "conflicts": 0
+    },
+    {
+      "columns": [
+        "is_entrance_mdate",
+        "client_name"
+      ],
+      "uniqueness_est": 1.0,
+      "conflicts": 0
+    },
+    {
+      "columns": [
+        "is_entrance_mdate",
+        "museum_inn"
+      ],
+      "uniqueness_est": 1.0,
+      "conflicts": 0
+    },
+    {
+      "columns": [
+        "is_entrance_mdate",
+        "order_number"
+      ],
+      "uniqueness_est": 1.0,
+      "conflicts": 0
+    },
+    {
+      "columns": [
+        "is_entrance_mdate",
+        "ticket_number"
+      ],
+      "uniqueness_est": 1.0,
+      "conflicts": 0
+    },
+    {
+      "columns": [
+        "ticket_id",
+        "client_name"
+      ],
+      "uniqueness_est": 1.0,
+      "conflicts": 0
+    },
+    {
+      "columns": [
+        "ticket_id",
+        "museum_inn"
+      ],
+      "uniqueness_est": 1.0,
+      "conflicts": 0
+    },
+    {
+      "columns": [
+        "ticket_id",
+        "order_number"
+      ],
+      "uniqueness_est": 1.0,
+      "conflicts": 0
+    },
+    {
+      "columns": [
+        "ticket_id",
+        "ticket_number"
+      ],
+      "uniqueness_est": 1.0,
+      "conflicts": 0
+    },
+    {
+      "columns": [
+        "update_timestamp",
+        "museum_inn"
+      ],
+      "uniqueness_est": 1.0,
+      "conflicts": 0
+    },
+    {
+      "columns": [
+        "update_timestamp",
+        "order_number"
+      ],
+      "uniqueness_est": 1.0,
+      "conflicts": 0
+    },
+    {
+      "columns": [
+        "update_timestamp",
+        "ticket_number"
+      ],
+      "uniqueness_est": 1.0,
+      "conflicts": 0
+    }
+  ],
+  "routing_signals": {
+    "order_status": {
+      "present": true,
+      "distinct": 3,
+      "top_k": [
+        [
+          "PAID",
+          199763
+        ],
+        [
+          "REFUND",
+          227
+        ],
+        [
+          "CANCELLED",
+          10
+        ]
+      ]
+    },
+    "ticket_status": {
+      "present": true,
+      "distinct": 4,
+      "top_k": [
+        [
+          "PAID",
+          199757
+        ],
+        [
+          "REFUND",
+          231
+        ],
+        [
+          "CANCELLED",
+          10
+        ],
+        [
+          "NEW",
+          2
+        ]
+      ]
+    },
+    "is_active": {
+      "present": true,
+      "distinct": 1,
+      "top_k": [
+        [
+          true,
+          200000
+        ]
+      ]
+    },
+    "count_visitor": {
+      "present": true,
+      "distinct": 1,
+      "top_k": [
+        [
+          1,
+          200000
+        ]
+      ]
+    },
+    "is_entrance": {
+      "present": true,
+      "distinct": 3,
+      "top_k": [
+        [
+          true,
+          133700
+        ],
+        [
+          false,
+          66279
+        ]
+      ]
+    }
+  },
+  "engine_hints": {
+    "pg": {},
+    "ch": {
+      "needs_date32": [],
+      "low_cardinality": [
+        "order_status",
+        "ticket_status",
+        "ticket_price",
+        "visitor_category",
+        "is_active",
+        "count_visitor",
+        "is_entrance",
+        "event_kind_name",
+        "museum_name"
+      ]
+    }
+  },
+  "quality_flags": [
+    "anomalies_detected",
+    "ambiguous_types_present"
+  ],
+  "columns_compact": {
+    "created": {
+      "chosen_type": "string",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 182213
+    },
+    "order_status": {
+      "chosen_type": "string",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 3
+    },
+    "ticket_status": {
+      "chosen_type": "string",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 4
+    },
+    "ticket_price": {
+      "chosen_type": "int64",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 81,
+      "ambig": [
+        {
+          "type": "int64",
+          "score": 0.4
+        },
+        {
+          "type": "float64",
+          "score": 0.4
+        },
+        {
+          "type": "string",
+          "score": 0.2
+        }
+      ]
+    },
+    "visitor_category": {
+      "chosen_type": "string",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 79
+    },
+    "event_id": {
+      "chosen_type": "int64",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 4510,
+      "ambig": [
+        {
+          "type": "int64",
+          "score": 0.4
+        },
+        {
+          "type": "float64",
+          "score": 0.4
+        },
+        {
+          "type": "string",
+          "score": 0.2
+        }
+      ]
+    },
+    "is_active": {
+      "chosen_type": "bool",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 1,
+      "ambig": [
+        {
+          "type": "bool",
+          "score": 0.2857
+        },
+        {
+          "type": "int64",
+          "score": 0.2857
+        },
+        {
+          "type": "float64",
+          "score": 0.2857
+        }
+      ]
+    },
+    "valid_to": {
+      "chosen_type": "date",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 790,
+      "ambig": [
+        {
+          "type": "date",
+          "score": 0.5
+        },
+        {
+          "type": "string",
+          "score": 0.5
+        }
+      ]
+    },
+    "count_visitor": {
+      "chosen_type": "bool",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 1,
+      "ambig": [
+        {
+          "type": "bool",
+          "score": 0.2857
+        },
+        {
+          "type": "int64",
+          "score": 0.2857
+        },
+        {
+          "type": "float64",
+          "score": 0.2857
+        }
+      ]
+    },
+    "is_entrance": {
+      "chosen_type": "bool",
+      "succ": 1.0,
+      "null": 0.000105,
+      "distinct": 3,
+      "ambig": [
+        {
+          "type": "bool",
+          "score": 0.2857
+        },
+        {
+          "type": "int64",
+          "score": 0.2857
+        },
+        {
+          "type": "float64",
+          "score": 0.2857
+        }
+      ]
+    },
+    "is_entrance_mdate": {
+      "chosen_type": "string",
+      "succ": 1.0,
+      "null": 0.000105,
+      "distinct": 199928
+    },
+    "event_name": {
+      "chosen_type": "string",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 4294
+    },
+    "event_kind_name": {
+      "chosen_type": "string",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 32
+    },
+    "spot_id": {
+      "chosen_type": "int64",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 307,
+      "ambig": [
+        {
+          "type": "int64",
+          "score": 0.3997
+        },
+        {
+          "type": "float64",
+          "score": 0.3997
+        },
+        {
+          "type": "string",
+          "score": 0.1998
+        }
+      ]
+    },
+    "spot_name": {
+      "chosen_type": "string",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 315
+    },
+    "museum_name": {
+      "chosen_type": "string",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 133
+    },
+    "start_datetime": {
+      "chosen_type": "string",
+      "succ": 1.0,
+      "null": 0.042555,
+      "distinct": 7652,
+      "ambig": [
+        {
+          "type": "timestamp64(ms)",
+          "score": 0.4891
+        },
+        {
+          "type": "string",
+          "score": 0.5109
+        }
+      ]
+    },
+    "ticket_id": {
+      "chosen_type": "int64",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 199904,
+      "ambig": [
+        {
+          "type": "int64",
+          "score": 0.4
+        },
+        {
+          "type": "float64",
+          "score": 0.4
+        },
+        {
+          "type": "string",
+          "score": 0.2
+        }
+      ]
+    },
+    "update_timestamp": {
+      "chosen_type": "string",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 182220
+    },
+    "client_name": {
+      "chosen_type": "string",
+      "succ": 1.0,
+      "null": 3.5e-05,
+      "distinct": 162418
+    },
+    "name": {
+      "chosen_type": "string",
+      "succ": 1.0,
+      "null": 0.436415,
+      "distinct": 3257
+    },
+    "surname": {
+      "chosen_type": "string",
+      "succ": 1.0,
+      "null": 0.436415,
+      "distinct": 13486
+    },
+    "client_phone": {
+      "chosen_type": "string",
+      "succ": 1.0,
+      "null": 0.35717,
+      "distinct": 128517,
+      "ambig": [
+        {
+          "type": "int64",
+          "score": 0.2771
+        },
+        {
+          "type": "float64",
+          "score": 0.2771
+        },
+        {
+          "type": "string",
+          "score": 0.4457
+        }
+      ]
+    },
+    "museum_inn": {
+      "chosen_type": "int64",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 199997,
+      "ambig": [
+        {
+          "type": "int64",
+          "score": 0.4
+        },
+        {
+          "type": "float64",
+          "score": 0.4
+        },
+        {
+          "type": "string",
+          "score": 0.2
+        }
+      ]
+    },
+    "birthday_date": {
+      "chosen_type": "string",
+      "succ": 1.0,
+      "null": 0.93371,
+      "distinct": 9737
+    },
+    "order_number": {
+      "chosen_type": "string",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 199999
+    },
+    "ticket_number": {
+      "chosen_type": "string",
+      "succ": 1.0,
+      "null": 0.0,
+      "distinct": 200000
+    }
+  },
+  "profile_summary": {
+    "num_columns": 27,
+    "ambiguous_columns": 11,
+    "mostly_null_cols": 1,
+    "low_card_cols": 5,
+    "engine_overrides_present": 0
+  }
+}

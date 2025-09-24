@@ -1,0 +1,8 @@
+record_type,device_id,device_name,registered_at,firmware_version,is_active,meta_json,location_id,country,city,latitude,longitude,reading_id,ts_ms,temperature_c,humidity_pct,voltage_v,status,tags_json
+device,10,TempSense-10,2025-09-01T10:00:00Z,1.4.2,1,"{""calibration"":""2025-01"",""sensors"":[""temp"",""hum""]}",,,,,,,,
+device,20,WeatherPro-20,2025-09-03T15:30:00Z,2.0.1,0,"{""calibration"":""2025-02"",""sensors"":[""temp"",""hum"",""volt""]}",,,,,,,,
+location,,,,,,,"101",EE,Tallinn,59.437000,24.753000,,,,,,,
+location,,,,,,,"202",DE,Berlin,52.520000,13.405000,,,,,,,
+reading,10,,,,,,"101",,,,"",10001,2025-09-23T12:34:56.789Z,21.37,45.20,3.70,ok,"[""indoor"",""lab""]"
+reading,10,,,,,,"101",,,,"",10002,2025-09-23T13:00:00.123Z,22.05,44.00,3.69,ok,"[]"
+reading,20,,,,,,"202",,,,"",10003,2025-09-24T01:02:03.004Z,-5.50,12.00,12.10,warn,"[""outdoor""]"

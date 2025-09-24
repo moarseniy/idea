@@ -1,0 +1,42 @@
+{
+  "load_mappings": [
+    {
+      "source": "artifacts/sample_orders.csv",
+      "format": "csv",
+      "csv_options": {"header": true},
+      "staging_table": "stg_orders_flat",
+      "select_schema": {
+        "order_id": "bigint",
+        "user_id": "bigint",
+        "user_email": "text",
+        "user_name": "text",
+        "order_ts": "timestamptz",
+        "amount": "numeric(12,2)"
+      },
+      "route": [
+        {
+          "into": "users",
+          "when": "TRUE",
+          "select": {
+            "user_id": "user_id",
+            "email": "user_email",
+            "user_name": "user_name"
+          },
+          "upsert_key": ["user_id"]
+        },
+        {
+          "into": "orders",
+          "when": "TRUE",
+          "select": {
+            "order_id": "order_id",
+            "user_id": "user_id",
+            "order_ts": "order_ts",
+            "amount": "amount"
+          },
+          "upsert_key": ["order_id"]
+        }
+      ],
+      "dead_letter": "stg_bad_rows"
+    }
+  ]
+}

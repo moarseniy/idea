@@ -1,0 +1,63 @@
+// DB: analytics
+
+Table devices {
+  device_id bigint [pk, not null]
+  device_name varchar [not null]
+  registered_at timestamp
+  firmware_version varchar
+  is_active boolean
+  meta_json json
+  created_at timestamp [default: 'now()']
+  Note: 'ordering: device_id\nqe.not_null: device_id, device_name'
+}
+Table locations {
+  location_id int [pk, not null]
+  country varchar
+  city varchar
+  latitude decimal(9,6)
+  longitude decimal(9,6)
+  created_at timestamp [default: 'now()']
+  Note: 'ordering: location_id'
+}
+Table readings {
+  reading_id bigint [pk, not null]
+  device_id bigint [not null]
+  location_id int
+  event_ts timestamp [not null, note: 'precision: timestamp64(ms)']
+  temperature_c decimal(5,2) [not null]
+  humidity_pct decimal(5,2) [not null]
+  voltage_v float [not null]
+  status varchar
+  tags_json json
+  Note: 'ordering: event_ts, device_id\npartitioning: to_date(event_ts)\nqe.ranges: temperature_c[-100..200], humidity_pct[0..100], voltage_v[0..None]'
+}
+
+// Foreign Keys
+Ref: readings.device_id > devices.device_id
+Ref: readings.location_id > locations.location_id
+
+// Staging tables from load_mapping
+Table stg_telemetry_flat {
+  record_type varchar
+  device_id bigint
+  device_name varchar
+  registered_at timestamp
+  firmware_version varchar
+  is_active boolean
+  meta_json json
+  location_id int
+  country varchar
+  city varchar
+  latitude decimal(9,6)
+  longitude decimal(9,6)
+  reading_id bigint
+  ts_ms timestamp
+  temperature_c decimal(5,2)
+  humidity_pct decimal(5,2)
+  voltage_v float
+  status varchar
+  tags_json json
+  src_file varchar
+  load_ts timestamp
+  Note: 'staging table from mapping'
+}

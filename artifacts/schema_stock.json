@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "database": "analytics",
+  "tables": [
+    {
+      "name": "warehouses",
+      "columns": [
+        { "name": "warehouse_id",   "type": "int32",   "nullable": false },
+        { "name": "warehouse_name", "type": "string",  "nullable": false },
+        { "name": "country",        "type": "string",  "nullable": true  },
+        { "name": "created_at",     "type": "timestamp","nullable": true, "default": "now()" }
+      ],
+      "primary_key": ["warehouse_id"],
+      "ordering": { "by": ["warehouse_id"] }
+    },
+    {
+      "name": "products",
+      "columns": [
+        { "name": "sku",          "type": "string",        "nullable": false },
+        { "name": "product_name", "type": "string",        "nullable": false },
+        { "name": "category",     "type": "string",        "nullable": true  },
+        { "name": "unit_cost",    "type": "decimal(10,2)", "nullable": false },
+        { "name": "active",       "type": "bool",          "nullable": true  },
+        { "name": "attrs_json",   "type": "json",          "nullable": true  },
+        { "name": "created_at",   "type": "timestamp",     "nullable": true, "default": "now()" }
+      ],
+      "primary_key": ["sku"],
+      "ordering": { "by": ["sku"] },
+      "quality_expectations": {
+        "ranges": { "unit_cost": [0, null] }
+      }
+    },
+    {
+      "name": "inventory",
+      "columns": [
+        { "name": "sku",         "type": "string",  "nullable": false },
+        { "name": "warehouse_id","type": "int32",   "nullable": false },
+        { "name": "restock_ts",  "type": "timestamp","nullable": false },
+        { "name": "stock_qty",   "type": "int32",   "nullable": false }
+      ],
+      "primary_key": ["sku","warehouse_id"],
+      "ordering": { "by": ["restock_ts","sku","warehouse_id"] },
+      "partitioning": { "by": "to_date(restock_ts)" },
+      "quality_expectations": {
+        "ranges": { "stock_qty": [0, null] }
+      },
+      "foreign_keys": [
+        { "columns": ["sku"],          "ref_table": "products",   "ref_columns": ["sku"] },
+        { "columns": ["warehouse_id"], "ref_table": "warehouses", "ref_columns": ["warehouse_id"] }
+      ]
+    }
+  ]
+}

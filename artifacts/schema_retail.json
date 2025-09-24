@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "database": "analytics",
+  "tables": [
+    {
+      "name": "customers",
+      "columns": [
+        { "name": "user_id",     "type": "int64",     "nullable": false },
+        { "name": "email",       "type": "string",    "nullable": false },
+        { "name": "full_name",   "type": "string",    "nullable": false },
+        { "name": "signup_date", "type": "date",      "nullable": true  },
+        { "name": "is_premium",  "type": "bool",      "nullable": true  },
+        { "name": "created_at",  "type": "timestamp", "nullable": true, "default": "now()" }
+      ],
+      "primary_key": ["user_id"],
+      "ordering": { "by": ["user_id"] },
+      "quality_expectations": {
+        "not_null": ["user_id", "email", "full_name"]
+      }
+    },
+    {
+      "name": "products",
+      "columns": [
+        { "name": "sku",          "type": "string",        "nullable": false },
+        { "name": "product_name", "type": "string",        "nullable": false },
+        { "name": "price",        "type": "decimal(12,2)", "nullable": false },
+        { "name": "created_at",   "type": "timestamp",     "nullable": true, "default": "now()" }
+      ],
+      "primary_key": ["sku"],
+      "ordering": { "by": ["sku"] },
+      "quality_expectations": {
+        "ranges": { "price": [0, null] }
+      }
+    },
+    {
+      "name": "purchases",
+      "columns": [
+        { "name": "order_id", "type": "int64",        "nullable": false },
+        { "name": "user_id",  "type": "int64",        "nullable": false },
+        { "name": "sku",      "type": "string",       "nullable": false },
+        { "name": "order_ts", "type": "timestamp",    "nullable": false },
+        { "name": "quantity", "type": "int32",        "nullable": false },
+        { "name": "amount",   "type": "decimal(12,2)","nullable": false }
+      ],
+      "primary_key": ["order_id"],
+      "foreign_keys": [
+        { "columns": ["user_id"], "ref_table": "customers", "ref_columns": ["user_id"] },
+        { "columns": ["sku"],     "ref_table": "products",  "ref_columns": ["sku"] }
+      ],
+      "ordering": { "by": ["order_ts", "user_id"] },
+      "partitioning": { "by": "to_date(order_ts)" },
+      "quality_expectations": {
+        "ranges": { "amount": [0, null], "quantity": [0, null] }
+      }
+    }
+  ]
+}

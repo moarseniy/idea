@@ -1,0 +1,61 @@
+{
+  "load_mappings": [
+    {
+      "source": "artifacts/stock_events.csv",
+      "format": "csv",
+      "csv_options": { "header": true },
+      "staging_table": "stg_stock_flat",
+      "select_schema": {
+        "record_type": "string",
+        "warehouse_id": "int32",
+        "warehouse_name": "string",
+        "country": "string",
+        "sku": "string",
+        "product_name": "string",
+        "category": "string",
+        "unit_cost": "decimal(10,2)",
+        "stock_qty": "int32",
+        "restock_ts": "timestamp",
+        "active": "bool",
+        "attrs_json": "json"
+      },
+      "route": [
+        {
+          "into": "warehouses",
+          "when": "record_type = 'warehouse'",
+          "select": {
+            "warehouse_id": "warehouse_id",
+            "warehouse_name": "warehouse_name",
+            "country": "country"
+          },
+          "upsert_key": ["warehouse_id"]
+        },
+        {
+          "into": "products",
+          "when": "record_type = 'product'",
+          "select": {
+            "sku": "sku",
+            "product_name": "product_name",
+            "category": "category",
+            "unit_cost": "unit_cost",
+            "active": "active",
+            "attrs_json": "attrs_json"
+          },
+          "upsert_key": ["sku"]
+        },
+        {
+          "into": "inventory",
+          "when": "record_type = 'inventory'",
+          "select": {
+            "sku": "sku",
+            "warehouse_id": "warehouse_id",
+            "restock_ts": "restock_ts",
+            "stock_qty": "stock_qty"
+          },
+          "upsert_key": ["sku","warehouse_id"]
+        }
+      ],
+      "dead_letter": "stg_bad_rows"
+    }
+  ]
+}

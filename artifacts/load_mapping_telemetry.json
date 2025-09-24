@@ -1,0 +1,75 @@
+{
+  "load_mappings": [
+    {
+      "source": "artifacts/telemetry_events.csv",
+      "format": "csv",
+      "csv_options": { "header": true },
+      "staging_table": "stg_telemetry_flat",
+      "select_schema": {
+        "record_type": "string",
+        "device_id": "int64",
+        "device_name": "string",
+        "registered_at": "timestamp",
+        "firmware_version": "string",
+        "is_active": "bool",
+        "meta_json": "json",
+        "location_id": "int32",
+        "country": "string",
+        "city": "string",
+        "latitude": "decimal(9,6)",
+        "longitude": "decimal(9,6)",
+        "reading_id": "int64",
+        "ts_ms": "timestamp64(ms)",
+        "temperature_c": "decimal(5,2)",
+        "humidity_pct": "decimal(5,2)",
+        "voltage_v": "float64",
+        "status": "string",
+        "tags_json": "json"
+      },
+      "route": [
+        {
+          "into": "devices",
+          "when": "record_type = 'device'",
+          "select": {
+            "device_id": "device_id",
+            "device_name": "device_name",
+            "registered_at": "registered_at",
+            "firmware_version": "firmware_version",
+            "is_active": "is_active",
+            "meta_json": "meta_json"
+          },
+          "upsert_key": ["device_id"]
+        },
+        {
+          "into": "locations",
+          "when": "record_type = 'location'",
+          "select": {
+            "location_id": "location_id",
+            "country": "country",
+            "city": "city",
+            "latitude": "latitude",
+            "longitude": "longitude"
+          },
+          "upsert_key": ["location_id"]
+        },
+        {
+          "into": "readings",
+          "when": "record_type = 'reading'",
+          "select": {
+            "reading_id": "reading_id",
+            "device_id": "device_id",
+            "location_id": "location_id",
+            "event_ts": "ts_ms",
+            "temperature_c": "temperature_c",
+            "humidity_pct": "humidity_pct",
+            "voltage_v": "voltage_v",
+            "status": "status",
+            "tags_json": "tags_json"
+          },
+          "upsert_key": ["reading_id"]
+        }
+      ],
+      "dead_letter": "stg_bad_rows"
+    }
+  ]
+}

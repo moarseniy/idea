@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "database": "analytics",
+  "tables": [
+    {
+      "name": "devices",
+      "columns": [
+        { "name": "device_id",       "type": "int64",          "nullable": false },
+        { "name": "device_name",     "type": "string",         "nullable": false },
+        { "name": "registered_at",   "type": "timestamp",      "nullable": true  },
+        { "name": "firmware_version","type": "string",         "nullable": true  },
+        { "name": "is_active",       "type": "bool",           "nullable": true  },
+        { "name": "meta_json",       "type": "json",           "nullable": true  },
+        { "name": "created_at",      "type": "timestamp",      "nullable": true, "default": "now()" }
+      ],
+      "primary_key": ["device_id"],
+      "ordering": { "by": ["device_id"] },
+      "quality_expectations": {
+        "not_null": ["device_id", "device_name"]
+      }
+    },
+    {
+      "name": "locations",
+      "columns": [
+        { "name": "location_id", "type": "int32",        "nullable": false },
+        { "name": "country",     "type": "string",       "nullable": true  },
+        { "name": "city",        "type": "string",       "nullable": true  },
+        { "name": "latitude",    "type": "decimal(9,6)", "nullable": true  },
+        { "name": "longitude",   "type": "decimal(9,6)", "nullable": true  },
+        { "name": "created_at",  "type": "timestamp",    "nullable": true, "default": "now()" }
+      ],
+      "primary_key": ["location_id"],
+      "ordering": { "by": ["location_id"] }
+    },
+    {
+      "name": "readings",
+      "columns": [
+        { "name": "reading_id",   "type": "int64",         "nullable": false },
+        { "name": "device_id",    "type": "int64",         "nullable": false },
+        { "name": "location_id",  "type": "int32",         "nullable": true  },
+        { "name": "event_ts",     "type": "timestamp64(ms)","nullable": false },
+        { "name": "temperature_c","type": "decimal(5,2)",  "nullable": false },
+        { "name": "humidity_pct", "type": "decimal(5,2)",  "nullable": false },
+        { "name": "voltage_v",    "type": "float64",       "nullable": false },
+        { "name": "status",       "type": "string",        "nullable": true  },
+        { "name": "tags_json",    "type": "json",          "nullable": true  }
+      ],
+      "primary_key": ["reading_id"],
+      "foreign_keys": [
+        { "columns": ["device_id"],   "ref_table": "devices",   "ref_columns": ["device_id"] },
+        { "columns": ["location_id"], "ref_table": "locations", "ref_columns": ["location_id"] }
+      ],
+      "ordering": { "by": ["event_ts", "device_id"] },
+      "partitioning": { "by": "to_date(event_ts)" },
+      "quality_expectations": {
+        "ranges": {
+          "temperature_c": [-100, 200],
+          "humidity_pct": [0, 100],
+          "voltage_v": [0, null]
+        }
+      }
+    }
+  ]
+}

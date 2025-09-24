@@ -1,0 +1,94 @@
+meta:
+  project_name: ""
+  owner: ""
+  created_at: ""       # ISO 8601
+  description: ""      # коротко про домен и use-case
+
+inputs:
+  - id: "source_1"
+    path: "artifacts/your.csv"    # или s3://..., http(s)://..., kafka://...
+    format: "csv"                  # csv | jsonl | parquet | ...
+    csv_options:
+      header: true
+      delimiter: ","
+      quotechar: '"'
+      encoding: "utf-8"
+      has_bom: false
+    sample_rows: 5000             # сколько строк брать на профайлинг
+    contains_pii: true            # PII/чувствительные поля
+    expected_volume:
+      rows_per_day: 1_000_000
+      file_size_mb: 200
+
+business_goals:
+  - "Ответить на X"
+  - "Покрыть отчёт Y"
+stakeholders:
+  - name: ""
+    role: ""
+    needs: ["", ""]
+
+constraints:
+  latency_slo: "D+1 by 06:00 UTC"
+  engines_allowed: ["pg", "ch"]
+  default_engine: "ch"
+  storage_limits: "—"
+  privacy:
+    pii_policy: "hash_phone, mask_names"
+    retention_days: 365
+
+entities_hints:        # опционально, если бизнес уже знает сущности/ключи
+  - name: "customers"
+    candidate_keys: [["phone"], ["customer_id"]]
+    attributes: ["first_name","last_name","birthday"]
+  - name: "orders"
+    candidate_keys: [["order_id"]]
+    parent: "customers"
+
+routing_hints:         # как класть строки из единого файла
+  split_by_column: "record_type"
+  mapping:
+    customers: ["user","client"]
+    products: ["product","sku"]
+    orders: ["order","purchase"]
+
+quality_expectations:  # high-level ожидания на данные
+  not_null: ["order_id","phone"]
+  ranges:
+    amount: [0, null]
+    quantity: [0, null]
+  uniques:
+    - ["order_id"]
+    - ["sku","warehouse_id"]
+
+keys_and_partitioning: # пожелания к ключам/партициям
+  primary_keys:
+    customers: ["customer_id"]
+    orders: ["order_id"]
+  foreign_keys:
+    orders:
+      - { columns: ["customer_id"], ref_table: "customers", ref_columns: ["customer_id"] }
+  partitioning:
+    orders: "to_date(order_ts)"
+  ordering:
+    orders: ["order_ts","customer_id"]
+
+target_types:          # предпочтения по типам
+  timestamp_precision: "ms"     # s | ms
+  default_string: "string"      # можно указать lowcard_string, если введём
+  decimals_default: "decimal(12,2)"
+
+preprocess_defaults:   # глобальные правила препроцессинга (можно переопределять per-column)
+  trim: true
+  null_if: ["", " ", "N/A", "NULL"]
+  normalize_whitespace: true
+
+security:              # кто видит какие поля
+  columns_mask:
+    client_name: "name_mask"
+    phone: "hash"
+
+acceptance_criteria:   # что считаем «хорошо спроектировано»
+  - "Идемпотентность загрузки"
+  - "Составные ключи поддержаны"
+  - "PG и CH совместимы по каноническим типам"

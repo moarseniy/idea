@@ -1,0 +1,63 @@
+{
+  "load_mappings": [
+    {
+      "source": "artifacts/retail_events.csv",
+      "format": "csv",
+      "csv_options": { "header": true },
+      "staging_table": "stg_retail_flat",
+      "select_schema": {
+        "record_type": "string",
+        "user_id": "int64",
+        "email": "string",
+        "full_name": "string",
+        "signup_date": "date",
+        "is_premium": "bool",
+        "order_id": "int64",
+        "order_ts": "timestamp",
+        "sku": "string",
+        "product_name": "string",
+        "price": "decimal(12,2)",
+        "quantity": "int32",
+        "amount": "decimal(12,2)"
+      },
+      "route": [
+        {
+          "into": "customers",
+          "when": "record_type = 'user'",
+          "select": {
+            "user_id": "user_id",
+            "email": "email",
+            "full_name": "full_name",
+            "signup_date": "signup_date",
+            "is_premium": "is_premium"
+          },
+          "upsert_key": ["user_id"]
+        },
+        {
+          "into": "products",
+          "when": "record_type = 'product'",
+          "select": {
+            "sku": "sku",
+            "product_name": "product_name",
+            "price": "price"
+          },
+          "upsert_key": ["sku"]
+        },
+        {
+          "into": "purchases",
+          "when": "record_type = 'order'",
+          "select": {
+            "order_id": "order_id",
+            "user_id": "user_id",
+            "sku": "sku",
+            "order_ts": "order_ts",
+            "quantity": "quantity",
+            "amount": "amount"
+          },
+          "upsert_key": ["order_id"]
+        }
+      ],
+      "dead_letter": "stg_bad_rows"
+    }
+  ]
+}

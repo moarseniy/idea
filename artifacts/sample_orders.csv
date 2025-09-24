@@ -1,0 +1,4 @@
+order_id,user_id,user_email,user_name,order_ts,amount
+101,1,alice@example.com,Alice,2025-09-20T10:15:00Z,39.90
+102,2,bob@example.com,Bob,2025-09-20T11:02:00Z,18.00
+103,1,alice@example.com,Alice,2025-09-21T09:44:00Z,12.50

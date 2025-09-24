@@ -1,0 +1,9 @@
+record_type,warehouse_id,warehouse_name,country,sku,product_name,category,unit_cost,stock_qty,restock_ts,active,attrs_json
+warehouse,101,North Hub,EE,,,,,,,,
+warehouse,202,Central Depot,DE,,,,,,,,
+product,,,,P100,Widget,tools,3.75,,,1,"{""color"":""red""}"
+product,,,,P200,Gadget,home,12.50,,,0,"{""color"":""blue""}"
+inventory,101,,,P100,,,,150,2025-09-21T10:00:00Z,,
+inventory,202,,,P100,,,,80,2025-09-22T09:30:00.500Z,,
+inventory,101,,,P200,,,,40,2025-09-22T11:15:00Z,,
+inventory,101,,,P100,,,,155,2025-09-23T08:45:00Z,,

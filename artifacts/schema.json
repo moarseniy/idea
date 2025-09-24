@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "database": "analytics",
+  "tables": [
+    {
+      "name": "users",
+      "columns": [
+        {"name": "user_id",   "type": "int64",           "nullable": false},
+        {"name": "email",     "type": "string",          "nullable": false},
+        {"name": "user_name", "type": "string",          "nullable": false},
+        {"name": "created_at","type": "timestamp",       "nullable": true, "default": "now()"}
+      ],
+      "primary_key": ["user_id"],
+      "ordering": {"by": ["user_id"]},
+      "quality_expectations": {"not_null": ["user_id","email","user_name"]}
+    },
+    {
+      "name": "orders",
+      "columns": [
+        {"name": "order_id", "type": "int64",            "nullable": false},
+        {"name": "user_id",  "type": "int64",            "nullable": false},
+        {"name": "order_ts", "type": "timestamp",        "nullable": false},
+        {"name": "amount",   "type": "decimal(12,2)",    "nullable": false}
+      ],
+      "primary_key": ["order_id"],
+      "foreign_keys": [
+        {"columns": ["user_id"], "ref_table": "users", "ref_columns": ["user_id"]}
+      ],
+      "ordering": {"by": ["order_ts","user_id"]},
+      "partitioning": {"by": "to_date(order_ts)"},
+      "quality_expectations": {
+        "not_null": ["order_id","user_id","order_ts","amount"],
+        "ranges": {"amount": [0, null]}
+      }
+    }
+  ]
+}
