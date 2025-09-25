@@ -25,6 +25,7 @@ class CorrectionAgentBuilder(Singleton):
     def _setup(self):
         self.settings = AgentSettings()
 
+
     def create_de_corrector_agent(self):
         llm = self.settings.select_model()
 
@@ -39,6 +40,7 @@ class CorrectionAgentBuilder(Singleton):
             handle_parsing_errors=True
         )
         return de_agent
+
 
     def create_darch_corrector_agent(self):
         llm = self.settings.select_model()
@@ -55,16 +57,6 @@ class CorrectionAgentBuilder(Singleton):
         )
         return darch_agent
 
-    def create_correction_orchestrator_node(self):
-        llm = self.settings.select_model()
-
-        def orchestrator_node(state: CorrectorAgentState) -> Command[Literal["de_agent", "darch_agent"]]:
-            orchestrator_prompt = self.settings.correction_orchestrator_prompt
-            request = [SystemMessage(content=orchestrator_prompt)] + state["messages"]
-            response = self.settings.call_llm(llm, request, "orchestrator")
-            goto = response["next"]
-            return Command(goto=goto)
-        return orchestrator_node
 
     def create_correction_de_node(self, de_corrector_agent):
         def de_requirements_node(state: CorrectorAgentState) -> Command[Literal["de_validator"]]:
@@ -91,6 +83,7 @@ class CorrectionAgentBuilder(Singleton):
                 goto=goto
             )
         return de_requirements_node
+
 
     def create_correction_de_validator_node(self):
         llm = self.settings.select_model()
@@ -123,6 +116,7 @@ class CorrectionAgentBuilder(Singleton):
             )
         return de_validator_node
 
+
     def create_correction_darch_node(self, darch_corrector_agent):
         def darch_requirements_node(state: CorrectorAgentState) -> Command[Literal["darch_validator"]]:
             task = state["task"]
@@ -148,6 +142,7 @@ class CorrectionAgentBuilder(Singleton):
                 goto=goto
             )
         return darch_requirements_node
+
 
     def create_correction_darch_validator_node(self):
         llm = self.settings.select_model()
@@ -179,3 +174,15 @@ class CorrectionAgentBuilder(Singleton):
                 goto=goto
             )
         return darch_validator_node
+
+
+    def create_correction_orchestrator_node(self):
+        llm = self.settings.select_model()
+
+        def orchestrator_node(state: CorrectorAgentState) -> Command[Literal["de_agent", "darch_agent"]]:
+            orchestrator_prompt = self.settings.correction_orchestrator_prompt
+            request = [SystemMessage(content=orchestrator_prompt)] + state["messages"]
+            response = self.settings.call_llm(llm, request, "orchestrator")
+            goto = response["next"]
+            return Command(goto=goto)
+        return orchestrator_node

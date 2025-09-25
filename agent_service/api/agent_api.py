@@ -3,17 +3,17 @@ from typing import List, Dict, Optional
 from datetime import datetime
 
 class AgentRequest(BaseModel):
+    deRequirements: Optional[bool] = None
+    darchRequirements: Optional[bool] = None
     needFix: Optional[bool] = None
-    needInfo: Optional[bool] = None
     jsonAgentHistory: Optional[List] = None
     history: Optional[Dict] = None
     task: Optional[str] = None
     requestDateTime: datetime
-    deRequirements: Optional[bool] = None
-    darchRequirements: Optional[bool] = None
 
 class AgentResponse(BaseModel):
-    needInfo: Optional[bool] = None
+    deRequirements: Optional[str] = None
+    darchRequirements: Optional[str] = None
     message: Optional[str] = None
     history: Optional[Dict] = None
 

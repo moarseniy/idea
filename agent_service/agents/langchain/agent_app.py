@@ -14,7 +14,9 @@ class LangchainApp:
         
         self.de_agent_chain = builder.create_de_chain()
         self.darch_agent_chain = builder.create_darch_chain()
-        
+        self.de_corrector_agent_chain = builder.create_de_corrector_chain()
+        self.darch_corrector_agent_chain = builder.create_darch_corrector_chain()
+
     def memory_to_list(self, memory):
         messages = memory.chat_memory.messages
         prepared_messages = []
@@ -48,18 +50,18 @@ class LangchainApp:
             SystemMessage(content=system),
             HumanMessage(content=user, name="Пользователь")
         ]
-        result = await self.de_agent_chain.ainvoke(request)
+        result = await self.de_corrector_agent_chain.ainvoke(request)
         print(f"DE_CORRECTOR_RESULT: {result}")
         return result.content
 
     async def darch_corrector_agent(self, history, task):
         system = self.settings.darch_corrector_system_prompt
-        user = self.settings.darch_corrector_user_prompt.format(task=task, sa_requirements=history["darchRequirements"])
+        user = self.settings.darch_corrector_user_prompt.format(task=task, darch_requirements=history["darchRequirements"])
         request = [
             SystemMessage(content=system),
             HumanMessage(content=user, name="Пользователь")
         ]
-        result = await self.darch_agent_chain.ainvoke(request)
-        print(f"SA_CORRECTOR_RESULT: {result}")
+        result = await self.darch_corrector_agent_chain.ainvoke(request)
+        print(f"DARCH_CORRECTOR_RESULT: {result}")
         return result.content
 
