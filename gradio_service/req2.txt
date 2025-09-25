@@ -146,6 +146,7 @@ pdfminer.six==20240706
 pexpect==4.9.0
 pi_heif==0.21.0
 pillow==11.1.0
+polars==1.33.1
 posthog==3.23.0
 primp==0.14.0
 proglog==0.1.10
