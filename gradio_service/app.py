@@ -1,17 +1,21 @@
 import gradio as gr
-import json, os, time
+import json, os, time, re
 import datetime
 import requests
 
 from gradio_utils import *
 
-from profile_csv import analyze_source_data
+from scripts.profile_csv import profile_csv
 from modules import DataProvider, UserData, PipeLine, Summarizer, TextSplitter
 from modules import customLogger
 
 _LOGGER = customLogger.getLogger(__name__)
 
 llm_host = "http://agent_app:7861/llm_agents"
+
+def reboot_system():
+    import subprocess
+    subprocess.check_call('reboot')
 
 # Декоратор для логирования времени выполнения функций
 def log_execution_time(func):
@@ -23,6 +27,11 @@ def log_execution_time(func):
         _LOGGER.info(f"Время выполнения {func.__name__}: {elapsed_time:.2f} секунд.")
         return result
     return wrapper
+
+def extract_sql_blocks(text: str):
+    pattern = r"```sql\s*(.*?)```"
+    matches = re.findall(pattern, text, re.DOTALL | re.IGNORECASE)
+    return [m.strip() for m in matches]
 
 # Основной интерфейс приложения
 class AppInterface:
@@ -59,7 +68,7 @@ def run_web_interface(app):
 
         llm_agent_request = gr.State({
             "deRequirements": False,
-            "darchRequirements": True,
+            "darchRequirements": False,
             "needFix": False,
             "history": {},
             "task": "",
@@ -69,19 +78,28 @@ def run_web_interface(app):
         with gr.Row():
             with gr.Column(scale=1):
                 start_choice = gr.Radio(choices=['Создать новое хранилище','Подключиться к существующему хранилищу'], value=None, label='Что вы хотите сделать?')
-
-                new_source_choice = gr.Dropdown(choices=['Загрузить файлы (CSV/JSON/XML)','На основе существующего хранилища (указать ссылку)'], value='Загрузить файлы (CSV/JSON/XML)', label='Источник:', visible=False)
-                upload_file_new = gr.Textbox(label='Путь до директории с CSV/JSON/XML файлами', placeholder='Например: C:\\Users\\1\\data\\', visible=False)
+                new_source_choice = gr.Dropdown(choices=['Загрузить файлы (CSV/JSON/XML)','Указать директорию','На основе существующего хранилища (указать ссылку)'], value='Загрузить файлы (CSV/JSON/XML)', label='Источник:', visible=False)
+                
+                upload_file_new = gr.File(label='Перенесите файлы мышкой или выберите в открывшемся окне.', file_count='multiple', visible=False)
+                upload_file_new2 = gr.Textbox(label='Путь до директории с CSV/JSON/XML файлами', placeholder='Например: C:\\Users\\1\\data\\', visible=False)
                 new_base_conn = gr.Textbox(label='Ссылка на существующее хранилище (для создания на его основе)', placeholder='Например: postgres://user:pass@host:5432/db', visible=False)
 
                 existing_conn = gr.Textbox(label='Connection string для подключения к существующему хранилищу', placeholder='postgres://user:pass@host:5432/db', visible=False)
                 
+                with gr.Row():
+                    with gr.Column():
+                        chatbot_ui = gr.Chatbot(label="Чат-бот", type="messages", visible=False)
+
+                        with gr.Row():
+                            user_input = gr.Textbox(scale=30, label="", placeholder="Введите текст...", lines=1, visible=False)
+                            submit_button = gr.Button(scale=1, value="➤", elem_id="submit_button", visible=False)
+
                 analytic_btn = gr.Button('Загрузить данные, сделать аналитику', visible=False)
                 create_connect_btn = gr.Button('Создать/Подключиться', visible=False)
 
             with gr.Column(scale=1):
-                log_display = gr.Textbox(value="", label="Логгирование", lines=7, max_lines=7, interactive=False, show_copy_button=True)
-                info_box = gr.Textbox(value="", label='Info / Recommendations', lines=7, max_lines=7, interactive=False, visible=True)
+                log_display = gr.Textbox(value="", label="Логгирование", lines=5, max_lines=5, interactive=False, show_copy_button=True)
+                info_box = gr.Markdown(value="", label='Отчет/Рекомендации', visible=True)
 
                 # DDL
                 ddl_preview = gr.Code(label='DDL script (preview)', language='sql', visible=False)
@@ -90,27 +108,35 @@ def run_web_interface(app):
 
 
         @start_choice.change(inputs=[start_choice], 
-                            outputs=[new_source_choice, upload_file_new, existing_conn])
+                            outputs=[new_source_choice, upload_file_new, upload_file_new2, existing_conn])
         def on_start(choice):
             if choice == 'Создать новое хранилище':
-                return gr.update(visible=True), gr.update(visible=True), gr.update(visible=False)
+                return gr.update(visible=True), gr.update(visible=True), gr.update(visible=False), gr.update(visible=False)
             elif choice == 'Подключиться к существующему хранилищу':
-                return gr.update(visible=False), gr.update(visible=False), gr.update(visible=True)
+                return gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=True)
             else:
-                return [gr.update(visible=False)]*3
+                return [gr.update(visible=False)]*4
 
         
         @new_source_choice.change(inputs=[new_source_choice], 
-                                 outputs=[upload_file_new, new_base_conn, analytic_btn])
+                                 outputs=[upload_file_new, upload_file_new2, new_base_conn, analytic_btn])
         def on_new_source_change(sel):
             if sel == 'Загрузить файлы (CSV/JSON/XML)':
-                return gr.update(visible=True), gr.update(visible=False), gr.update(visible=True)
-            return gr.update(visible=False), gr.update(visible=True), gr.update(visible=True)
+                return gr.update(visible=True), gr.update(visible=False), gr.update(visible=False), gr.update(visible=True)
+            if sel == 'Указать директорию':
+                return gr.update(visible=False), gr.update(visible=True), gr.update(visible=False), gr.update(visible=True)
+            return gr.update(visible=False), gr.update(visible=False), gr.update(visible=True), gr.update(visible=True)
 
 
         @upload_file_new.change(inputs=[upload_file_new], 
                                 outputs=[analytic_btn])
         def upload_files(dir_path):
+            return gr.update(visible=True)
+
+
+        @upload_file_new2.change(inputs=[upload_file_new2], 
+                                outputs=[analytic_btn])
+        def upload_files2(files):
             return gr.update(visible=True)
 
 
@@ -120,14 +146,16 @@ def run_web_interface(app):
             return gr.update(visible=bool(conn and str(conn).strip()))
 
 
-        @analytic_btn.click(inputs=[start_choice, new_source_choice, upload_file_new, new_base_conn, existing_conn, log_display, info_box, llm_agent_request], 
-                            outputs=[create_connect_btn, log_display, info_box, ddl_preview, dag_preview, llm_agent_request])
-        def on_analytic(start_choice_val, new_source_sel, upload_new_file, new_base_conn_val, existing_conn_val, log_text, info_text, llm_agent_request):
+        @analytic_btn.click(inputs=[start_choice, new_source_choice, upload_file_new, upload_file_new2, new_base_conn, existing_conn, log_display, info_box, llm_agent_request, chatbot_ui], 
+                            outputs=[create_connect_btn, log_display, info_box, ddl_preview, dag_preview, llm_agent_request, chatbot_ui, user_input, submit_button])
+        def on_analytic(start_choice_val, new_source_sel, upload_new_file, upload_new_file2, new_base_conn_val, existing_conn_val, log_text, info_text, llm_agent_request, chat_history):
             source_desc = 'unknown'
 
             if start_choice_val == 'Создать новое хранилище':
                 if new_source_sel == 'Загрузить файлы (CSV/JSON/XML)':
-                    source_desc = upload_new_file
+                    source_desc = upload_new_file[0] # TODO: read list of paths
+                elif new_source_sel == 'Указать директорию':
+                    source_desc = upload_new_file2[0] # TODO: read list of paths
                 else:
                     source_desc = new_base_conn_val
             else:
@@ -135,19 +163,42 @@ def run_web_interface(app):
 
             log_text += 'Данные успешно загружены.\n'
 
-            # result = analyze_source_data(source_desc, ";", None, None, None)
+            # _LOGGER.info(f"PATH: {source_desc}")
+            log_text += f'Обрабатываем файл: {source_desc}\n'
+
+            result = profile_csv(source_desc, ";")
             log_text += 'Аналитика данных завершена.\n'
-            with open("result.json") as f_json:
-                result = f_json.readlines()
             
-            print("RESULT:", result)
+            # print(f"RESULT: {result}")
 
             llm_agent_request["task"] = f"{result}"
+            llm_agent_request["darchRequirements"] = True
+
+            print(f"REQUEST:\n{json.dumps(llm_agent_request)}")
+            log_text += 'Отправляем запрос к LLM агенту...\n'
+
             headers = {"Content-Type": "application/json"}
-            print(f"REQUEST: {json.dumps(llm_agent_request)}")
             response = requests.post(llm_host, data=json.dumps(llm_agent_request), verify=False, headers=headers) #timeout=120)
-            print(f"RESPONSE: {response}")
+            print(f"RESPONSE:\n{response}")
             response_json = response.json()
+            log_text += 'Получен ответ от LLM агентов...\n'
+
+            info_text += response_json["darchRequirements"] + '\n'
+
+            if "darchRequirements" in response_json and response_json["darchRequirements"]:
+                llm_agent_request["history"]["darchRequirements"] = response_json["darchRequirements"]
+
+            llm_agent_request["task"] = ""
+            llm_agent_request["darchRequirements"] = False
+
+            # TODO
+            if "needFix" in llm_agent_request and llm_agent_request["needFix"]:
+                if "message" in response_json and response_json["message"]:
+                    msg = response_json["message"]
+                    chat_history.append({"role": "assistant", "content": msg})
+            
+            # TODO:
+            llm_agent_request["needFix"] = True
 
             # rec = recommend_storage(result['schema'])
 
@@ -156,31 +207,49 @@ def run_web_interface(app):
             #     info_lines.append('Parsed connection: ' + json.dumps(result['conn_info'], ensure_ascii=False))
             # info_text += '\n'.join(info_lines)
 
-            # TODO: REPLACE TO VOVA CODE
+            # TODO: CALL LLM
             # ddl = generate_ddl(result['schema'], table_name='my_table', target_db=rec['recommendation'])
             log_text += 'DDL сгенерирован.\n'
             ddl, dag = "", ""
-            # # TODO: REPLACE TO VOVA CODE
+            # # TODO: CALL LLM
             # dag = generate_airflow_dag_from_pipeline('example_pipeline', '@hourly', [], rec['recommendation'])
             # log_text += 'DAG сгенерирован.\n'
 
-            return gr.update(visible=True), log_text, info_text, gr.update(value=ddl, visible=True), gr.update(value=dag, visible=True), gr.update(value=llm_agent_request)
+            return gr.update(visible=True), log_text, info_text, gr.update(value=ddl, visible=True), gr.update(value=dag, visible=True), gr.update(value=llm_agent_request), gr.update(value=chat_history, visible=True), gr.update(visible=True), gr.update(visible=True)
 
+
+        @submit_button.click(inputs=[user_input, chatbot_ui, llm_agent_request], outputs=[chatbot_ui, user_input, llm_agent_request])
+        @user_input.submit(inputs=[user_input, chatbot_ui, llm_agent_request], outputs=[chatbot_ui, user_input, llm_agent_request])
+        def submit_and_get_response(user_text, chat_history, llm_agent_request):
+            llm_agent_request["task"] = user_text
+            print(llm_agent_request)
+            response_text = "Информация записана!"
+            chat_history.append({"role": "user", "content": user_text})
+            chat_history.append({"role": "assistant", "content": response_text})
+            _LOGGER.info(f"Запрос пользователя: {user_text}")
+            return chat_history, "", gr.update(value=llm_agent_request)
         
-        @create_connect_btn.click(inputs=[start_choice, new_source_choice, upload_file_new, new_base_conn, existing_conn, log_display, info_box],
+
+        @create_connect_btn.click(inputs=[start_choice, new_source_choice, upload_file_new, upload_file_new2, new_base_conn, existing_conn, log_display, info_box],
                                  outputs=[log_display])
-        def on_create_connect(start_choice_val, new_source_sel, upload_new_file, new_base_conn_val, existing_conn_val, log_text, info_text):
+        def on_create_connect(start_choice_val, new_source_sel, upload_new_file, upload_new_file2, new_base_conn_val, existing_conn_val, log_text, info_text):
             source_desc = 'unknown'
             if start_choice_val == 'Создать новое хранилище':
                 if new_source_sel == 'Загрузить файлы (CSV/JSON/XML)':
-                    source_desc = upload_new_file
+                    source_desc = '\n'.join(upload_new_file)
+                elif new_source_sel == 'Указать директорию':
+                    source_desc = '\n'.join(upload_new_file2)
                 else:
+                    # на основе существующего
                     source_desc = new_base_conn_val
 
+                # TODO: create bd
+                log_text += source_desc + '\n'
                 log_text += "Новое хранилище успешно создано.\n"
             else:
                 source_desc = existing_conn_val
                 
+                # TODO: connect to bd
                 log_text += "Подключение к хранилищу успешно выполнено.\n"
 
             return log_text
