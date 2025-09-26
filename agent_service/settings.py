@@ -59,11 +59,15 @@ class AgentSettings(Singleton):
 
         self.DE_TEMPLATE = self.__read_file("prompts/de/de_template.txt")
         self.DE_VALIDATOR_TEMPLATE = self.__read_file("prompts/de/de_validator_template.txt")
+        self.DE_CORRECTOR_TEMPLATE = self.__read_file("prompts/de/de_corrector_template.txt")
+        self.DE_CORRECTOR_VALIDATOR_TEMPLATE = self.__read_file("prompts/de/de_corrector_validator_template.txt")
         self.DE_CORRECTOR_SYSTEM_TEMPLATE = self.__read_file("prompts/de/de_corrector_system_template.txt")
         self.DE_CORRECTOR_USER_TEMPLATE = self.__read_file("prompts/de/de_corrector_user_template.txt")
 
         self.DARCH_TEMPLATE = self.__read_file("prompts/darch/darch_template.txt")
         self.DARCH_VALIDATOR_TEMPLATE = self.__read_file("prompts/darch/darch_validator_template.txt")
+        self.DARCH_CORRECTOR_TEMPLATE = self.__read_file("prompts/darch/darch_corrector_template.txt")
+        self.DARCH_CORRECTOR_VALIDATOR_TEMPLATE = self.__read_file("prompts/darch/darch_corrector_validator_template.txt")
         self.DARCH_CORRECTOR_SYSTEM_TEMPLATE = self.__read_file("prompts/darch/darch_corrector_system_template.txt")
         self.DARCH_CORRECTOR_USER_TEMPLATE = self.__read_file("prompts/darch/darch_corrector_user_template.txt")
         
@@ -140,6 +144,14 @@ class AgentSettings(Singleton):
     @property
     def de_validator_prompt(self):
         return self.DE_VALIDATOR_TEMPLATE
+    
+    @property
+    def correction_de_agent_prompt(self):
+        return self.DE_CORRECTOR_TEMPLATE
+
+    @property
+    def correction_de_validator_agent_prompt(self):
+        return self.de_CORRECTOR_VALIDATOR_TEMPLATE
 
     @property
     def de_corrector_system_prompt(self):
@@ -156,6 +168,14 @@ class AgentSettings(Singleton):
     @property
     def darch_validator_prompt(self):
         return self.DARCH_VALIDATOR_TEMPLATE
+
+    @property
+    def correction_darch_agent_prompt(self):
+        return self.DARCH_CORRECTOR_TEMPLATE
+
+    @property
+    def correction_darch_validator_agent_prompt(self):
+        return self.DARCH_CORRECTOR_VALIDATOR_TEMPLATE
 
     @property
     def darch_corrector_system_prompt(self):
