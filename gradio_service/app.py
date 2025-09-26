@@ -149,32 +149,38 @@ def run_web_interface(app):
         @analytic_btn.click(inputs=[start_choice, new_source_choice, upload_file_new, upload_file_new2, new_base_conn, existing_conn, log_display, info_box, llm_agent_request, chatbot_ui], 
                             outputs=[create_connect_btn, log_display, info_box, ddl_preview, dag_preview, llm_agent_request, chatbot_ui, user_input, submit_button])
         def on_analytic(start_choice_val, new_source_sel, upload_new_file, upload_new_file2, new_base_conn_val, existing_conn_val, log_text, info_text, llm_agent_request, chat_history):
-            source_desc = 'unknown'
 
-            if start_choice_val == 'Создать новое хранилище':
-                if new_source_sel == 'Загрузить файлы (CSV/JSON/XML)':
-                    source_desc = upload_new_file[0] # TODO: read list of paths
-                elif new_source_sel == 'Указать директорию':
-                    source_desc = upload_new_file2[0] # TODO: read list of paths
-                else:
-                    source_desc = new_base_conn_val
-            else:
-                source_desc = existing_conn_val
-
-            log_text += 'Данные успешно загружены.\n'
-
-            # _LOGGER.info(f"PATH: {source_desc}")
-            log_text += f'Обрабатываем файл: {source_desc}\n'
-
-            result = profile_csv(source_desc, ";")
-            log_text += 'Аналитика данных завершена.\n'
-            
-            # print(f"RESULT: {result}")
-
-            llm_agent_request["task"] = f"{result}"
             llm_agent_request["darchRequirements"] = True
 
-            print(f"REQUEST:\n{json.dumps(llm_agent_request)}")
+            if "needFix" in llm_agent_request and llm_agent_request["needFix"]:
+                source_desc = 'unknown' # TODO
+            else:
+                source_desc = 'unknown'
+
+                if start_choice_val == 'Создать новое хранилище':
+                    if new_source_sel == 'Загрузить файлы (CSV/JSON/XML)':
+                        source_desc = upload_new_file[0] # TODO: read list of paths
+                    elif new_source_sel == 'Указать директорию':
+                        source_desc = upload_new_file2[0] # TODO: read list of paths
+                    else:
+                        source_desc = new_base_conn_val
+                else:
+                    source_desc = existing_conn_val
+
+                log_text += 'Данные успешно загружены.\n'
+
+                # _LOGGER.info(f"PATH: {source_desc}")
+                log_text += f'Обрабатываем файл: {source_desc}\n'
+                result = profile_csv(source_desc, ";")
+                log_text += 'Аналитика данных завершена.\n'
+                
+                # print(f"RESULT: {result}")
+
+                llm_agent_request["task"] = f"{result}"
+
+
+
+            # print(f"REQUEST:\n{json.dumps(llm_agent_request)}")
             log_text += 'Отправляем запрос к LLM агенту...\n'
 
             headers = {"Content-Type": "application/json"}
@@ -183,9 +189,9 @@ def run_web_interface(app):
             response_json = response.json()
             log_text += 'Получен ответ от LLM агентов...\n'
 
-            info_text += response_json["darchRequirements"] + '\n'
-
+            # save result
             if "darchRequirements" in response_json and response_json["darchRequirements"]:
+                info_text += response_json["darchRequirements"] + '\n'
                 llm_agent_request["history"]["darchRequirements"] = response_json["darchRequirements"]
 
             llm_agent_request["task"] = ""
@@ -196,9 +202,9 @@ def run_web_interface(app):
                 if "message" in response_json and response_json["message"]:
                     msg = response_json["message"]
                     chat_history.append({"role": "assistant", "content": msg})
-            
-            # TODO:
-            llm_agent_request["needFix"] = True
+            else:
+                # TODO:
+                llm_agent_request["needFix"] = True
 
             # rec = recommend_storage(result['schema'])
 

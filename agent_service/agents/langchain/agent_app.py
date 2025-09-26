@@ -41,27 +41,27 @@ class LangchainApp:
 
     async def darch_agent(self, initial_state):
         result = await self.darch_agent_chain.ainvoke(initial_state)
-        return "darchRequirements", result["darch_requirements"]
+        return "darchRequirements", result["result"]
 
     async def de_corrector_agent(self, history, task):
-        system = self.settings.de_corrector_system_prompt
-        user = self.settings.de_corrector_user_prompt.format(task=task, de_requirements=history["deRequirements"])
-        request = [
-            SystemMessage(content=system),
-            HumanMessage(content=user, name="Пользователь")
-        ]
-        result = await self.de_corrector_agent_chain.ainvoke(request)
-        print(f"DE_CORRECTOR_RESULT: {result}")
-        return result.content
+        prev_context = history.get("deRequirements", "")
+        initial_state = {
+            "task": task,
+            "prev_context": prev_context,
+            "messages": []
+        }
+        result = await self.de_corrector_agent_chain.ainvoke(initial_state)
+        print(f"DE_CORRECTOR_RESULT(agent_app.py): {result}")
+        return result.get("de_requirements", "")
 
     async def darch_corrector_agent(self, history, task):
-        system = self.settings.darch_corrector_system_prompt
-        user = self.settings.darch_corrector_user_prompt.format(task=task, darch_requirements=history["darchRequirements"])
-        request = [
-            SystemMessage(content=system),
-            HumanMessage(content=user, name="Пользователь")
-        ]
-        result = await self.darch_corrector_agent_chain.ainvoke(request)
-        print(f"DARCH_CORRECTOR_RESULT: {result}")
-        return result.content
+        prev_context = history.get("darchRequirements", "")
+        initial_state = {
+            "task": task,
+            "prev_context": prev_context,
+            "messages": []
+        }
+        result = await self.darch_corrector_agent_chain.ainvoke(initial_state)
+        print(f"DARCH_CORRECTOR_RESULT(agent_app.py): {result}")
+        return result.get("darch_requirements", "")
 

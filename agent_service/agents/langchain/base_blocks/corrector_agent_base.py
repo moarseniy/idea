@@ -59,7 +59,7 @@ class CorrectionAgentBuilder(Singleton):
 
 
     def create_correction_de_node(self, de_corrector_agent):
-        def de_requirements_node(state: CorrectorAgentState) -> Command[Literal["de_validator"]]:
+        def de_requirements_node(state: CorrectorAgentState) -> Command[Literal["de_corrector_validator"]]:
             task = state["task"]
             prev_context = state["prev_context"]
             de_correction_prompt = self.settings.correction_de_agent_prompt.format(task=task, prev_context=prev_context)
@@ -74,7 +74,7 @@ class CorrectionAgentBuilder(Singleton):
                 result = response["output"]
             else:
                 result = response
-            goto = "de_validator"
+            goto = "de_corrector_validator"
             return Command(
                 update={
                     "de_requirements": result,
@@ -88,8 +88,8 @@ class CorrectionAgentBuilder(Singleton):
     def create_correction_de_validator_node(self):
         llm = self.settings.select_model()
 
-        def de_validator_node(state: CorrectorAgentState) -> Command[Literal["de_agent", END]]:
-            return_node = "de_agent"
+        def de_validator_node(state: CorrectorAgentState) -> Command[Literal["de_corrector_agent", END]]:
+            return_node = "de_corrector_agent"
             task = state["task"]
             prev_context = state["prev_context"]
             de_validator_prompt = self.settings.correction_de_validator_agent_prompt.format(task=task, prev_context=prev_context)
@@ -118,7 +118,7 @@ class CorrectionAgentBuilder(Singleton):
 
 
     def create_correction_darch_node(self, darch_corrector_agent):
-        def darch_requirements_node(state: CorrectorAgentState) -> Command[Literal["darch_validator"]]:
+        def darch_requirements_node(state: CorrectorAgentState) -> Command[Literal["darch_corrector_validator"]]:
             task = state["task"]
             prev_context = state["prev_context"]
             darch_correction_prompt = self.settings.correction_darch_agent_prompt.format(task=task, prev_context=prev_context)
@@ -133,7 +133,8 @@ class CorrectionAgentBuilder(Singleton):
                 result = response["output"]
             else:
                 result = response
-            goto = "darch_validator"
+            goto = "darch_corrector_validator"
+            # print(f"STATUS: {response['status']}\n\nCORRECTOR: {result}")
             return Command(
                 update={
                     "darch_requirements": result,
@@ -147,8 +148,8 @@ class CorrectionAgentBuilder(Singleton):
     def create_correction_darch_validator_node(self):
         llm = self.settings.select_model()
 
-        def darch_validator_node(state: CorrectorAgentState) -> Command[Literal["darch_agent", END]]:
-            return_node = "darch_agent"
+        def darch_validator_node(state: CorrectorAgentState) -> Command[Literal["darch_corrector_agent", END]]:
+            return_node = "darch_corrector_agent"
             task = state["task"]
             prev_context = state["prev_context"]
             darch_validator_prompt = self.settings.correction_darch_validator_agent_prompt.format(task=task, prev_context=prev_context)
