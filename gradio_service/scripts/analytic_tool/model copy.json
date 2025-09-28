@@ -1,0 +1,189 @@
+{
+  "main_entity": {
+    "name": "Ticket Fact",
+    "grain": "Одна строка — это один билет на мероприятие",
+    "keys": [
+      "ticket_number"
+    ],
+    "description": "Каждая строка отражает уникальный билет, идентифицируемый по ticket_number. Это зерно включает атрибуты, относящиеся к покупке билета, его использованию и связям с клиентом, событием и музеем.",
+    "columns": [
+      "ticket_number",
+      "ticket_id",
+      "order_number",
+      "ticket_status",
+      "ticket_price",
+      "is_active",
+      "is_entrance",
+      "is_entrance_mdate",
+      "count_visitor",
+      "valid_to",
+      "update_timestamp",
+      "created"
+    ]
+  },
+  "entities": [
+    {
+      "name": "Клиент",
+      "description": "Персональные данные клиента, приобретающего билет. Характеризуются высокой кардинальностью и включают ФИО, телефон и ИНН.",
+      "keys": [
+        "client_phone"
+      ],
+      "columns": [
+        "client_name",
+        "name",
+        "surname",
+        "client_phone",
+        "birthday_date",
+        "museum_inn"
+      ],
+      "confidence": "0.9"
+    },
+    {
+      "name": "Событие",
+      "description": "Описание мероприятия, включая название, тип, дату и связанное с ним место проведения.",
+      "keys": [
+        "event_id"
+      ],
+      "columns": [
+        "event_id",
+        "event_name",
+        "event_kind_name",
+        "start_datetime"
+      ],
+      "confidence": "0.95"
+    },
+    {
+      "name": "Площадка",
+      "description": "Данные о месте проведения мероприятий, включая название, адрес и уникальный идентификатор.",
+      "keys": [
+        "spot_id"
+      ],
+      "columns": [
+        "spot_id",
+        "spot_name"
+      ],
+      "confidence": "0.95"
+    },
+    {
+      "name": "Музей",
+      "description": "Организация, проводящая мероприятие. Включает ИНН и наименование. Отдельная сущность с невысокой кардинальностью.",
+      "keys": [
+        "museum_name"
+      ],
+      "columns": [
+        "museum_name"
+      ],
+      "confidence": "0.9"
+    },
+    {
+      "name": "Категория посетителя",
+      "description": "Типовая классификация категории посетителя, влияющая на цену и условия посещения.",
+      "keys": [
+        "visitor_category"
+      ],
+      "columns": [
+        "visitor_category"
+      ],
+      "confidence": "0.95"
+    },
+    {
+      "name": "Статусы заказа",
+      "description": "Служебные статусы, связанные с оплатой и обработкой билета.",
+      "keys": [],
+      "columns": [
+        "order_status"
+      ],
+      "confidence": "0.8"
+    }
+  ],
+  "relationships": [
+    {
+      "from_entity": "Ticket Fact",
+      "to_entity": "Клиент",
+      "type": "many:1",
+      "via_columns": {
+        "from": [
+          "client_phone"
+        ],
+        "to": [
+          "client_phone"
+        ]
+      },
+      "description": "Каждый билет связан с одним клиентом по номеру телефона"
+    },
+    {
+      "from_entity": "Ticket Fact",
+      "to_entity": "Событие",
+      "type": "many:1",
+      "via_columns": {
+        "from": [
+          "event_id"
+        ],
+        "to": [
+          "event_id"
+        ]
+      },
+      "description": "Каждый билет относится к одному событию"
+    },
+    {
+      "from_entity": "Событие",
+      "to_entity": "Площадка",
+      "type": "many:1",
+      "via_columns": {
+        "from": [
+          "spot_id"
+        ],
+        "to": [
+          "spot_id"
+        ]
+      },
+      "description": "Каждое событие проводится на одной площадке"
+    },
+    {
+      "from_entity": "Событие",
+      "to_entity": "Музей",
+      "type": "many:1",
+      "via_columns": {
+        "from": [
+          "museum_name"
+        ],
+        "to": [
+          "museum_name"
+        ]
+      },
+      "description": "Событие связано с одним музеем-организатором"
+    },
+    {
+      "from_entity": "Ticket Fact",
+      "to_entity": "Категория посетителя",
+      "type": "many:1",
+      "via_columns": {
+        "from": [
+          "visitor_category"
+        ],
+        "to": [
+          "visitor_category"
+        ]
+      },
+      "description": "Каждый билет приобретён для одной категории посетителя"
+    }
+  ],
+  "under_question_columns": [
+    {
+      "column": "museum_inn",
+      "description": "Похоже на ИНН клиента, но в некоторых случаях повторяет ИНН музея — требуется уточнение бизнес-логики",
+      "suspected_entities": [
+        "Клиент",
+        "Музей"
+      ],
+      "suggested_action": "уточнить у SME — это ИНН клиента или организации, провести анализ соответствия museum_name и museum_inn",
+      "confidence": "0.5"
+    }
+  ],
+  "coverage": {
+    "total_columns_in_csv": "28",
+    "assigned_to_entities": "27",
+    "under_question": "1"
+  },
+  "notes": "Есть подозрение на неразделённые поля ФИО (client_name дублирует name и surname). Возможна нормализация адресов (spot_name). Некоторые значения client_phone содержат несколько номеров, стоит очистить или нормализовать."
+}
