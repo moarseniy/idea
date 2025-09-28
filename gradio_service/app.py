@@ -3,11 +3,14 @@ import json, os, time, re
 import datetime
 import requests
 
+
 from gradio_utils import *
 
 from scripts.profile_csv import profile_csv
 from modules import DataProvider, UserData, PipeLine, Summarizer, TextSplitter
 from modules import customLogger
+
+from file_utils import *
 
 _LOGGER = customLogger.getLogger(__name__)
 
@@ -27,11 +30,6 @@ def log_execution_time(func):
         _LOGGER.info(f"Время выполнения {func.__name__}: {elapsed_time:.2f} секунд.")
         return result
     return wrapper
-
-def extract_sql_blocks(text: str):
-    pattern = r"```sql\s*(.*?)```"
-    matches = re.findall(pattern, text, re.DOTALL | re.IGNORECASE)
-    return [m.strip() for m in matches]
 
 # Основной интерфейс приложения
 class AppInterface:
@@ -95,10 +93,11 @@ def run_web_interface(app):
                             submit_button = gr.Button(scale=1, value="➤", elem_id="submit_button", visible=False)
 
                 analytic_btn = gr.Button('Загрузить данные, сделать аналитику', visible=False)
-                create_connect_btn = gr.Button('Создать/Подключиться', visible=False)
+                create_connect_btn = gr.Button('Создать', visible=False)
 
             with gr.Column(scale=1):
                 log_display = gr.Textbox(value="", label="Логгирование", lines=5, max_lines=5, interactive=False, show_copy_button=True)
+                md_download_button = gr.DownloadButton("Скачать отчет", visible=False)
                 info_box = gr.Markdown(value="", label='Отчет/Рекомендации', visible=True)
 
                 # DDL
@@ -147,13 +146,13 @@ def run_web_interface(app):
 
 
         @analytic_btn.click(inputs=[start_choice, new_source_choice, upload_file_new, upload_file_new2, new_base_conn, existing_conn, log_display, info_box, llm_agent_request, chatbot_ui], 
-                            outputs=[create_connect_btn, log_display, info_box, ddl_preview, dag_preview, llm_agent_request, chatbot_ui, user_input, submit_button])
+                            outputs=[create_connect_btn, log_display, info_box, ddl_preview, dag_preview, llm_agent_request, chatbot_ui, user_input, submit_button, md_download_button])
         def on_analytic(start_choice_val, new_source_sel, upload_new_file, upload_new_file2, new_base_conn_val, existing_conn_val, log_text, info_text, llm_agent_request, chat_history):
 
             llm_agent_request["darchRequirements"] = True
 
             if "needFix" in llm_agent_request and llm_agent_request["needFix"]:
-                source_desc = 'unknown' # TODO
+                info_text = ""
             else:
                 source_desc = 'unknown'
 
@@ -197,21 +196,46 @@ def run_web_interface(app):
             llm_agent_request["task"] = ""
             llm_agent_request["darchRequirements"] = False
 
-            # TODO
+            # TODO: ???
             if "needFix" in llm_agent_request and llm_agent_request["needFix"]:
                 if "message" in response_json and response_json["message"]:
                     msg = response_json["message"]
                     chat_history.append({"role": "assistant", "content": msg})
             else:
-                # TODO:
+                # TODO: ???
                 llm_agent_request["needFix"] = True
 
-            # rec = recommend_storage(result['schema'])
+            # TODO: Это полная жопа, либо упростить, либо завернуть в try-catch
+            sql_script = extract_sql_data(response_json['darchRequirements'])
+            print("(extract_sql_data)", sql_script)
+            if sql_script:
+                
+                # clean_sql_script = clean_clickhouse_ddl(sql_script)
+                tables = parse_create_tables(sql_script)
+                clean_sql_script = to_dbml_with_refs(tables)
+                print("(clean_clickhouse_ddl)", clean_sql_script)
+                clean_sql_script_path = save_dbml_file(clean_sql_script)
+                # clean_sql_script_path = save_sql_file(clean_sql_script)
+                print("(save_dbml_file)", clean_sql_script_path)
+                # dbml_path = convert_sql_to_dbml(clean_sql_script_path)
+                # print(dbml_path)
+                dbml_svg_path = convert_dbml_to_svg(clean_sql_script_path)
+                print(dbml_svg_path)
 
-            # info_lines = [f"Рекоммендация: {rec['recommendation']}", f"Обоснование: {rec['rationale']}"]
-            # if result.get('conn_info'):
-            #     info_lines.append('Parsed connection: ' + json.dumps(result['conn_info'], ensure_ascii=False))
-            # info_text += '\n'.join(info_lines)
+                # <img src="data:image/png;base64,{image_to_base64(dbml_svg_path)}" width="1000">
+                # markdown_content = f"""
+                # # Результат в виде DBML схемы
+                # <img src="data:image/svg+xml;base64,{image_to_base64(dbml_svg_path)}" width="800"/>
+                # """
+
+                markdown_content = (
+                    f"# Результат в виде DBML схемы\n"
+                    f"<img src=\"data:image/svg+xml;base64,{image_to_base64(dbml_svg_path)}\" width=\"450\"/>\n"
+                )
+
+                info_text += markdown_content
+
+            md_file_path = save_markdown_file(info_text)
 
             # TODO: CALL LLM
             # ddl = generate_ddl(result['schema'], table_name='my_table', target_db=rec['recommendation'])
@@ -221,7 +245,7 @@ def run_web_interface(app):
             # dag = generate_airflow_dag_from_pipeline('example_pipeline', '@hourly', [], rec['recommendation'])
             # log_text += 'DAG сгенерирован.\n'
 
-            return gr.update(visible=True), log_text, info_text, gr.update(value=ddl, visible=True), gr.update(value=dag, visible=True), gr.update(value=llm_agent_request), gr.update(value=chat_history, visible=True), gr.update(visible=True), gr.update(visible=True)
+            return gr.update(visible=True), log_text, info_text, gr.update(value=ddl, visible=True), gr.update(value=dag, visible=True), gr.update(value=llm_agent_request), gr.update(value=chat_history, visible=True), gr.update(visible=True), gr.update(visible=True), gr.update(visible=True, value=md_file_path)
 
 
         @submit_button.click(inputs=[user_input, chatbot_ui, llm_agent_request], outputs=[chatbot_ui, user_input, llm_agent_request])
