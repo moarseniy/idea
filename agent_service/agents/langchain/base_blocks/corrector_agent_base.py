@@ -107,7 +107,7 @@ class CorrectionAgentBuilder(Singleton):
                 goto = END
             else:
                 goto = return_node
-            print(f"STATUS: {response['status']}\n\nVALIDATOR: {result}")
+            print(f"STATUS: {response['status']}\n\nDE_VALIDATOR: {result}")
             return Command(
                 update={
                     "messages": old_messages + [HumanMessage(content=result, name="Валидатор")],
@@ -167,7 +167,7 @@ class CorrectionAgentBuilder(Singleton):
                 goto = END
             else:
                 goto = return_node
-            print(f"STATUS: {response['status']}\n\nVALIDATOR: {result}")
+            print(f"STATUS: {response['status']}\n\nCORRECTOR_VALIDATOR: {result}")
             return Command(
                 update={
                     "messages": old_messages + [HumanMessage(content=result, name="Валидатор")],
