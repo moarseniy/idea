@@ -3,10 +3,10 @@ import json, os, time, re
 import datetime
 import requests
 
-
 from gradio_utils import *
 
-from scripts.profile_csv import profile_csv
+# from scripts.profile_csv import profile_csv
+from scripts.analytic_pipeline import run_build_analytic_prompt, run_build_final_prompt
 from modules import DataProvider, UserData, PipeLine, Summarizer, TextSplitter
 from modules import customLogger
 
@@ -65,6 +65,7 @@ def run_web_interface(app):
         gr.Markdown(''' # ETL Assistant ''')
 
         llm_agent_request = gr.State({
+            "daRequirements": False,
             "deRequirements": False,
             "darchRequirements": False,
             "needFix": False,
@@ -149,8 +150,6 @@ def run_web_interface(app):
                             outputs=[create_connect_btn, log_display, info_box, ddl_preview, dag_preview, llm_agent_request, chatbot_ui, user_input, submit_button, md_download_button])
         def on_analytic(start_choice_val, new_source_sel, upload_new_file, upload_new_file2, new_base_conn_val, existing_conn_val, log_text, info_text, llm_agent_request, chat_history):
 
-            llm_agent_request["darchRequirements"] = True
-
             if "needFix" in llm_agent_request and llm_agent_request["needFix"]:
                 info_text = ""
             else:
@@ -170,15 +169,37 @@ def run_web_interface(app):
 
                 # _LOGGER.info(f"PATH: {source_desc}")
                 log_text += f'Обрабатываем файл: {source_desc}\n'
-                result = profile_csv(source_desc, ";")
+                # result = profile_csv(source_desc, ";")
+
+
+                preview, cardinality_text, card_json, types_json, parquet_report = run_build_analytic_prompt(source_desc)
+
+                llm_agent_request["daRequirements"] = True
+                llm_agent_request["task"] = f"{preview + '\n' + cardinality_text}"
+
+                log_text += 'Отправляем запрос к LLM агенту...\n'
+                headers = {"Content-Type": "application/json"}
+                response = requests.post(llm_host, data=json.dumps(llm_agent_request), verify=False, headers=headers) #timeout=120)
+                print(f"RESPONSE:\n{response}")
+                response_json = response.json()
+                log_text += 'Получен ответ от LLM агентов...\n'
+
+                entity_report = run_build_final_prompt(response_json)
+
+                # if "darchRequirements" in response_json and response_json["darchRequirements"]:
+                #     info_text += response_json["darchRequirements"] + '\n'
+                #     llm_agent_request["history"]["darchRequirements"] = response_json["darchRequirements"]
+
                 log_text += 'Аналитика данных завершена.\n'
                 
                 # print(f"RESULT: {result}")
 
-                llm_agent_request["task"] = f"{result}"
+                # TODO: !!!! SAVE THIS PROMPT TO prev_context FOR NEXT corrector REQUESTS
+                llm_agent_request["daRequirements"] = False
+                llm_agent_request["task"] = f"{preview + '\n' + entity_report + '\n' + cardinality_text + '\n' + parquet_report + '\n' + str(types_json) + '\n'}"
 
 
-
+            llm_agent_request["darchRequirements"] = True
             # print(f"REQUEST:\n{json.dumps(llm_agent_request)}")
             log_text += 'Отправляем запрос к LLM агенту...\n'
 
@@ -208,7 +229,10 @@ def run_web_interface(app):
             # TODO: Это полная жопа, либо упростить, либо завернуть в try-catch
             sql_script = extract_sql_data(response_json['darchRequirements'])
             print("(extract_sql_data)", sql_script)
-            if sql_script:
+            db_type = extract_db_type(response_json['darchRequirements']:50)
+            print("DB_TYPE: " + db_type)
+
+            if sql_script and 1 == 2:
                 
                 # clean_sql_script = clean_clickhouse_ddl(sql_script)
                 tables = parse_create_tables(sql_script)
@@ -221,12 +245,6 @@ def run_web_interface(app):
                 # print(dbml_path)
                 dbml_svg_path = convert_dbml_to_svg(clean_sql_script_path)
                 print(dbml_svg_path)
-
-                # <img src="data:image/png;base64,{image_to_base64(dbml_svg_path)}" width="1000">
-                # markdown_content = f"""
-                # # Результат в виде DBML схемы
-                # <img src="data:image/svg+xml;base64,{image_to_base64(dbml_svg_path)}" width="800"/>
-                # """
 
                 markdown_content = (
                     f"# Результат в виде DBML схемы\n"

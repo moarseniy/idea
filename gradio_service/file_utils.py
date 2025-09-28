@@ -13,6 +13,10 @@ def image_to_base64(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode('utf-8')
 
+def extract_db_type(content: str) -> str:
+    match = re.search(r"\*(.*?)\*", content)
+    return(match.group(1))
+
 def extract_sql_data(text: str):
     pattern = r"```sql\s*(.*?)```"
     matches = re.findall(pattern, text, re.DOTALL | re.IGNORECASE)
