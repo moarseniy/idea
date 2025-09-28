@@ -3,6 +3,7 @@ from typing import List, Dict, Optional
 from datetime import datetime
 
 class AgentRequest(BaseModel):
+    daRequirements: Optional[bool] = None
     deRequirements: Optional[bool] = None
     darchRequirements: Optional[bool] = None
     needFix: Optional[bool] = None
@@ -12,6 +13,7 @@ class AgentRequest(BaseModel):
     requestDateTime: datetime
 
 class AgentResponse(BaseModel):
+    daRequirements: Optional[str] = None
     deRequirements: Optional[str] = None
     darchRequirements: Optional[str] = None
     message: Optional[str] = None

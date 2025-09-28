@@ -7,7 +7,7 @@ class ValidatorResponse(TypedDict):
     status: Literal["FAIL", "SUCCESS"]
 
 class OrchestratorResponse(TypedDict):
-    next: Literal["de_agent", "darch_agent"]
+    next: Literal["da_agent", "de_agent", "darch_agent"]
 
 class JsonValidatorResponse(TypedDict):
     """В поле result нужно указать результат доработки. В поле status указать статус проверки [FAIL, SUCCESS]"""
@@ -25,7 +25,7 @@ class HFValidatorResponse(BaseModel):
     status: Literal["FAIL", "SUCCESS"] = Field(..., description="Статус задачи")
 
 class HFOrchestratorResponse(BaseModel):
-    next: Literal["ba_agent", "bpmn_agent", "sa_agent", "json_agent"] = Field(..., description="Следующий агент")
+    next: Literal["da_agent", "de_agent", "darch_agent"] = Field(..., description="Следующий агент")
 
 class HFJsonValidatorResponse(BaseModel):
     result: str = Field(..., description="Результат доработки")

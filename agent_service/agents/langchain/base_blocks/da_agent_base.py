@@ -1,5 +1,5 @@
 from abstract.singleton import Singleton
-from ..agent_states import DarchAgentState
+from ..agent_states import DaAgentState
 from settings import AgentSettings
 
 from langchain.agents import initialize_agent, AgentType, Tool
@@ -21,38 +21,38 @@ from typing_extensions import TypedDict
 import warnings
 import os
 
-class DarchAgentBuilder(Singleton):
+class DaAgentBuilder(Singleton):
     def _setup(self):
         self.settings = AgentSettings()
 
-    def create_darch_agent(self):
+    def create_da_agent(self):
         llm = self.settings.select_model()
 
-        memory_darch = ConversationBufferMemory(memory_key="chat_history")
+        memory_da = ConversationBufferMemory(memory_key="chat_history")
         tools = []
-        darch_agent = initialize_agent(
+        da_agent = initialize_agent(
             tools=tools,
             llm=llm,
-            memory=memory_darch,
+            memory=memory_da,
             agent=AgentType.CONVERSATIONAL_REACT_DESCRIPTION,
             verbose=True,
             handle_parsing_errors=True
         )
-        return darch_agent
+        return da_agent
 
-    def create_darch_agent_node(self, darch_agent):
-        def darch_agent_node(state: DarchAgentState) -> Command[Literal["darch_validator"]]:
-            darch_prompt = self.settings.darch_template
-            darch_instruction = self.settings.darch_instruction
+    def create_da_agent_node(self, da_agent):
+        def da_agent_node(state: DaAgentState) -> Command[Literal["da_validator"]]:
+            da_prompt = self.settings.da_template
+            da_instruction = self.settings.da_instruction
 
             if "messages" in state and state["messages"]:
                 old_messages = state["messages"]
                 request = state["messages"][-1].content
             else:
                 old_messages = []
-                request = darch_prompt.format(task=state["task"], darch_instruction=darch_instruction)
+                request = da_prompt.format(task=state["task"], da_instruction=da_instruction)
 
-            response = darch_agent.run(request)
+            response = da_agent.run(request)
             if isinstance(response, dict):
                 result = response["output"]
             else:
@@ -60,21 +60,21 @@ class DarchAgentBuilder(Singleton):
             return Command(
                 update={
                     "result": result,
-                    "messages": old_messages + [HumanMessage(content=result, name="Архитектор")]
+                    "messages": old_messages + [HumanMessage(content=result, name="Аналитик")]
                 },
-                goto="darch_validator"
+                goto="da_validator"
             )
-        return darch_agent_node
+        return da_agent_node
 
-    def create_darch_validator_node(self):
+    def create_da_validator_node(self):
         llm_max = self.settings.select_model()
-        def darch_validator_node(state: DarchAgentState) -> Command[Literal["darch_agent", END]]:
-            darch_validator_prompt = self.settings.darch_validator_prompt
-            return_node = "darch_agent"
+        def da_validator_node(state: DaAgentState) -> Command[Literal["da_agent", END]]:
+            da_validator_prompt = self.settings.da_validator_prompt
+            return_node = "da_agent"
             if not "messages" in state or not state["messages"]:
                 return Command(goto=return_node)
 
-            prompt = darch_validator_prompt.format(task=state["task"])
+            prompt = da_validator_prompt.format(task=state["task"])
             system = SystemMessage(content=prompt)
             request = [system] + state["messages"]
 
@@ -82,7 +82,7 @@ class DarchAgentBuilder(Singleton):
             response = self.settings.call_llm(llm_max, request, "validator")
             
             result = response["instructions"]
-            print(f"STATUS: {response['status']}\n\nARCHITECT VALIDATOR: {result}")
+            print(f"STATUS: {response['status']}\n\nANALYTIC VALIDATOR: {result}")
 
             if response["status"] == "SUCCESS" or validator_msgs_fount + 1 > 3:
                 goto = END
@@ -94,4 +94,4 @@ class DarchAgentBuilder(Singleton):
                 },
                 goto=goto
             )
-        return darch_validator_node
+        return da_validator_node

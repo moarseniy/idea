@@ -1,9 +1,12 @@
 from abstract.singleton import Singleton
-from .agent_states import DeAgentState, DarchAgentState, CorrectorAgentState
+from .agent_states import DaAgentState, DeAgentState, DarchAgentState, CorrectorAgentState
 from .agent_responses import ValidatorResponse
+
+from .base_blocks.da_agent_base import DaAgentBuilder
 from .base_blocks.de_agent_base import DeAgentBuilder
 from .base_blocks.darch_agent_base import DarchAgentBuilder
 from .base_blocks.corrector_agent_base import CorrectionAgentBuilder
+
 from settings import AgentSettings
 
 from langchain.agents import initialize_agent, AgentType, Tool
@@ -29,6 +32,7 @@ import os
 class LangChainBuilder(Singleton):
     def _setup(self):
         self.settings = AgentSettings()
+        self.da_builder = DaAgentBuilder()
         self.de_builder = DeAgentBuilder()
         self.darch_builder = DarchAgentBuilder()
         self.corrector_builder = CorrectionAgentBuilder()
@@ -40,6 +44,19 @@ class LangChainBuilder(Singleton):
         for name, node in mapper.items():
             builder.add_node(name, node)
         graph = builder.compile()
+        return graph
+
+    def create_da_chain(self):
+        da_agent = self.da_builder.create_da_agent()
+        da_agent_node = self.da_builder.create_da_agent_node(da_agent)
+        da_validator_node = self.da_builder.create_da_validator_node()
+        
+        graph_mapper = {
+            "da_agent": da_agent_node,
+            "da_validator": da_validator_node
+        }
+
+        graph = self.make_graph(graph_mapper, "da_agent", DaAgentState)
         return graph
 
     def create_de_chain(self):

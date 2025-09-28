@@ -8,12 +8,14 @@ from langchain.schema import HumanMessage, AIMessage, SystemMessage
 from langchain.memory import ConversationBufferMemory, ChatMessageHistory
 
 class LangchainApp:
-    def __init__(self, de_requirements=False, darch_requirements=False):
+    def __init__(self, da_requirements=False, de_requirements=False, darch_requirements=False):
         builder = LangChainBuilder()
         self.settings = AgentSettings()
         
+        self.da_agent_chain = builder.create_da_chain()
         self.de_agent_chain = builder.create_de_chain()
         self.darch_agent_chain = builder.create_darch_chain()
+        
         self.de_corrector_agent_chain = builder.create_de_corrector_chain()
         self.darch_corrector_agent_chain = builder.create_darch_corrector_chain()
 
@@ -34,6 +36,10 @@ class LangchainApp:
         ]
         chat_memory = ChatMessageHistory(messages=prepared_messages)
         return ConversationBufferMemory(chat_memory=chat_memory, memory_key="chat_history")
+
+    async def da_agent(self, initial_state):
+        result = await self.da_agent_chain.ainvoke(initial_state)
+        return "daRequirements", result["result"]
 
     async def de_agent(self, initial_state):
         result = await self.de_agent_chain.ainvoke(initial_state)

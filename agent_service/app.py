@@ -14,7 +14,7 @@ class App(FastAPI):
     def setup_endpoints(self):
         @self.post("/llm_agents")
         async def agent_endpoint(request:AgentRequest)->AgentResponse:
-            print(f"REQUEST: {request}")
+            print(f"REQUEST(app.py): {request}")
             agents = LangchainApp()
             response = dict()
 
@@ -29,13 +29,17 @@ class App(FastAPI):
                     de_initial_state = {"task": task}
                     _, de_response = await agents.de_agent(de_initial_state)
                     response["deRequirements"] = de_response
+                if request.daRequirements:
+                    da_initial_state = {"task": task}
+                    _, da_response = await agents.da_agent(da_initial_state)
+                    response["daRequirements"] = da_response
 
             else:
 
                 if request.darchRequirements:
-                    print("BBBBBBBBBBBBBBBBBBB")
+                    print("BBBBBBBBBBBBBBBBBBB", request.history, request.task)
                     result = await agents.darch_corrector_agent(history=request.history, task=request.task)
-                    print("CCCCCCCCCCCCCCCCCCC")
+                    print("CCCCCCCCCCCCCCCCCCC", request.task)
                     response["darchRequirements"] = result
 
                 if request.deRequirements:
