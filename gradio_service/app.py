@@ -6,8 +6,7 @@ import requests
 from gradio_utils import *
 
 # from scripts.profile_csv import profile_csv
-from scripts.analytic_pipeline import run_build_analytic_prompt, run_build_final_prompt
-from modules import DataProvider, UserData, PipeLine, Summarizer, TextSplitter
+from scripts.analytic_pipeline import clean_json, run_build_analytic_prompt, run_build_final_prompt
 from modules import customLogger
 
 from file_utils import *
@@ -31,35 +30,8 @@ def log_execution_time(func):
         return result
     return wrapper
 
-# Основной интерфейс приложения
-class AppInterface:
-    def __init__(self):
-        self.text_splitter = TextSplitter()
-        self.pipeline = PipeLine()
-        self.data_provider = DataProvider()
-        self.summarizer = Summarizer()
 
-    @log_execution_time
-    def extract_text(self, file_path):
-        txt = self.pipeline.process(file_path)
-        return txt
-
-    @log_execution_time
-    def split_text(self, txt):
-        txt_chunks = self.text_splitter.split(txt)
-        return txt_chunks
-
-    @log_execution_time
-    def summarize_text(self, txt_chunks):
-        txt_summaries = self.summarizer.generate_summaries(txt_chunks, summarize=False)
-        return txt_summaries
-
-    def get_summary(self, username, filename):
-        summary = self.data_provider.load_summary(username, filename)
-        return summary
-
-
-def run_web_interface(app):
+def run_web_interface():
     with gr.Blocks(title='MVP: Цифровой инженер данных') as demo:
 
         gr.Markdown(''' # ETL Assistant ''')
@@ -175,13 +147,14 @@ def run_web_interface(app):
                 preview, cardinality_text, card_json, types_json, parquet_report = run_build_analytic_prompt(source_desc)
 
                 llm_agent_request["daRequirements"] = True
-                llm_agent_request["task"] = f"{preview + '\n' + cardinality_text}"
+                llm_agent_request["task"] = f"{preview} + '\n' + {cardinality_text}"
 
                 log_text += 'Отправляем запрос к LLM агенту...\n'
                 headers = {"Content-Type": "application/json"}
                 response = requests.post(llm_host, data=json.dumps(llm_agent_request), verify=False, headers=headers) #timeout=120)
                 print(f"RESPONSE:\n{response}")
-                response_json = response.json()
+                clean_response = response.replace('json','').replace('````','')
+                response_json = clean_response.json()
                 log_text += 'Получен ответ от LLM агентов...\n'
 
                 entity_report = run_build_final_prompt(response_json)
@@ -196,7 +169,7 @@ def run_web_interface(app):
 
                 # TODO: !!!! SAVE THIS PROMPT TO prev_context FOR NEXT corrector REQUESTS
                 llm_agent_request["daRequirements"] = False
-                llm_agent_request["task"] = f"{preview + '\n' + entity_report + '\n' + cardinality_text + '\n' + parquet_report + '\n' + str(types_json) + '\n'}"
+                llm_agent_request["task"] = f"{preview} + '\n' + {entity_report} + '\n' + {cardinality_text} + '\n' + {parquet_report} + '\n' + {str(types_json)} + '\n'"
 
 
             llm_agent_request["darchRequirements"] = True
@@ -229,8 +202,8 @@ def run_web_interface(app):
             # TODO: Это полная жопа, либо упростить, либо завернуть в try-catch
             sql_script = extract_sql_data(response_json['darchRequirements'])
             print("(extract_sql_data)", sql_script)
-            db_type = extract_db_type(response_json['darchRequirements']:50)
-            print("DB_TYPE: " + db_type)
+            # db_type = extract_db_type(response_json['darchRequirements']:50)
+            # print("DB_TYPE: " + db_type)
 
             if sql_script and 1 == 2:
                 
@@ -308,8 +281,7 @@ def run_web_interface(app):
 if __name__ == '__main__':
     _LOGGER.info("Starting app...")
     # try:
-    app_instance = AppInterface()
-    demo = run_web_interface(app_instance)
+    demo = run_web_interface()
     demo.launch(server_name="0.0.0.0", server_port=7862)
     # except:
         # reboot_system()
