@@ -1,0 +1,750 @@
+{
+  "version": "1.0",
+  "root": "__root__",
+  "entities": [
+    {
+      "name": "__root__",
+      "path": [],
+      "depth": 0,
+      "parent": null,
+      "primary_key": [
+        "rec_id"
+      ],
+      "columns": [
+        {
+          "name": "citizenship_kind",
+          "path": [
+            "citizenship_kind"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "1",
+            "2",
+            "1"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "citizenship_name",
+          "path": [
+            "citizenship_name"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "ТАДЖИКИСТАН",
+            "УЗБЕКИСТАН",
+            "ТАДЖИКИСТАН"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "code_form_ind_entrep",
+          "path": [
+            "code_form_ind_entrep"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "1",
+            "1",
+            "1"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "date_exec",
+          "path": [
+            "date_exec"
+          ],
+          "type": "date",
+          "nullable": true,
+          "examples": [
+            "2024-10-09",
+            "2024-10-08",
+            "2024-10-08"
+          ],
+          "types_seen": [
+            "date"
+          ]
+        },
+        {
+          "name": "date_ogrnip",
+          "path": [
+            "date_ogrnip"
+          ],
+          "type": "date",
+          "nullable": true,
+          "examples": [
+            "2023-11-14",
+            "2025-01-02",
+            "2020-02-26"
+          ],
+          "types_seen": [
+            "date"
+          ]
+        },
+        {
+          "name": "dob",
+          "path": [
+            "dob"
+          ],
+          "type": "date",
+          "nullable": true,
+          "examples": [
+            "1980-02-29",
+            "1985-08-01",
+            "1968-10-07"
+          ],
+          "types_seen": [
+            "date"
+          ]
+        },
+        {
+          "name": "email_ind_entrep",
+          "path": [
+            "email_ind_entrep"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "zverev.vladimir_syn_7298@YANDEX.RU",
+            "chagochkin.sherzod_syn_5414@GMAIL.COM",
+            "aandrei_4_syn_3305@MAIL.RU"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "error_code",
+          "path": [
+            "error_code"
+          ],
+          "type": "int32",
+          "nullable": true,
+          "examples": [
+            0,
+            0,
+            0
+          ],
+          "types_seen": [
+            "int32"
+          ]
+        },
+        {
+          "name": "id_card",
+          "path": [
+            "id_card"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "77 82 349990",
+            "503461406",
+            "34 68 741072"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "id_card_alien_for_rus",
+          "path": [
+            "id_card_alien_for_rus"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "32№2986662",
+            "40№2974004",
+            "28№8649028"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "inf_authority_reg_ind_entrep_code",
+          "path": [
+            "inf_authority_reg_ind_entrep_code"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "5800",
+            "5800",
+            "5800"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "inf_authority_reg_ind_entrep_name",
+          "path": [
+            "inf_authority_reg_ind_entrep_name"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "Управление Федеральной налоговой службы по Пензенской области",
+            "Управление Федеральной налоговой службы по Пензенской области",
+            "Управление Федеральной налоговой службы по Пензенской области"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "inf_okved_code",
+          "path": [
+            "inf_okved_code"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "01.25.1",
+            "43.39",
+            "43.29"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "inf_okved_name",
+          "path": [
+            "inf_okved_name"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "Выращивание прочих плодовых и ягодных культур",
+            "Производство прочих отделочных и завершающих работ",
+            "Производство прочих строительно-монтажных работ"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "inf_reg_ind_entrep_date",
+          "path": [
+            "inf_reg_ind_entrep_date"
+          ],
+          "type": "date",
+          "nullable": true,
+          "examples": [
+            "1996-07-05",
+            "1995-04-27",
+            "1999-08-30"
+          ],
+          "types_seen": [
+            "date"
+          ]
+        },
+        {
+          "name": "inf_reg_ind_entrep_num",
+          "path": [
+            "inf_reg_ind_entrep_num"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "ССА № 6",
+            "99/05237",
+            "93/51166"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "inf_reg_tax_ind_entrep",
+          "path": [
+            "inf_reg_tax_ind_entrep"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "Управление Федеральной налоговой службы по Пензенской области",
+            "Управление Федеральной налоговой службы по Пензенской области",
+            "Управление Федеральной налоговой службы по Пензенской области"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "inf_status_ind_entrep_code",
+          "path": [
+            "inf_status_ind_entrep_code"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "110",
+            "110",
+            "111"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "inf_status_ind_entrep_name",
+          "path": [
+            "inf_status_ind_entrep_name"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "Принято решение о предстоящем исключении недействующего ИП из ЕГРИП",
+            "Принято решение о предстоящем исключении недействующего ИП из ЕГРИП",
+            "Принято решение о предстоящем исключении ИП из ЕГРИП (пп. «б» п.2 Закона № 129-ФЗ)"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "inf_stop_ind_entrep_code",
+          "path": [
+            "inf_stop_ind_entrep_code"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "201",
+            "201",
+            "209"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "inf_stop_ind_entrep_name",
+          "path": [
+            "inf_stop_ind_entrep_name"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "Индивидуальный предприниматель прекратил деятельность в связи с принятием им соответствующего решения",
+            "Индивидуальный предприниматель прекратил деятельность в связи с принятием им соответствующего решения",
+            "Недействующий ИП исключен из ЕГРИП"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "inf_surname_ind_entrep_firstname",
+          "path": [
+            "inf_surname_ind_entrep_firstname"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "ВЛАДИМИР",
+            "МАКСИМ",
+            "ШЕРЗОД"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "inf_surname_ind_entrep_midname",
+          "path": [
+            "inf_surname_ind_entrep_midname"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "ЕВГЕНЬЕВИЧ",
+            "АЛЕКСАНДРОВИЧ",
+            "ЮРЬЕВИЧ"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "inf_surname_ind_entrep_sex",
+          "path": [
+            "inf_surname_ind_entrep_sex"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "1",
+            "1",
+            "1"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "inf_surname_ind_entrep_surname",
+          "path": [
+            "inf_surname_ind_entrep_surname"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "ЗВЕРЕВ",
+            "БАЛУЕВ",
+            "ЧАГОЧКИН"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "inf_surname_ind_entrep_zags_firstname",
+          "path": [
+            "inf_surname_ind_entrep_zags_firstname"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "СОФЬЯ",
+            "ЛЮДМИЛА",
+            "ТАТЬЯНА"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "inf_surname_ind_entrep_zags_midname",
+          "path": [
+            "inf_surname_ind_entrep_zags_midname"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "АЛЕКСАНДРОВНА",
+            "ВЛАДИМИРОВНА",
+            "ХАБИНУРОВНА"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "inf_surname_ind_entrep_zags_surname",
+          "path": [
+            "inf_surname_ind_entrep_zags_surname"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "ШТУКЕРТ",
+            "МЕЗЕНЦЕВА",
+            "ЗАВАРЗИНА"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "innfl",
+          "path": [
+            "innfl"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "301127163757",
+            "606163038359",
+            "886737772797"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "insured_pf",
+          "path": [
+            "insured_pf"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "305481831532",
+            "247538274786",
+            "483204952719"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "insuref_fss",
+          "path": [
+            "insuref_fss"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "173856101397129",
+            "856471362694236",
+            "305234329718883"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "name_form_ind_entrep",
+          "path": [
+            "name_form_ind_entrep"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "Индивидуальный предприниматель",
+            "Индивидуальный предприниматель",
+            "Индивидуальный предприниматель"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "ogrnip",
+          "path": [
+            "ogrnip"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "865363287164043",
+            "633724687498507",
+            "031125119070468"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "process_dttm",
+          "path": [
+            "process_dttm"
+          ],
+          "type": "timestamp64(ms)",
+          "nullable": true,
+          "examples": [
+            "2024-10-09T21:07:09.765+03:00",
+            "2024-10-09T21:07:09.765+03:00",
+            "2024-10-09T21:07:09.765+03:00"
+          ],
+          "types_seen": [
+            "timestamp64(ms)"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "__root____inf_okved_opt",
+      "path": [
+        "inf_okved_opt"
+      ],
+      "depth": 1,
+      "parent": "__root__",
+      "primary_key": [
+        "rec_id",
+        "idx1"
+      ],
+      "columns": [
+        {
+          "name": "attr_КодОКВЭД",
+          "path": [
+            "attr_КодОКВЭД"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "38.49",
+            "94.01",
+            "81.42"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "attr_НаимОКВЭД",
+          "path": [
+            "attr_НаимОКВЭД"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "Предоставление услуг в области растениеводства",
+            "Торговля оптовая цветами и растениями",
+            "Прочие виды полиграфической деятельности"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "attr_ПрВерсОКВЭД",
+          "path": [
+            "attr_ПрВерсОКВЭД"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "2014",
+            "2014",
+            "2014"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "ГРНИПДата__attr_ГРНИП",
+          "path": [
+            "ГРНИПДата",
+            "attr_ГРНИП"
+          ],
+          "type": "string",
+          "nullable": true,
+          "examples": [
+            "501892037413202",
+            "196664199989513",
+            "665461963844494"
+          ],
+          "types_seen": [
+            "string"
+          ]
+        },
+        {
+          "name": "ГРНИПДата__attr_ДатаЗаписи",
+          "path": [
+            "ГРНИПДата",
+            "attr_ДатаЗаписи"
+          ],
+          "type": "date",
+          "nullable": true,
+          "examples": [
+            "2024-06-07",
+            "2023-12-20",
+            "2023-05-14"
+          ],
+          "types_seen": [
+            "date"
+          ]
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "name": "fk___root____inf_okved_opt_to___root__",
+      "from_table": "__root____inf_okved_opt",
+      "to_table": "__root__",
+      "from_columns": [
+        "rec_id"
+      ],
+      "to_columns": [
+        "rec_id"
+      ],
+      "cardinality": "many-to-one"
+    }
+  ],
+  "type_system": {
+    "canonical": {
+      "string": {
+        "pg": "text",
+        "ch": "String",
+        "py": "str"
+      },
+      "int32": {
+        "pg": "integer",
+        "ch": "Int32",
+        "py": "int"
+      },
+      "int64": {
+        "pg": "bigint",
+        "ch": "Int64",
+        "py": "int"
+      },
+      "float64": {
+        "pg": "double precision",
+        "ch": "Float64",
+        "py": "float"
+      },
+      "decimal(p,s)": {
+        "pg": "numeric({p},{s})",
+        "ch": "Decimal({p},{s})",
+        "py": "decimal.Decimal"
+      },
+      "bool": {
+        "pg": "boolean",
+        "ch": "Bool",
+        "py": "bool"
+      },
+      "date": {
+        "pg": "date",
+        "ch": "Date32",
+        "py": "datetime.date"
+      },
+      "timestamp": {
+        "pg": "timestamptz",
+        "ch": "DateTime('UTC')",
+        "py": "datetime.datetime"
+      },
+      "timestamp64(ms)": {
+        "pg": "timestamptz",
+        "ch": "DateTime64(3, 'UTC')",
+        "py": "datetime.datetime"
+      },
+      "json": {
+        "pg": "jsonb",
+        "ch": "String",
+        "py": "typing.Any"
+      }
+    },
+    "synonyms": {
+      "text": "string",
+      "varchar": "string",
+      "bigint": "int64",
+      "integer": "int32",
+      "int4": "int32",
+      "int8": "int64",
+      "double": "float64",
+      "double precision": "float64",
+      "numeric": "decimal(p,s)",
+      "decimal": "decimal(p,s)",
+      "timestamptz": "timestamp",
+      "timestampz": "timestamp",
+      "datetime": "timestamp",
+      "datetime64": "timestamp64(ms)",
+      "jsonb": "json",
+      "uint8": "bool"
+    },
+    "fallback": "string"
+  },
+  "notes": [
+    "root = массив записей; для каждого пути до массива создаётся сущность (TABLE-PER-PATH)",
+    "скалярные поля объектов разворачиваются в колонки с префиксом key__sub__leaf",
+    "nullable=true если встречались null или отсутствие поля",
+    "при смешанных типах берётся безопасный тип (int→int64; int+float→float64; иное→string)"
+  ]
+}

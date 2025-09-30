@@ -1,0 +1,53 @@
+Project {
+  database_type: 'Generic'
+}
+
+Table "IndividualEntrepreneur" {
+  "rec_id" bigint [pk, not null]
+  "CitizenshipTypeCode" text [null, note: 'Код типа гражданства (например, гражданин РФ, иностранец и т.п.).']
+  "CitizenshipCountry" text [null, note: 'Страна гражданства предпринимателя.']
+  "EntrepreneurFormCode" text [null, note: 'Код организационно-правовой формы ИП.']
+  "RecordProcessingDate" date [null, note: 'Дата формирования или обработки записи.']
+  "OGRNIPAssignmentDate" date [null, note: 'Дата присвоения ОГРНИП (Основного государственного регистрационного номера ИП).']
+  "DateOfBirth" date [null, note: 'Дата рождения ИП.']
+  "Email" text [null, note: 'Адрес электронной почты ИП.']
+  "ErrorCode" int [null, note: 'Код ошибки при обработке записи (если 0 — ошибок нет).']
+  "NationalIDCard" text [null, note: 'Номер удостоверения личности (паспорт или иной документ).']
+  "ForeignCitizenID" text [null, note: 'Документ, удостоверяющий личность иностранного гражданина.']
+  "RegistrationAuthorityCode" text [null, note: 'Код налогового органа, зарегистрировавшего ИП.']
+  "RegistrationAuthorityName" text [null, note: 'Наименование налогового органа регистрации ИП.']
+  "PrimaryOKVEDCode" text [null, note: 'Основной код ОКВЭД деятельности ИП.']
+  "PrimaryOKVEDName" text [null, note: 'Наименование основного вида деятельности по ОКВЭД.']
+  "InitialRegistrationDate" date [null, note: 'Дата первичной регистрации ИП.']
+  "InitialRegistrationNumber" text [null, note: 'Номер первичной регистрации ИП.']
+  "TaxAuthorityName" text [null, note: 'Наименование налогового органа по месту учета ИП.']
+  "StatusCode" text [null, note: 'Код текущего статуса ИП.']
+  "StatusDescription" text [null, note: 'Описание текущего статуса ИП.']
+  "TerminationReasonCode" text [null, note: 'Код причины прекращения деятельности ИП.']
+  "TerminationReasonDescription" text [null, note: 'Описание причины прекращения деятельности ИП.']
+  "FirstName" text [null, note: 'Имя ИП.']
+  "Patronymic" text [null, note: 'Отчество ИП.']
+  "GenderCode" text [null, note: 'Пол ИП (1 — мужской, 2 — женский).']
+  "LastName" text [null, note: 'Фамилия ИП.']
+  "BirthCertificateFirstName" text [null, note: 'Имя по записи акта гражданского состояния (ЗАГС).']
+  "BirthCertificatePatronymic" text [null, note: 'Отчество по ЗАГС.']
+  "BirthCertificateLastName" text [null, note: 'Фамилия по ЗАГС.']
+  "INN" text [null, note: 'ИНН физического лица (ИП).']
+  "PensionFundNumber" text [null, note: 'Страховой номер в Пенсионном фонде (СНИЛС).']
+  "SocialInsuranceNumber" text [null, note: 'Регистрационный номер в Фонде социального страхования.']
+  "EntrepreneurFormName" text [null, note: 'Полное наименование организационно-правовой формы ИП.']
+  "OGRNIP" text [null, note: 'ОГРНИП (Основной государственный регистрационный номер ИП).']
+  "RecordProcessingTimestamp" datetime [null, note: 'Метка времени обработки записи.']
+}
+
+Table "EntrepreneurOKVEDOptional" {
+  "rec_id" bigint [pk, not null]
+  "idx1" int [pk, not null]
+  "OKVEDCode" text [null, note: 'Код дополнительного вида деятельности по ОКВЭД.']
+  "OKVEDName" text [null, note: 'Наименование дополнительного вида деятельности по ОКВЭД.']
+  "OKVEDVersion" text [null, note: 'Версия классификатора ОКВЭД.']
+  "GRNIPNumber" text [null, note: 'ГРНИП записи по дополнительному виду деятельности.']
+  "GRNIPRecordDate" date [null, note: 'Дата внесения записи о дополнительной деятельности в ЕГРИП.']
+}
+
+Ref: "EntrepreneurOKVEDOptional"."rec_id" > "IndividualEntrepreneur"."rec_id"
