@@ -1,0 +1,92 @@
+Project "Registry ETL" {
+  database_type: 'generic'
+  Note: 'Generated from final_spec'
+}
+
+Table real_estate_object {
+  id bigint [not null, pk, note: 'Суррогатный первичный ключ.']
+  unverified_purpose_code bigint [note: 'Код назначения (неподтвержденные данные) Код предполагаемого назначения объекта, не прошедший проверку.']
+  unverified_purpose_name string [note: 'Назначение (неподтвержденные данные) Наименование предполагаемого назначения объекта, не прошедшее проверку.']
+  unverified_name string [note: 'Наименование (неподтвержденные данные) Наименование объекта, указанное без подтверждения.']
+  unverified_area decimal(6,1) [note: 'Площадь (неподтвержденные данные) Площадь объекта по неподтвержденным данным.']
+  unverified_floors int [note: 'Этажность (неподтвержденные данные) Количество этажей по неподтвержденным данным.']
+  unverified_underground_floors string [note: 'Подземные этажи (неподтвержденные данные) Количество подземных этажей по неподтвержденным данным.']
+  inventory_cost decimal(11,2) [note: 'Инвентаризационная стоимость Оценочная стоимость объекта по данным инвентаризации.']
+  inventory_letter string [note: 'Литера по инвентаризации Обозначение литера (буквенного кода) здания по данным инвентаризации.']
+  inventory_date string [note: 'Дата инвентаризации Дата последней инвентаризации объекта.']
+  inventory_name string [note: 'Наименование по инвентаризации Наименование объекта согласно данным технической инвентаризации.']
+  last_change_record_number string [note: 'Номер последней записи изменений Идентификатор последней записи изменений объекта в системе.']
+  last_container_fixed_at timestamp [not null, note: 'Дата последней фиксации контейнера Дата фиксации последнего состояния объекта в контейнере данных.']
+  record_status string [not null, note: 'Статус записи Текущий статус записи объекта недвижимости.']
+  cadastral_number string [not null, note: 'Кадастровый номер Уникальный кадастровый номер объекта недвижимости.']
+  was_previously_registered boolean [note: 'Ранее учтённый Признак того, что объект был ранее поставлен на учет.']
+  quarter_cadastral_number string [not null, note: 'Кадастровый номер квартала Кадастровый номер квартала, в котором расположен объект.']
+  object_type_code bigint [not null, note: 'Код типа объекта Код, обозначающий тип объекта недвижимости.']
+  object_type_name string [not null, note: 'Тип объекта Наименование типа объекта недвижимости.']
+  temporary_info string [note: 'Временная информация Дополнительная временная информация об объекте.']
+  object_definition string [note: 'Описание объекта Описание или определение объекта недвижимости.']
+  formation_method_code int [note: 'Код метода образования Код способа образования объекта недвижимости.']
+  formation_method_name string [note: 'Метод образования Наименование способа образования объекта.']
+  declared_area decimal(6,1) [note: 'Заявленная площадь Площадь объекта, заявленная пользователем.']
+  declared_floors string [note: 'Заявленная этажность Количество этажей по заявленным данным.']
+  wall_material_code bigint [note: 'Код материала стен Код материала, из которого выполнены стены объекта.']
+  wall_material_name string [note: 'Материал стен Наименование материала стен объекта.']
+  declared_name string [note: 'Заявленное наименование Наименование объекта, указанное заявителем.']
+  permitted_use_name string [note: 'Разрешенное использование Наименование разрешенного использования объекта.']
+  declared_purpose_code bigint [note: 'Код назначения (заявленное) Код назначения объекта, заявленный пользователем.']
+  declared_purpose_name string [note: 'Назначение (заявленное) Наименование назначения объекта, заявленное пользователем.']
+  year_built int [note: 'Год постройки Год завершения строительства объекта.']
+  year_commissioned string [note: 'Год ввода в эксплуатацию Год ввода объекта в эксплуатацию.']
+  declared_underground_floors string [note: 'Подземные этажи (заявленное) Количество подземных этажей по заявленным данным.']
+  record_number string [not null, note: 'Номер записи Номер учетной записи объекта в системе.']
+  registration_date timestamp [not null, note: 'Дата регистрации Дата государственной регистрации объекта.']
+  section_number string [not null, note: 'Номер раздела Номер раздела в реестре, к которому относится объект.']
+  record_cancel_date timestamp [note: 'Дата аннулирования записи Дата аннулирования учетной записи объекта.']
+  Note: 'Объект недвижимости Основная сущность, представляющая объект недвижимости с кадастровыми, техническими и учетными характеристиками.'
+}
+
+Table object_contour {
+  id bigint [not null, pk, note: 'Суррогатный первичный ключ.']
+  real_estate_object_id bigint [not null, note: 'Внешний ключ на родительскую сущность.']
+  spatial_id string [note: 'Идентификатор пространственного элемента Уникальный идентификатор пространственного элемента контура.']
+  spatial_code decimal(3,1) [note: 'Код пространственного элемента Код, определяющий пространственное положение контура.']
+  spatial_code_name string [note: 'Наименование пространственного кода Наименование, соответствующее коду пространственного элемента.']
+  contour_definition string [note: 'Описание контура Текстовое описание границ контура объекта.']
+  contour_number int [note: 'Порядковый номер контура Порядковый номер контура в составе объекта.']
+  Note: 'Контур объекта Контур объекта недвижимости, описывающий его пространственное положение и форму.'
+}
+
+Index object_contour_real_estate_object_id_idx on object_contour (real_estate_object_id)
+
+Table spatial_element {
+  id bigint [not null, pk, note: 'Суррогатный первичный ключ.']
+  object_contour_id bigint [not null, note: 'Внешний ключ на родительскую сущность.']
+  unit_type_code int [not null, note: 'Код типа единицы Код, определяющий тип единицы измерения или пространственного элемента.']
+  unit_type_name string [not null, note: 'Тип единицы Наименование типа единицы или пространственного элемента.']
+  contour_level_code int [note: 'Код уровня контура Код уровня, на котором расположен пространственный элемент.']
+  contour_level_name string [note: 'Уровень контура Наименование уровня расположения пространственного элемента.']
+  seq int [not null, note: 'Порядковый номер строки в рамках родительской записи.']
+  Note: 'Пространственный элемент Пространственный элемент, входящий в состав контура, определяющий его часть на определенном уровне.'
+}
+
+Index spatial_element_object_contour_id_idx on spatial_element (object_contour_id)
+
+Table coordinate_point {
+  id bigint [not null, pk, note: 'Суррогатный первичный ключ.']
+  spatial_element_id bigint [not null, note: 'Внешний ключ на родительскую сущность.']
+  point_sequence_number int [not null, note: 'Порядковый номер точки Порядковый номер координатной точки в описании геометрии.']
+  coordinate_x decimal(9,2) [not null, note: 'Координата X Координата X точки в системе координат.']
+  coordinate_y decimal(8,2) [not null, note: 'Координата Y Координата Y точки в системе координат.']
+  coordinate_z int [note: 'Координата Z Координата Z точки (высота), если задана.']
+  geopoint_accuracy decimal(3,2) [note: 'Точность геоточки Допустимое отклонение координаты точки.']
+  geopoint_number int [note: 'Номер геоточки Идентификатор геоточки в пределах пространственного элемента.']
+  geopoint_determination_code bigint [note: 'Код способа определения точки Код, обозначающий способ определения координат точки.']
+  geopoint_determination_name string [note: 'Способ определения точки Наименование способа определения координат точки.']
+  Note: 'Опорная точка (ордината) Координатная точка, определяющая геометрию пространственного элемента.'
+}
+
+Index coordinate_point_spatial_element_id_idx on coordinate_point (spatial_element_id)
+
+Ref: object_contour.real_estate_object_id > real_estate_object.id
+Ref: spatial_element.object_contour_id > object_contour.id
+Ref: coordinate_point.spatial_element_id > spatial_element.id

@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "entities": [
+    {
+      "path": "/root/item",
+      "alias": "real_estate_object",
+      "title": "Объект недвижимости",
+      "description": "Корневая запись объекта из XML (ЕГРН): общие данные, параметры, метаданные и даты.",
+      "fields": [
+        {
+          "path": "object_common_data/cad_number",
+          "alias": "cadastral_number",
+          "title": "Кадастровый номер",
+          "description": "Основной идентификатор объекта недвижимости."
+        },
+        {
+          "path": "record_info/record_number",
+          "alias": "record_number",
+          "title": "Номер записи",
+          "description": "Идентификатор записи в реестре."
+        },
+        {
+          "path": "record_info/section_number",
+          "alias": "section_number",
+          "title": "Номер раздела",
+          "description": "Секция/раздел учётной записи."
+        },
+        {
+          "path": "metadata/status",
+          "alias": "status",
+          "title": "Статус записи",
+          "description": "Актуальный/архивный статус объекта."
+        }
+      ]
+    },
+    {
+      "path": "/root/item/contour",
+      "alias": "spatial_contour",
+      "title": "Пространственный контур",
+      "description": "Контур (футпринт) объекта; может быть несколько на один объект."
+    },
+    {
+      "path": "/root/item/contour/entity_spatial/spatials_elements/spatial_element",
+      "alias": "contour_polygon",
+      "title": "Полигон контура",
+      "description": "Отдельный полигон внутри контура (например, внешний или внутренние кольца)."
+    },
+    {
+      "path": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate",
+      "alias": "vertex",
+      "title": "Вершина полигона",
+      "description": "Координатная вершина полигона: x, y, необязательная z; доп. атрибуты точности."
+    }
+  ]
+}

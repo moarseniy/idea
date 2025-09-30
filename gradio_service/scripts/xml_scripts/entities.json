@@ -1,0 +1,316 @@
+{
+  "version": 1,
+  "entities": [
+    {
+      "name": "item",
+      "path": "/root/item",
+      "table": "item",
+      "parent": null,
+      "row_xpath": "/root/item",
+      "key_hints": [
+        "object_common_data/cad_number",
+        "record_info/record_number",
+        "record_info/section_number",
+        "params/purpose/code"
+      ],
+      "fields": [
+        {
+          "path": "actual_unverified_data/purpose/code",
+          "optional": true
+        },
+        {
+          "path": "actual_unverified_data/purpose/value",
+          "optional": true
+        },
+        {
+          "path": "actual_unverified_data/name",
+          "optional": true
+        },
+        {
+          "path": "actual_unverified_data/area",
+          "optional": true
+        },
+        {
+          "path": "actual_unverified_data/floors",
+          "optional": true
+        },
+        {
+          "path": "actual_unverified_data/underground_floors",
+          "optional": true
+        },
+        {
+          "path": "dated_info/oti/invent_cost",
+          "optional": true
+        },
+        {
+          "path": "dated_info/oti/letter",
+          "optional": true
+        },
+        {
+          "path": "dated_info/oti/invent_date",
+          "optional": true
+        },
+        {
+          "path": "dated_info/oti/name_oti",
+          "optional": true
+        },
+        {
+          "path": "metadata/last_change_record_number",
+          "optional": false
+        },
+        {
+          "path": "metadata/last_container_fixed_at",
+          "optional": false
+        },
+        {
+          "path": "metadata/status",
+          "optional": false
+        },
+        {
+          "path": "object_common_data/cad_number",
+          "optional": false
+        },
+        {
+          "path": "object_common_data/previously_posted",
+          "optional": true
+        },
+        {
+          "path": "object_common_data/quarter_cad_number",
+          "optional": false
+        },
+        {
+          "path": "object_common_data/type/code",
+          "optional": false
+        },
+        {
+          "path": "object_common_data/type/value",
+          "optional": false
+        },
+        {
+          "path": "object_common_data/temporary_info",
+          "optional": true
+        },
+        {
+          "path": "object_common_data/definition",
+          "optional": true
+        },
+        {
+          "path": "object_formation/method/code",
+          "optional": true
+        },
+        {
+          "path": "object_formation/method/value",
+          "optional": true
+        },
+        {
+          "path": "params/area",
+          "optional": true
+        },
+        {
+          "path": "params/floors",
+          "optional": true
+        },
+        {
+          "path": "params/material/code",
+          "optional": true
+        },
+        {
+          "path": "params/material/value",
+          "optional": true
+        },
+        {
+          "path": "params/name",
+          "optional": true
+        },
+        {
+          "path": "params/permitted_use/name",
+          "optional": true
+        },
+        {
+          "path": "params/purpose/code",
+          "optional": true
+        },
+        {
+          "path": "params/purpose/value",
+          "optional": true
+        },
+        {
+          "path": "params/year_built",
+          "optional": true
+        },
+        {
+          "path": "params/year_commisioning",
+          "optional": true
+        },
+        {
+          "path": "params/underground_floors",
+          "optional": true
+        },
+        {
+          "path": "record_info/record_number",
+          "optional": false
+        },
+        {
+          "path": "record_info/registration_date",
+          "optional": false
+        },
+        {
+          "path": "record_info/section_number",
+          "optional": false
+        },
+        {
+          "path": "record_info/cancel_date",
+          "optional": true
+        }
+      ],
+      "children": [
+        {
+          "entity": "contour",
+          "path": "/root/item/contour",
+          "table": "item_contour",
+          "relpath_from_parent": "contour",
+          "min": 0,
+          "max": 129
+        }
+      ],
+      "ordering_hints": []
+    },
+    {
+      "name": "contour",
+      "path": "/root/item/contour",
+      "table": "item_contour",
+      "parent": "/root/item",
+      "row_xpath": "/root/item/contour",
+      "key_hints": [
+        "number_pp",
+        "entity_spatial/sk_code/code"
+      ],
+      "fields": [
+        {
+          "path": "entity_spatial/sk_id",
+          "optional": true
+        },
+        {
+          "path": "entity_spatial/sk_code/code",
+          "optional": true
+        },
+        {
+          "path": "entity_spatial/sk_code/value",
+          "optional": true
+        },
+        {
+          "path": "definition",
+          "optional": true
+        },
+        {
+          "path": "number_pp",
+          "optional": true
+        }
+      ],
+      "children": [
+        {
+          "entity": "spatial_element",
+          "path": "/root/item/contour/entity_spatial/spatials_elements/spatial_element",
+          "table": "item_contour_entity_spatial_spatials_elements_spatial_element",
+          "relpath_from_parent": "entity_spatial/spatials_elements/spatial_element",
+          "min": 0,
+          "max": 99
+        }
+      ],
+      "ordering_hints": [
+        "number_pp"
+      ]
+    },
+    {
+      "name": "spatial_element",
+      "path": "/root/item/contour/entity_spatial/spatials_elements/spatial_element",
+      "table": "item_contour_entity_spatial_spatials_elements_spatial_element",
+      "parent": "/root/item/contour",
+      "row_xpath": "/root/item/contour/entity_spatial/spatials_elements/spatial_element",
+      "key_hints": [
+        "type_unit/code",
+        "level_contour/code"
+      ],
+      "fields": [
+        {
+          "path": "type_unit/code",
+          "optional": false
+        },
+        {
+          "path": "type_unit/value",
+          "optional": false
+        },
+        {
+          "path": "level_contour/code",
+          "optional": true
+        },
+        {
+          "path": "level_contour/value",
+          "optional": true
+        }
+      ],
+      "children": [
+        {
+          "entity": "ordinate",
+          "path": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate",
+          "table": "item_contour_entity_spatial_spatials_elements_spatial_element_o",
+          "relpath_from_parent": "ordinates/ordinate",
+          "min": 0,
+          "max": 922
+        }
+      ],
+      "ordering_hints": []
+    },
+    {
+      "name": "ordinate",
+      "path": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate",
+      "table": "item_contour_entity_spatial_spatials_elements_spatial_element_o",
+      "parent": "/root/item/contour/entity_spatial/spatials_elements/spatial_element",
+      "row_xpath": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate",
+      "key_hints": [
+        "ord_nmb",
+        "num_geopoint",
+        "geopoint_opred/code"
+      ],
+      "fields": [
+        {
+          "path": "ord_nmb",
+          "optional": false
+        },
+        {
+          "path": "x",
+          "optional": false
+        },
+        {
+          "path": "y",
+          "optional": false
+        },
+        {
+          "path": "z",
+          "optional": true
+        },
+        {
+          "path": "delta_geopoint",
+          "optional": true
+        },
+        {
+          "path": "num_geopoint",
+          "optional": true
+        },
+        {
+          "path": "geopoint_opred/code",
+          "optional": true
+        },
+        {
+          "path": "geopoint_opred/value",
+          "optional": true
+        }
+      ],
+      "children": [],
+      "ordering_hints": [
+        "ord_nmb",
+        "num_geopoint"
+      ]
+    }
+  ]
+}

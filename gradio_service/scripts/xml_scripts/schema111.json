@@ -1,0 +1,1440 @@
+{
+  "version": 1,
+  "namespaces": [],
+  "roots": [
+    "/root"
+  ],
+  "elements": {
+    "/root": {
+      "name": "root",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item": {
+      "name": "item",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/actual_unverified_data": {
+      "name": "actual_unverified_data",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/actual_unverified_data/purpose": {
+      "name": "purpose",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/contour": {
+      "name": "contour",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/contour/entity_spatial": {
+      "name": "entity_spatial",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/contour/entity_spatial/sk_id": {
+      "name": "sk_id",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/contour/entity_spatial/spatials_elements": {
+      "name": "spatials_elements",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/contour/entity_spatial/spatials_elements/spatial_element": {
+      "name": "spatial_element",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/contour/entity_spatial/spatials_elements/spatial_element/type_unit": {
+      "name": "type_unit",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/contour/entity_spatial/spatials_elements/spatial_element/type_unit/code": {
+      "name": "code",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/contour/entity_spatial/spatials_elements/spatial_element/type_unit/value": {
+      "name": "value",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates": {
+      "name": "ordinates",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate": {
+      "name": "ordinate",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/ord_nmb": {
+      "name": "ord_nmb",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/x": {
+      "name": "x",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/y": {
+      "name": "y",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/z": {
+      "name": "z",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/dated_info": {
+      "name": "dated_info",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/dated_info/oti": {
+      "name": "oti",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/dated_info/oti/invent_cost": {
+      "name": "invent_cost",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/metadata": {
+      "name": "metadata",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/metadata/last_change_record_number": {
+      "name": "last_change_record_number",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/metadata/last_container_fixed_at": {
+      "name": "last_container_fixed_at",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/metadata/status": {
+      "name": "status",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/object_common_data": {
+      "name": "object_common_data",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/object_common_data/cad_number": {
+      "name": "cad_number",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/object_common_data/previously_posted": {
+      "name": "previously_posted",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/object_common_data/quarter_cad_number": {
+      "name": "quarter_cad_number",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/object_common_data/type": {
+      "name": "type",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/object_common_data/type/code": {
+      "name": "code",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/object_common_data/type/value": {
+      "name": "value",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/object_formation": {
+      "name": "object_formation",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/object_formation/method": {
+      "name": "method",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/params": {
+      "name": "params",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/params/area": {
+      "name": "area",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/params/floors": {
+      "name": "floors",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/params/material": {
+      "name": "material",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/params/material/code": {
+      "name": "code",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/params/material/value": {
+      "name": "value",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/params/name": {
+      "name": "name",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/params/permitted_use": {
+      "name": "permitted_use",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/params/purpose": {
+      "name": "purpose",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/params/purpose/code": {
+      "name": "code",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/params/purpose/value": {
+      "name": "value",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/params/year_built": {
+      "name": "year_built",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/params/year_commisioning": {
+      "name": "year_commisioning",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/record_info": {
+      "name": "record_info",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/record_info/record_number": {
+      "name": "record_number",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/record_info/registration_date": {
+      "name": "registration_date",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/record_info/section_number": {
+      "name": "section_number",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/dated_info/oti/letter": {
+      "name": "letter",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/params/underground_floors": {
+      "name": "underground_floors",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/record_info/cancel_date": {
+      "name": "cancel_date",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/delta_geopoint": {
+      "name": "delta_geopoint",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/num_geopoint": {
+      "name": "num_geopoint",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/contour/definition": {
+      "name": "definition",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/contour/entity_spatial/sk_code": {
+      "name": "sk_code",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/contour/entity_spatial/sk_code/code": {
+      "name": "code",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/contour/entity_spatial/sk_code/value": {
+      "name": "value",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/contour/entity_spatial/spatials_elements/spatial_element/level_contour": {
+      "name": "level_contour",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/contour/entity_spatial/spatials_elements/spatial_element/level_contour/code": {
+      "name": "code",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/contour/entity_spatial/spatials_elements/spatial_element/level_contour/value": {
+      "name": "value",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/contour/number_pp": {
+      "name": "number_pp",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/actual_unverified_data/name": {
+      "name": "name",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/params/permitted_use/name": {
+      "name": "name",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/actual_unverified_data/area": {
+      "name": "area",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/geopoint_opred": {
+      "name": "geopoint_opred",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": false,
+      "has_children": true
+    },
+    "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/geopoint_opred/code": {
+      "name": "code",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/geopoint_opred/value": {
+      "name": "value",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/actual_unverified_data/purpose/code": {
+      "name": "code",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/actual_unverified_data/purpose/value": {
+      "name": "value",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/object_formation/method/code": {
+      "name": "code",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/object_formation/method/value": {
+      "name": "value",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/actual_unverified_data/floors": {
+      "name": "floors",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/actual_unverified_data/underground_floors": {
+      "name": "underground_floors",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/dated_info/oti/invent_date": {
+      "name": "invent_date",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/dated_info/oti/name_oti": {
+      "name": "name_oti",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/object_common_data/temporary_info": {
+      "name": "temporary_info",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    },
+    "/root/item/object_common_data/definition": {
+      "name": "definition",
+      "ns_uri": null,
+      "attributes": [],
+      "has_text": true,
+      "has_children": false
+    }
+  },
+  "edges": [
+    {
+      "from": "/root/item/actual_unverified_data",
+      "to": "/root/item/actual_unverified_data/purpose",
+      "label": "purpose",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/type_unit",
+      "to": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/type_unit/code",
+      "label": "code",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 45486,
+      "parents_with_child_observed": 45486,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/type_unit",
+      "to": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/type_unit/value",
+      "label": "value",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 45486,
+      "parents_with_child_observed": 45486,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate",
+      "to": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/ord_nmb",
+      "label": "ord_nmb",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 866995,
+      "parents_with_child_observed": 866995,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate",
+      "to": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/x",
+      "label": "x",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 866995,
+      "parents_with_child_observed": 866995,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate",
+      "to": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/y",
+      "label": "y",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 866995,
+      "parents_with_child_observed": 866995,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate",
+      "to": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/z",
+      "label": "z",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 866995,
+      "parents_with_child_observed": 158313,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates",
+      "to": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate",
+      "label": "ordinate",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 4,
+      "max_per_parent_observed": 922,
+      "parent_instances_observed": 45480,
+      "parents_with_child_observed": 45480,
+      "is_list": true
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/spatials_elements/spatial_element",
+      "to": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/type_unit",
+      "label": "type_unit",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 45486,
+      "parents_with_child_observed": 45486,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/spatials_elements/spatial_element",
+      "to": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates",
+      "label": "ordinates",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 45486,
+      "parents_with_child_observed": 45480,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/spatials_elements",
+      "to": "/root/item/contour/entity_spatial/spatials_elements/spatial_element",
+      "label": "spatial_element",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 99,
+      "parent_instances_observed": 39018,
+      "parents_with_child_observed": 39018,
+      "is_list": true
+    },
+    {
+      "from": "/root/item/contour/entity_spatial",
+      "to": "/root/item/contour/entity_spatial/sk_id",
+      "label": "sk_id",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 39032,
+      "parents_with_child_observed": 33558,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial",
+      "to": "/root/item/contour/entity_spatial/spatials_elements",
+      "label": "spatials_elements",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 39032,
+      "parents_with_child_observed": 39018,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour",
+      "to": "/root/item/contour/entity_spatial",
+      "label": "entity_spatial",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 39032,
+      "parents_with_child_observed": 39032,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/dated_info/oti",
+      "to": "/root/item/dated_info/oti/invent_cost",
+      "label": "invent_cost",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 16998,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/dated_info",
+      "to": "/root/item/dated_info/oti",
+      "label": "oti",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/metadata",
+      "to": "/root/item/metadata/last_change_record_number",
+      "label": "last_change_record_number",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/metadata",
+      "to": "/root/item/metadata/last_container_fixed_at",
+      "label": "last_container_fixed_at",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/metadata",
+      "to": "/root/item/metadata/status",
+      "label": "status",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/object_common_data/type",
+      "to": "/root/item/object_common_data/type/code",
+      "label": "code",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/object_common_data/type",
+      "to": "/root/item/object_common_data/type/value",
+      "label": "value",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/object_common_data",
+      "to": "/root/item/object_common_data/cad_number",
+      "label": "cad_number",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/object_common_data",
+      "to": "/root/item/object_common_data/previously_posted",
+      "label": "previously_posted",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 39175,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/object_common_data",
+      "to": "/root/item/object_common_data/quarter_cad_number",
+      "label": "quarter_cad_number",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/object_common_data",
+      "to": "/root/item/object_common_data/type",
+      "label": "type",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/object_formation",
+      "to": "/root/item/object_formation/method",
+      "label": "method",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/params/material",
+      "to": "/root/item/params/material/code",
+      "label": "code",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 44267,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/params/material",
+      "to": "/root/item/params/material/value",
+      "label": "value",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 44267,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/params/purpose",
+      "to": "/root/item/params/purpose/code",
+      "label": "code",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53503,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/params/purpose",
+      "to": "/root/item/params/purpose/value",
+      "label": "value",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53501,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/params",
+      "to": "/root/item/params/area",
+      "label": "area",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53502,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/params",
+      "to": "/root/item/params/floors",
+      "label": "floors",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 50689,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/params",
+      "to": "/root/item/params/material",
+      "label": "material",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/params",
+      "to": "/root/item/params/name",
+      "label": "name",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 47185,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/params",
+      "to": "/root/item/params/permitted_use",
+      "label": "permitted_use",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/params",
+      "to": "/root/item/params/purpose",
+      "label": "purpose",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/params",
+      "to": "/root/item/params/year_built",
+      "label": "year_built",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 38216,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/params",
+      "to": "/root/item/params/year_commisioning",
+      "label": "year_commisioning",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 18049,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/record_info",
+      "to": "/root/item/record_info/record_number",
+      "label": "record_number",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/record_info",
+      "to": "/root/item/record_info/registration_date",
+      "label": "registration_date",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/record_info",
+      "to": "/root/item/record_info/section_number",
+      "label": "section_number",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item",
+      "to": "/root/item/actual_unverified_data",
+      "label": "actual_unverified_data",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item",
+      "to": "/root/item/contour",
+      "label": "contour",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 129,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 26728,
+      "is_list": true
+    },
+    {
+      "from": "/root/item",
+      "to": "/root/item/dated_info",
+      "label": "dated_info",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item",
+      "to": "/root/item/metadata",
+      "label": "metadata",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item",
+      "to": "/root/item/object_common_data",
+      "label": "object_common_data",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item",
+      "to": "/root/item/object_formation",
+      "label": "object_formation",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item",
+      "to": "/root/item/params",
+      "label": "params",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item",
+      "to": "/root/item/record_info",
+      "label": "record_info",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 53505,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/dated_info/oti",
+      "to": "/root/item/dated_info/oti/letter",
+      "label": "letter",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 20922,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/params",
+      "to": "/root/item/params/underground_floors",
+      "label": "underground_floors",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 13234,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/record_info",
+      "to": "/root/item/record_info/cancel_date",
+      "label": "cancel_date",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 2512,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate",
+      "to": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/delta_geopoint",
+      "label": "delta_geopoint",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 866995,
+      "parents_with_child_observed": 667984,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate",
+      "to": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/num_geopoint",
+      "label": "num_geopoint",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 866995,
+      "parents_with_child_observed": 666380,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/sk_code",
+      "to": "/root/item/contour/entity_spatial/sk_code/code",
+      "label": "code",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 19966,
+      "parents_with_child_observed": 19966,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/sk_code",
+      "to": "/root/item/contour/entity_spatial/sk_code/value",
+      "label": "value",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 19966,
+      "parents_with_child_observed": 19607,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/level_contour",
+      "to": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/level_contour/code",
+      "label": "code",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 19990,
+      "parents_with_child_observed": 19990,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/level_contour",
+      "to": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/level_contour/value",
+      "label": "value",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 19990,
+      "parents_with_child_observed": 19990,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/spatials_elements/spatial_element",
+      "to": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/level_contour",
+      "label": "level_contour",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 45486,
+      "parents_with_child_observed": 19990,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial",
+      "to": "/root/item/contour/entity_spatial/sk_code",
+      "label": "sk_code",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 39032,
+      "parents_with_child_observed": 19966,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour",
+      "to": "/root/item/contour/definition",
+      "label": "definition",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 39032,
+      "parents_with_child_observed": 17796,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour",
+      "to": "/root/item/contour/number_pp",
+      "label": "number_pp",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 39032,
+      "parents_with_child_observed": 17858,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/actual_unverified_data",
+      "to": "/root/item/actual_unverified_data/name",
+      "label": "name",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 508,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/params/permitted_use",
+      "to": "/root/item/params/permitted_use/name",
+      "label": "name",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 689,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/actual_unverified_data",
+      "to": "/root/item/actual_unverified_data/area",
+      "label": "area",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 440,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/geopoint_opred",
+      "to": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/geopoint_opred/code",
+      "label": "code",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 83638,
+      "parents_with_child_observed": 83638,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/geopoint_opred",
+      "to": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/geopoint_opred/value",
+      "label": "value",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 1,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 83638,
+      "parents_with_child_observed": 83638,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate",
+      "to": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate/geopoint_opred",
+      "label": "geopoint_opred",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 866995,
+      "parents_with_child_observed": 83638,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/actual_unverified_data/purpose",
+      "to": "/root/item/actual_unverified_data/purpose/code",
+      "label": "code",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 109,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/actual_unverified_data/purpose",
+      "to": "/root/item/actual_unverified_data/purpose/value",
+      "label": "value",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 109,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/object_formation/method",
+      "to": "/root/item/object_formation/method/code",
+      "label": "code",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 119,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/object_formation/method",
+      "to": "/root/item/object_formation/method/value",
+      "label": "value",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 119,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/actual_unverified_data",
+      "to": "/root/item/actual_unverified_data/floors",
+      "label": "floors",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 78,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/actual_unverified_data",
+      "to": "/root/item/actual_unverified_data/underground_floors",
+      "label": "underground_floors",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 17,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/dated_info/oti",
+      "to": "/root/item/dated_info/oti/invent_date",
+      "label": "invent_date",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 2,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/dated_info/oti",
+      "to": "/root/item/dated_info/oti/name_oti",
+      "label": "name_oti",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 2,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/object_common_data",
+      "to": "/root/item/object_common_data/temporary_info",
+      "label": "temporary_info",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 3,
+      "is_list": false
+    },
+    {
+      "from": "/root/item/object_common_data",
+      "to": "/root/item/object_common_data/definition",
+      "label": "definition",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 0,
+      "max_per_parent_observed": 1,
+      "parent_instances_observed": 53505,
+      "parents_with_child_observed": 1,
+      "is_list": false
+    },
+    {
+      "from": "/root",
+      "to": "/root/item",
+      "label": "item",
+      "child_ns_uri": null,
+      "min_per_parent_observed": 53505,
+      "max_per_parent_observed": 53505,
+      "parent_instances_observed": 1,
+      "parents_with_child_observed": 1,
+      "is_list": true
+    }
+  ]
+}

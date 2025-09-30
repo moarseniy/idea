@@ -1,0 +1,361 @@
+{
+  "version": 1,
+  "entities": [
+    {
+      "path": "/root/item",
+      "alias": "real_estate_object",
+      "title": "Объект недвижимости",
+      "description": "Основная сущность, представляющая объект недвижимости с кадастровыми, техническими и учетными характеристиками.",
+      "fields": [
+        {
+          "path": "actual_unverified_data/purpose/code",
+          "alias": "unverified_purpose_code",
+          "title": "Код назначения (неподтвержденные данные)",
+          "description": "Код предполагаемого назначения объекта, не прошедший проверку."
+        },
+        {
+          "path": "actual_unverified_data/purpose/value",
+          "alias": "unverified_purpose_name",
+          "title": "Назначение (неподтвержденные данные)",
+          "description": "Наименование предполагаемого назначения объекта, не прошедшее проверку."
+        },
+        {
+          "path": "actual_unverified_data/name",
+          "alias": "unverified_name",
+          "title": "Наименование (неподтвержденные данные)",
+          "description": "Наименование объекта, указанное без подтверждения."
+        },
+        {
+          "path": "actual_unverified_data/area",
+          "alias": "unverified_area",
+          "title": "Площадь (неподтвержденные данные)",
+          "description": "Площадь объекта по неподтвержденным данным."
+        },
+        {
+          "path": "actual_unverified_data/floors",
+          "alias": "unverified_floors",
+          "title": "Этажность (неподтвержденные данные)",
+          "description": "Количество этажей по неподтвержденным данным."
+        },
+        {
+          "path": "actual_unverified_data/underground_floors",
+          "alias": "unverified_underground_floors",
+          "title": "Подземные этажи (неподтвержденные данные)",
+          "description": "Количество подземных этажей по неподтвержденным данным."
+        },
+        {
+          "path": "dated_info/oti/invent_cost",
+          "alias": "inventory_cost",
+          "title": "Инвентаризационная стоимость",
+          "description": "Оценочная стоимость объекта по данным инвентаризации."
+        },
+        {
+          "path": "dated_info/oti/letter",
+          "alias": "inventory_letter",
+          "title": "Литера по инвентаризации",
+          "description": "Обозначение литера (буквенного кода) здания по данным инвентаризации."
+        },
+        {
+          "path": "dated_info/oti/invent_date",
+          "alias": "inventory_date",
+          "title": "Дата инвентаризации",
+          "description": "Дата последней инвентаризации объекта."
+        },
+        {
+          "path": "dated_info/oti/name_oti",
+          "alias": "inventory_name",
+          "title": "Наименование по инвентаризации",
+          "description": "Наименование объекта согласно данным технической инвентаризации."
+        },
+        {
+          "path": "metadata/last_change_record_number",
+          "alias": "last_change_record_number",
+          "title": "Номер последней записи изменений",
+          "description": "Идентификатор последней записи изменений объекта в системе."
+        },
+        {
+          "path": "metadata/last_container_fixed_at",
+          "alias": "last_container_fixed_at",
+          "title": "Дата последней фиксации контейнера",
+          "description": "Дата фиксации последнего состояния объекта в контейнере данных."
+        },
+        {
+          "path": "metadata/status",
+          "alias": "record_status",
+          "title": "Статус записи",
+          "description": "Текущий статус записи объекта недвижимости."
+        },
+        {
+          "path": "object_common_data/cad_number",
+          "alias": "cadastral_number",
+          "title": "Кадастровый номер",
+          "description": "Уникальный кадастровый номер объекта недвижимости."
+        },
+        {
+          "path": "object_common_data/previously_posted",
+          "alias": "was_previously_registered",
+          "title": "Ранее учтённый",
+          "description": "Признак того, что объект был ранее поставлен на учет."
+        },
+        {
+          "path": "object_common_data/quarter_cad_number",
+          "alias": "quarter_cadastral_number",
+          "title": "Кадастровый номер квартала",
+          "description": "Кадастровый номер квартала, в котором расположен объект."
+        },
+        {
+          "path": "object_common_data/type/code",
+          "alias": "object_type_code",
+          "title": "Код типа объекта",
+          "description": "Код, обозначающий тип объекта недвижимости."
+        },
+        {
+          "path": "object_common_data/type/value",
+          "alias": "object_type_name",
+          "title": "Тип объекта",
+          "description": "Наименование типа объекта недвижимости."
+        },
+        {
+          "path": "object_common_data/temporary_info",
+          "alias": "temporary_info",
+          "title": "Временная информация",
+          "description": "Дополнительная временная информация об объекте."
+        },
+        {
+          "path": "object_common_data/definition",
+          "alias": "object_definition",
+          "title": "Описание объекта",
+          "description": "Описание или определение объекта недвижимости."
+        },
+        {
+          "path": "object_formation/method/code",
+          "alias": "formation_method_code",
+          "title": "Код метода образования",
+          "description": "Код способа образования объекта недвижимости."
+        },
+        {
+          "path": "object_formation/method/value",
+          "alias": "formation_method_name",
+          "title": "Метод образования",
+          "description": "Наименование способа образования объекта."
+        },
+        {
+          "path": "params/area",
+          "alias": "declared_area",
+          "title": "Заявленная площадь",
+          "description": "Площадь объекта, заявленная пользователем."
+        },
+        {
+          "path": "params/floors",
+          "alias": "declared_floors",
+          "title": "Заявленная этажность",
+          "description": "Количество этажей по заявленным данным."
+        },
+        {
+          "path": "params/material/code",
+          "alias": "wall_material_code",
+          "title": "Код материала стен",
+          "description": "Код материала, из которого выполнены стены объекта."
+        },
+        {
+          "path": "params/material/value",
+          "alias": "wall_material_name",
+          "title": "Материал стен",
+          "description": "Наименование материала стен объекта."
+        },
+        {
+          "path": "params/name",
+          "alias": "declared_name",
+          "title": "Заявленное наименование",
+          "description": "Наименование объекта, указанное заявителем."
+        },
+        {
+          "path": "params/permitted_use/name",
+          "alias": "permitted_use_name",
+          "title": "Разрешенное использование",
+          "description": "Наименование разрешенного использования объекта."
+        },
+        {
+          "path": "params/purpose/code",
+          "alias": "declared_purpose_code",
+          "title": "Код назначения (заявленное)",
+          "description": "Код назначения объекта, заявленный пользователем."
+        },
+        {
+          "path": "params/purpose/value",
+          "alias": "declared_purpose_name",
+          "title": "Назначение (заявленное)",
+          "description": "Наименование назначения объекта, заявленное пользователем."
+        },
+        {
+          "path": "params/year_built",
+          "alias": "year_built",
+          "title": "Год постройки",
+          "description": "Год завершения строительства объекта."
+        },
+        {
+          "path": "params/year_commisioning",
+          "alias": "year_commissioned",
+          "title": "Год ввода в эксплуатацию",
+          "description": "Год ввода объекта в эксплуатацию."
+        },
+        {
+          "path": "params/underground_floors",
+          "alias": "declared_underground_floors",
+          "title": "Подземные этажи (заявленное)",
+          "description": "Количество подземных этажей по заявленным данным."
+        },
+        {
+          "path": "record_info/record_number",
+          "alias": "record_number",
+          "title": "Номер записи",
+          "description": "Номер учетной записи объекта в системе."
+        },
+        {
+          "path": "record_info/registration_date",
+          "alias": "registration_date",
+          "title": "Дата регистрации",
+          "description": "Дата государственной регистрации объекта."
+        },
+        {
+          "path": "record_info/section_number",
+          "alias": "section_number",
+          "title": "Номер раздела",
+          "description": "Номер раздела в реестре, к которому относится объект."
+        },
+        {
+          "path": "record_info/cancel_date",
+          "alias": "record_cancel_date",
+          "title": "Дата аннулирования записи",
+          "description": "Дата аннулирования учетной записи объекта."
+        }
+      ]
+    },
+    {
+      "path": "/root/item/contour",
+      "alias": "object_contour",
+      "title": "Контур объекта",
+      "description": "Контур объекта недвижимости, описывающий его пространственное положение и форму.",
+      "fields": [
+        {
+          "path": "entity_spatial/sk_id",
+          "alias": "spatial_id",
+          "title": "Идентификатор пространственного элемента",
+          "description": "Уникальный идентификатор пространственного элемента контура."
+        },
+        {
+          "path": "entity_spatial/sk_code/code",
+          "alias": "spatial_code",
+          "title": "Код пространственного элемента",
+          "description": "Код, определяющий пространственное положение контура."
+        },
+        {
+          "path": "entity_spatial/sk_code/value",
+          "alias": "spatial_code_name",
+          "title": "Наименование пространственного кода",
+          "description": "Наименование, соответствующее коду пространственного элемента."
+        },
+        {
+          "path": "definition",
+          "alias": "contour_definition",
+          "title": "Описание контура",
+          "description": "Текстовое описание границ контура объекта."
+        },
+        {
+          "path": "number_pp",
+          "alias": "contour_number",
+          "title": "Порядковый номер контура",
+          "description": "Порядковый номер контура в составе объекта."
+        }
+      ]
+    },
+    {
+      "path": "/root/item/contour/entity_spatial/spatials_elements/spatial_element",
+      "alias": "spatial_element",
+      "title": "Пространственный элемент",
+      "description": "Пространственный элемент, входящий в состав контура, определяющий его часть на определенном уровне.",
+      "fields": [
+        {
+          "path": "type_unit/code",
+          "alias": "unit_type_code",
+          "title": "Код типа единицы",
+          "description": "Код, определяющий тип единицы измерения или пространственного элемента."
+        },
+        {
+          "path": "type_unit/value",
+          "alias": "unit_type_name",
+          "title": "Тип единицы",
+          "description": "Наименование типа единицы или пространственного элемента."
+        },
+        {
+          "path": "level_contour/code",
+          "alias": "contour_level_code",
+          "title": "Код уровня контура",
+          "description": "Код уровня, на котором расположен пространственный элемент."
+        },
+        {
+          "path": "level_contour/value",
+          "alias": "contour_level_name",
+          "title": "Уровень контура",
+          "description": "Наименование уровня расположения пространственного элемента."
+        }
+      ]
+    },
+    {
+      "path": "/root/item/contour/entity_spatial/spatials_elements/spatial_element/ordinates/ordinate",
+      "alias": "coordinate_point",
+      "title": "Опорная точка (ордината)",
+      "description": "Координатная точка, определяющая геометрию пространственного элемента.",
+      "fields": [
+        {
+          "path": "ord_nmb",
+          "alias": "point_sequence_number",
+          "title": "Порядковый номер точки",
+          "description": "Порядковый номер координатной точки в описании геометрии."
+        },
+        {
+          "path": "x",
+          "alias": "coordinate_x",
+          "title": "Координата X",
+          "description": "Координата X точки в системе координат."
+        },
+        {
+          "path": "y",
+          "alias": "coordinate_y",
+          "title": "Координата Y",
+          "description": "Координата Y точки в системе координат."
+        },
+        {
+          "path": "z",
+          "alias": "coordinate_z",
+          "title": "Координата Z",
+          "description": "Координата Z точки (высота), если задана."
+        },
+        {
+          "path": "delta_geopoint",
+          "alias": "geopoint_accuracy",
+          "title": "Точность геоточки",
+          "description": "Допустимое отклонение координаты точки."
+        },
+        {
+          "path": "num_geopoint",
+          "alias": "geopoint_number",
+          "title": "Номер геоточки",
+          "description": "Идентификатор геоточки в пределах пространственного элемента."
+        },
+        {
+          "path": "geopoint_opred/code",
+          "alias": "geopoint_determination_code",
+          "title": "Код способа определения точки",
+          "description": "Код, обозначающий способ определения координат точки."
+        },
+        {
+          "path": "geopoint_opred/value",
+          "alias": "geopoint_determination_name",
+          "title": "Способ определения точки",
+          "description": "Наименование способа определения координат точки."
+        }
+      ]
+    }
+  ]
+}

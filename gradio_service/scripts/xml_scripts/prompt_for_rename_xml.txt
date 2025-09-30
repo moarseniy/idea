@@ -1,0 +1,39 @@
+Ниже теме дан профиль файла XML
+
+
+
+
+
+{
+  "version": 1,
+  "entities": [
+    {
+      "path": "<entity_path_from_entities_json>",
+      "alias": "<entity_alias_snake_case_max63>",
+      "title": "<entity_human_title>",
+      "description": "<entity_description>",
+      "fields": [
+        {
+          "path": "<field_rel_path_from_entities_json>",
+          "alias": "<field_alias_snake_case_max63>",
+          "title": "<field_human_title>",
+          "description": "<field_description>"
+        }
+      ]
+    },
+    {
+      "path": "<entity_path_from_entities_json_2>",
+      "alias": "<entity2_alias_snake_case_max63>",
+      "title": "<entity2_human_title>",
+      "description": "<entity2_description>",
+      "fields": [
+        {
+          "path": "<field_rel_path_from_entities_json_2>",
+          "alias": "<field2_alias_snake_case_max63>",
+          "title": "<field2_human_title>",
+          "description": "<field2_description>"
+        }
+      ]
+    }
+  ]
+}

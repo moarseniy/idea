@@ -1,0 +1,69 @@
+# Канонические типы
+canonical:
+  string:
+    pg: text
+    ch: String
+    py: str
+
+  int32:
+    pg: integer
+    ch: Int32
+    py: int
+
+  int64:
+    pg: bigint
+    ch: Int64
+    py: int
+
+  float64:
+    pg: double precision
+    ch: Float64
+    py: float
+
+  decimal(p,s):
+    pg: numeric({p},{s})
+    ch: Decimal({p},{s})
+    py: decimal.Decimal
+
+  bool:
+    pg: boolean
+    ch: Bool        # нативный тип; внутри UInt8
+    py: bool
+
+  date:
+    pg: date
+    ch: Date32       # или Date32, если нужен расширенный диапазон
+    py: datetime.date
+
+  timestamp:        # трактуем как «всегда с зоной»
+    pg: timestamptz # хранится как UTC, зона не сохраняется
+    ch: DateTime('UTC')   # TZ в метаданных столбца; хранится как Unix time
+    py: datetime.datetime  # aware
+
+  timestamp64(ms):  # повышенная точность
+    pg: timestamptz
+    ch: DateTime64(3, 'UTC')
+    py: datetime.datetime  # aware
+
+  json:
+    pg: jsonb
+    ch: String      # в 24.3 JSON-тип ещё не для прода; Object('json') — депрекейтед
+    py: typing.Any  # или dict, если парсите
+# Синонимы
+synonyms:
+  text: string
+  varchar: string
+  bigint: int64
+  integer: int32
+  int4: int32
+  int8: int64
+  double: float64
+  double precision: float64
+  numeric: decimal(p,s)
+  decimal: decimal(p,s)
+  timestamptz: timestamp
+  timestampz: timestamp        # не стандартный алиас PG, но пусть мапится
+  datetime: timestamp
+  datetime64: timestamp64(ms)
+  jsonb: json
+  uint8: bool                  # для старых схем CH
