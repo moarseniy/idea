@@ -7,6 +7,8 @@ from gradio_utils import *
 
 # from scripts.profile_csv import profile_csv
 from scripts.analytic_pipeline import clean_json, run_build_analytic_prompt, run_build_final_prompt
+from scripts.json_analytic_pipeline import run_compute_json_profile, run_final_profile
+
 from modules import customLogger
 
 from file_utils import *
@@ -38,6 +40,7 @@ def run_web_interface():
 
         llm_agent_request = gr.State({
             "daRequirements": False,
+            "daJsonRequirements": False,
             "deRequirements": False,
             "darchRequirements": False,
             "needFix": False,
@@ -143,42 +146,80 @@ def run_web_interface():
                 log_text += f'Обрабатываем файл: {source_desc}\n'
                 # result = profile_csv(source_desc, ";")
 
+                if source_desc.endswith('.json') or source_desc.endswith('.JSON'):
+                    profile_json = run_compute_json_profile(source_desc)
 
-                preview, cardinality_text, card_json, types_json, parquet_report = run_build_analytic_prompt(source_desc)
+                    print("ПРОФИЛЬ JSON", profile_json)
 
-                llm_agent_request["daRequirements"] = True
-                llm_agent_request["task"] = f"{preview} + '\n' + {cardinality_text}"
+                    llm_agent_request["task"] = f"{profile_json}"
+                    llm_agent_request["daJsonRequirements"] = True
 
-                log_text += 'Отправляем запрос к LLM агенту...\n'
-                headers = {"Content-Type": "application/json"}
-                response = requests.post(llm_host, data=json.dumps(llm_agent_request), verify=False, headers=headers) #timeout=120)
-                print(f"RESPONSE:\n{response}")
-                clean_response = response.replace('json','').replace('````','')
-                response_json = clean_response.json()
-                log_text += 'Получен ответ от LLM агентов...\n'
+                    log_text += 'Отправляем запрос к LLM агенту...\n'
+                    headers = {"Content-Type": "application/json"}
+                    response = requests.post(llm_host, data=json.dumps(llm_agent_request), verify=False, headers=headers) #timeout=120)
+                    print(f"FIRST RESPONSE:\n{response}")
+                    # clean_response = clean_json(response)#.replace('json','').replace('````','')
+                    response_json = response.json()
 
-                entity_report = run_build_final_prompt(response_json)
+                    print("FINAL:", response_json, type(response_json["daJsonRequirements"]))
+                    # answer = clean_json(str(response_json["daRequirements"]))
+                    log_text += 'Получен ответ от LLM агентов...\n'
 
-                # if "darchRequirements" in response_json and response_json["darchRequirements"]:
-                #     info_text += response_json["darchRequirements"] + '\n'
-                #     llm_agent_request["history"]["darchRequirements"] = response_json["darchRequirements"]
+                    final_profile_json = run_final_profile(profile_json, response_json["daJsonRequirements"])
 
-                log_text += 'Аналитика данных завершена.\n'
-                
-                # print(f"RESULT: {result}")
+                    if "daJsonRequirements" in response_json and response_json["daJsonRequirements"]:
+                        info_text += response_json["daJsonRequirements"] + '\n'
+                        llm_agent_request["history"]["daJsonRequirements"] = response_json["daJsonRequirements"]
 
-                # TODO: !!!! SAVE THIS PROMPT TO prev_context FOR NEXT corrector REQUESTS
-                llm_agent_request["daRequirements"] = False
-                llm_agent_request["task"] = f"{preview} + '\n' + {entity_report} + '\n' + {cardinality_text} + '\n' + {parquet_report} + '\n' + {str(types_json)} + '\n'"
+                    log_text += 'Аналитика данных завершена.\n'
+                    
+                    # print(f"RESULT: {result}")
+
+                    # TODO: !!!! SAVE THIS PROMPT TO prev_context FOR NEXT corrector REQUESTS
+                    llm_agent_request["daJsonRequirements"] = False
+                    llm_agent_request["task"] = f"{preview}\n{final_profile_json}\n"
+
+
+                elif source_desc.endswith('.csv') or source_desc.endswith('.CSV'):
+                    preview, cardinality_text, card_json, types_json, parquet_report = run_build_analytic_prompt(source_desc)
+
+                    llm_agent_request["daRequirements"] = True
+                    llm_agent_request["task"] = f"{preview}\n{cardinality_text}"
+
+                    log_text += 'Отправляем запрос к LLM агенту...\n'
+                    headers = {"Content-Type": "application/json"}
+                    response = requests.post(llm_host, data=json.dumps(llm_agent_request), verify=False, headers=headers) #timeout=120)
+                    print(f"FIRST RESPONSE:\n{response}")
+                    # clean_response = clean_json(response)#.replace('json','').replace('````','')
+                    response_json = response.json()
+
+                    print("FINAL:", response_json, type(response_json["daRequirements"]), card_json)
+                    # answer = clean_json(str(response_json["daRequirements"]))
+                    log_text += 'Получен ответ от LLM агентов...\n'
+
+                    entity_report = run_build_final_prompt(response_json["daRequirements"], 
+                                                            card_json)
+
+                    if "daRequirements" in response_json and response_json["daRequirements"]:
+                        info_text += response_json["daRequirements"] + '\n'
+                        llm_agent_request["history"]["daRequirements"] = response_json["daRequirements"]
+
+                    log_text += 'Аналитика данных завершена.\n'
+                    
+                    # print(f"RESULT: {result}")
+
+                    # TODO: !!!! SAVE THIS PROMPT TO prev_context FOR NEXT corrector REQUESTS
+                    llm_agent_request["daRequirements"] = False
+                    llm_agent_request["task"] = f"{preview}'\n'{entity_report}'\n'{cardinality_text}'\n'{parquet_report}'\n'{str(types_json)}'\n'"
 
 
             llm_agent_request["darchRequirements"] = True
-            # print(f"REQUEST:\n{json.dumps(llm_agent_request)}")
+            print(f"SECOND REQUEST:\n{json.dumps(llm_agent_request)}")
             log_text += 'Отправляем запрос к LLM агенту...\n'
 
             headers = {"Content-Type": "application/json"}
             response = requests.post(llm_host, data=json.dumps(llm_agent_request), verify=False, headers=headers) #timeout=120)
-            print(f"RESPONSE:\n{response}")
+            print(f"SECOND RESPONSE:\n{response}")
             response_json = response.json()
             log_text += 'Получен ответ от LLM агентов...\n'
 
@@ -200,8 +241,9 @@ def run_web_interface():
                 llm_agent_request["needFix"] = True
 
             # TODO: Это полная жопа, либо упростить, либо завернуть в try-catch
-            sql_script = extract_sql_data(response_json['darchRequirements'])
-            print("(extract_sql_data)", sql_script)
+            sql_script = ""#extract_sql_data(response_json['darchRequirements'])
+            # print("(extract_sql_data)", sql_script)
+
             # db_type = extract_db_type(response_json['darchRequirements']:50)
             # print("DB_TYPE: " + db_type)
 

@@ -17,6 +17,11 @@ def extract_db_type(content: str) -> str:
     match = re.search(r"\*(.*?)\*", content)
     return(match.group(1))
 
+def extract_json_data(text: str):
+    pattern = r"```json\s*(.*?)```"
+    matches = re.findall(pattern, text, re.DOTALL | re.IGNORECASE)
+    return "\n\n".join(m.strip() for m in matches)#[m.strip() for m in matches]
+
 def extract_sql_data(text: str):
     pattern = r"```sql\s*(.*?)```"
     matches = re.findall(pattern, text, re.DOTALL | re.IGNORECASE)
