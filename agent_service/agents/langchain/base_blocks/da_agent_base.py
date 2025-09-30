@@ -50,13 +50,16 @@ class DaAgentBuilder(Singleton):
                 request = state["messages"][-1].content
             else:
                 old_messages = []
-                request = da_prompt.format(task=state["task"], da_instruction=da_instruction)
+                print("(create_da_agent_node)", state["task"])
+                request = da_prompt.format(task=state["task"])
+                print("(create_da_agent_node)", request)
 
             response = da_agent.run(request)
             if isinstance(response, dict):
                 result = response["output"]
             else:
-                result = response
+                result = response#.replace('json','').replace('````','')
+            print("(create_da_agent_node111)", result)
             return Command(
                 update={
                     "result": result,
