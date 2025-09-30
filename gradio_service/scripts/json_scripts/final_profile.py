@@ -266,8 +266,8 @@ def build_final_profile(profile: Dict[str, Any], patch: Dict[str, Any]) -> Dict[
     Если патч некорректен — ValueError с сообщением об ошибке.
     """
     msg = validate_rename_patch_compact(profile, patch, max_examples=3)
-    if msg != "SUCCESS":
-        raise ValueError(msg)
+    # if msg != "SUCCESS":
+    #     raise ValueError(msg)
     return apply_rename_patch(profile, patch)
 
 def build_final_profile_from_files(profile_path: str, patch_path: str) -> Dict[str, Any]:

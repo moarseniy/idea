@@ -5,6 +5,11 @@ class DaAgentState(TypedDict):
     messages: List
     result: str
 
+class DaJsonAgentState(TypedDict):
+    task: str
+    messages: List
+    result: str
+
 class DeAgentState(TypedDict):
     task: str
     messages: List

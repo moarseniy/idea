@@ -60,6 +60,9 @@ class AgentSettings(Singleton):
         self.DA_TEMPLATE = self.__read_file("prompts/da/da_template.txt")
         self.DA_VALIDATOR_TEMPLATE = self.__read_file("prompts/da/da_validator_template.txt")
 
+        self.DA_JSON_TEMPLATE = self.__read_file("prompts/da_json/da_json_template.txt")
+        self.DA_JSON_VALIDATOR_TEMPLATE = self.__read_file("prompts/da_json/da_json_validator_template.txt")
+
         self.DE_TEMPLATE = self.__read_file("prompts/de/de_template.txt")
         self.DE_VALIDATOR_TEMPLATE = self.__read_file("prompts/de/de_validator_template.txt")
         self.DE_CORRECTOR_TEMPLATE = self.__read_file("prompts/de/de_corrector_template.txt")
@@ -75,6 +78,7 @@ class AgentSettings(Singleton):
         self.DARCH_CORRECTOR_USER_TEMPLATE = self.__read_file("prompts/darch/darch_corrector_user_template.txt")
         
         self.DA_INSTRUCTION = self.__read_file("instructions/da_instruction.md")
+        self.DA_JSON_INSTRUCTION = self.__read_file("instructions/da_json_instruction.md")
         self.DE_INSTRUCTION = self.__read_file("instructions/de_instruction.md")
         self.DARCH_INSTRUCTION = self.__read_file("instructions/darch_instruction.md")
 
@@ -151,6 +155,14 @@ class AgentSettings(Singleton):
         return self.DA_VALIDATOR_TEMPLATE
 
     @property
+    def da_json_template(self):
+        return self.DA_JSON_TEMPLATE
+
+    @property
+    def da_json_validator_prompt(self):
+        return self.DA_JSON_VALIDATOR_TEMPLATE
+
+    @property
     def de_template(self):
         return self.DE_TEMPLATE
 
@@ -205,6 +217,10 @@ class AgentSettings(Singleton):
     @property
     def da_instruction(self):
         return self.DA_INSTRUCTION
+
+    @property
+    def da_json_instruction(self):
+        return self.DA_JSON_INSTRUCTION
 
     @property
     def de_instruction(self):

@@ -25,14 +25,23 @@ class App(FastAPI):
                     darch_initial_state = {"task": task}
                     _, darch_response = await agents.darch_agent(darch_initial_state)
                     response["darchRequirements"] = darch_response
+                
                 if request.deRequirements:
                     de_initial_state = {"task": task}
                     _, de_response = await agents.de_agent(de_initial_state)
                     response["deRequirements"] = de_response
+                
                 if request.daRequirements:
                     da_initial_state = {"task": task}
                     _, da_response = await agents.da_agent(da_initial_state)
+                    print("(app.py)", type(da_response), da_response)
                     response["daRequirements"] = da_response
+                
+                if request.daJsonRequirements:
+                    da_json_initial_state = {"task": task}
+                    _, da_json_response = await agents.da_json_agent(da_json_initial_state)
+                    print("(app.py)", type(da_json_response), da_json_response)
+                    response["daJsonRequirements"] = da_json_response
 
             else:
 

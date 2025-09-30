@@ -1,8 +1,9 @@
 from abstract.singleton import Singleton
-from .agent_states import DaAgentState, DeAgentState, DarchAgentState, CorrectorAgentState
+from .agent_states import DaAgentState, DaJsonAgentState, DeAgentState, DarchAgentState, CorrectorAgentState
 from .agent_responses import ValidatorResponse
 
 from .base_blocks.da_agent_base import DaAgentBuilder
+from .base_blocks.da_json_agent_base import DaJsonAgentBuilder
 from .base_blocks.de_agent_base import DeAgentBuilder
 from .base_blocks.darch_agent_base import DarchAgentBuilder
 from .base_blocks.corrector_agent_base import CorrectionAgentBuilder
@@ -28,11 +29,11 @@ from typing_extensions import TypedDict
 import warnings
 import os
 
-
 class LangChainBuilder(Singleton):
     def _setup(self):
         self.settings = AgentSettings()
         self.da_builder = DaAgentBuilder()
+        self.da_json_builder = DaJsonAgentBuilder()
         self.de_builder = DeAgentBuilder()
         self.darch_builder = DarchAgentBuilder()
         self.corrector_builder = CorrectionAgentBuilder()
@@ -57,6 +58,19 @@ class LangChainBuilder(Singleton):
         }
 
         graph = self.make_graph(graph_mapper, "da_agent", DaAgentState)
+        return graph
+
+    def create_da_json_chain(self):
+        da_json_agent = self.da_json_builder.create_da_json_agent()
+        da_json_agent_node = self.da_json_builder.create_da_json_agent_node(da_json_agent)
+        da_json_validator_node = self.da_json_builder.create_da_json_validator_node()
+        
+        graph_mapper = {
+            "da_json_agent": da_json_agent_node,
+            "da_json_validator": da_json_validator_node
+        }
+
+        graph = self.make_graph(graph_mapper, "da_json_agent", DaJsonAgentState)
         return graph
 
     def create_de_chain(self):

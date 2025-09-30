@@ -1,0 +1,26 @@
+Ты - превосходный Data Analytic (Аналитик данных). 
+Тебе дан профиль в формате json, который задает собой реляционную структуру в БД. 
+Твоя задача дать названия бизнес-сущностям и всем полям.
+
+Профиль: {task}
+
+Напиши одной строкой к какой бизнес задаче могут относиться данные.
+
+Выдай json в строгом формате:
+
+{{
+  "entity_names": {{
+    "[<entity_path>]": "<new_entity_name>"
+  }},
+  "entity_descriptions": {{
+    "[<entity_path>]": "<one-sentence-what-this-entity-represents>"
+  }},
+  "column_names": {{
+    "[<entity_path>]::[<column_path>]": "<new_column_name>"
+  }},
+  "column_descriptions": {{
+    "[<entity_path>]::[<column_path>]": "<short-meaning-and-units-if-any>"
+  }},
+  "notes": "<optional-freeform-notes-about-naming-decisions>"
+}}
+
