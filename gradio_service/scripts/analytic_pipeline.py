@@ -11,7 +11,7 @@ from scripts.analytic_tool.colcomp import estimate_parquet_ratio
 def run_compute_profile(path):
     card_json, types_json = compute_csv_profile(
         path,
-        types_yaml_path="configs/types.yaml",  # ваш файл с каноническими типами
+        types_yaml_path="scripts/analytic_tool/configs/types.yaml",  # ваш файл с каноническими типами
         chunksize=200_000,                     # размер чанка
         type_sample_rows=50_000,               # сколько строк брать для типизации
         lowcard_ratio=0.10, lowcard_max=5000,  # пороги для lowcard_string
