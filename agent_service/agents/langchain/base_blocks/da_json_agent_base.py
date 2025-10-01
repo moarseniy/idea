@@ -84,30 +84,50 @@ class DaJsonAgentBuilder(Singleton):
             system = SystemMessage(content=prompt)
             request = [system] + state["messages"]
 
+            print(f"VALIDATOR_REQUEST: {request}")
+
             validator_msgs_fount = len(list(filter(lambda x: x.name == "Валидатор", state["messages"])))
-            response = self.settings.call_llm(llm_max, request, "validator")
             
-            result = response["instructions"]
-            print(f"STATUS: {response['status']}\n\nJSON ANALYTIC VALIDATOR: {result}")
+            # response = self.settings.call_llm(llm_max, request, "validator")
+            
+            # result = response["instructions"]
 
-            if not isinstance(result, dict):
-                result_json = json.loads(result)
+            # print("state[\"task\"]: ", state["task"])
 
-            if not isinstance(state["task"], dict):
-                task_json = json.loads(state["task"])
+            # print("state[\"messages\"]: ", state["messages"])
 
-            json_status = validate_rename_patch(task_json, result_json)
+            print("state[\"result\"]: ", state["result"])
 
-            print(f"PATCH_VALIDATOR_STATUS:{json_status}")
+            # print("PROFILE_JSON111: ", state["profile"])
 
-            if json_status != "SUCCESS":
-                response["status"] = "FAIL"
+            task_json = state["result"].replace("Отчет:", "")
+            if "`" in task_json and "json" in task_json:
+                task_json = extract_json_data(task_json)
+            task_json = task_json.replace("`", "")
 
-            if response["status"] == "SUCCESS" or validator_msgs_fount + 1 > 3:
+            print("TASK_JSON", task_json)
+            
+            if not isinstance(task_json, dict):
+                task_json = ast.literal_eval(task_json)
+
+            profile_json = state["task"]
+            if not isinstance(profile_json, dict):
+                profile_json = ast.literal_eval(profile_json)
+
+            print("PROFILE_JSON", profile_json)
+
+            json_status = validate_rename_patch(profile_json, task_json)
+
+            # print(f"STATUS: {response['status']}\n\nJSON ANALYTIC VALIDATOR: {result}")
+            print(f"PATCH_VALIDATOR_STATUS: {json_status}")
+
+            result = "Всё отлично, отчет хороший!"
+            if json_status == "SUCCESS" or validator_msgs_fount + 1 > 3:
                 goto = END
             else:
-                result += "\nПомимо этого, есть ряд важных ошибок, которые нужно исправить: \n" + json_status
+                result = "\nЕсть ряд важных ошибок, которые нужно исправить: \n" + json_status
                 goto = return_node
+
             return Command(
                 update={
                     "messages": state["messages"] + [HumanMessage(content=result, name="Валидатор")],
