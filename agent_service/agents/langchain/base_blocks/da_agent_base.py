@@ -35,6 +35,7 @@ class DaAgentBuilder(Singleton):
             llm=llm,
             memory=memory_da,
             agent=AgentType.CONVERSATIONAL_REACT_DESCRIPTION,
+            return_intermediate_steps=False,
             verbose=True,
             handle_parsing_errors=True
         )

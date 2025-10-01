@@ -19,9 +19,32 @@ from typing import TypedDict, Optional, Literal
 from typing_extensions import TypedDict
 
 import warnings
-import os, json
+import os, json, re, ast
 
 from scripts.validate_rename_patch import validate_rename_patch
+
+from langchain.agents import AgentOutputParser
+from langchain.schema import AgentFinish
+from typing import Any, Dict, Union
+
+class NoOpAgentOutputParser(AgentOutputParser):
+    """Простой парсер, который никогда не ломается и всегда возвращает сырой текст."""
+
+    def parse(self, text: str) -> AgentFinish:
+        # возвращаем всё как есть в виде "Final Answer"
+        return AgentFinish(
+            return_values={"output": text},
+            log=text
+        )
+
+    @property
+    def _type(self) -> str:
+        return "no_op"
+
+def extract_json_data(text: str):
+    pattern = r"```json\s*(.*?)```"
+    matches = re.findall(pattern, text, re.DOTALL | re.IGNORECASE)
+    return "\n\n".join(m.strip() for m in matches)#[m.strip() for m in matches]
 
 class DaJsonAgentBuilder(Singleton):
     def _setup(self):
@@ -32,14 +55,18 @@ class DaJsonAgentBuilder(Singleton):
 
         memory_da_json = ConversationBufferMemory(memory_key="chat_history")
         tools = []
+
+        agent_output_parser = NoOpAgentOutputParser()
+
         da_json_agent = initialize_agent(
             tools=tools,
             llm=llm,
             memory=memory_da_json,
             agent=AgentType.CONVERSATIONAL_REACT_DESCRIPTION,#CHAT_ZERO_SHOT_REACT_DESCRIPTION,
-            # return_intermediate_steps=False,
+            return_intermediate_steps=False,
             verbose=True,
-            handle_parsing_errors=True
+            handle_parsing_errors=True,
+            agent_kwargs={"output_parser": agent_output_parser}
         )
         return da_json_agent
 
@@ -53,11 +80,14 @@ class DaJsonAgentBuilder(Singleton):
                 request = state["messages"][-1].content
             else:
                 old_messages = []
-                print("(create_da_json_agent_node)", state["task"])
+                # print("(create_da_json_agent_node)", state["task"])
                 request = da_json_prompt.format(task=state["task"])
-                print("(create_da_json_agent_node)", request)
+                # print("(create_da_json_agent_node)", request)
 
             response = da_json_agent.run(request)
+            # response = self.settings.call_llm(self.settings.select_model(), request, "da_json_agent")
+            # print("AABB: ", response)
+
             if isinstance(response, dict):
                 result = response["output"]
             else:
