@@ -1,9 +1,10 @@
 from abstract.singleton import Singleton
-from .agent_states import DaAgentState, DaJsonAgentState, DeAgentState, DarchAgentState, CorrectorAgentState
+from .agent_states import DaAgentState, DaJsonAgentState, DaXmlAgentState, DeAgentState, DarchAgentState, CorrectorAgentState
 from .agent_responses import ValidatorResponse
 
 from .base_blocks.da_agent_base import DaAgentBuilder
 from .base_blocks.da_json_agent_base import DaJsonAgentBuilder
+from .base_blocks.da_xml_agent_base import DaXmlAgentBuilder
 from .base_blocks.de_agent_base import DeAgentBuilder
 from .base_blocks.darch_agent_base import DarchAgentBuilder
 from .base_blocks.corrector_agent_base import CorrectionAgentBuilder
@@ -34,6 +35,7 @@ class LangChainBuilder(Singleton):
         self.settings = AgentSettings()
         self.da_builder = DaAgentBuilder()
         self.da_json_builder = DaJsonAgentBuilder()
+        self.da_xml_builder = DaXmlAgentBuilder()
         self.de_builder = DeAgentBuilder()
         self.darch_builder = DarchAgentBuilder()
         self.corrector_builder = CorrectionAgentBuilder()
@@ -71,6 +73,19 @@ class LangChainBuilder(Singleton):
         }
 
         graph = self.make_graph(graph_mapper, "da_json_agent", DaJsonAgentState)
+        return graph
+
+    def create_da_xml_chain(self):
+        da_xml_agent = self.da_xml_builder.create_da_xml_agent()
+        da_xml_agent_node = self.da_xml_builder.create_da_xml_agent_node(da_xml_agent)
+        da_xml_validator_node = self.da_xml_builder.create_da_xml_validator_node()
+        
+        graph_mapper = {
+            "da_xml_agent": da_xml_agent_node,
+            "da_xml_validator": da_xml_validator_node
+        }
+
+        graph = self.make_graph(graph_mapper, "da_xml_agent", DaXmlAgentState)
         return graph
 
     def create_de_chain(self):

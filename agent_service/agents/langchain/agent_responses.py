@@ -7,7 +7,7 @@ class ValidatorResponse(TypedDict):
     status: Literal["FAIL", "SUCCESS"]
 
 class OrchestratorResponse(TypedDict):
-    next: Literal["da_agent", "da_json_agent", "de_agent", "darch_agent"]
+    next: Literal["da_agent", "da_json_agent", "da_xml_agent", "de_agent", "darch_agent"]
 
 class JsonValidatorResponse(TypedDict):
     """В поле result нужно указать результат доработки. В поле status указать статус проверки [FAIL, SUCCESS]"""

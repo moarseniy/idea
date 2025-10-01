@@ -43,6 +43,12 @@ class App(FastAPI):
                     print("(app.py)", type(da_json_response), da_json_response)
                     response["daJsonRequirements"] = da_json_response
 
+                if request.daXmlRequirements:
+                    da_xml_initial_state = {"task": task}
+                    _, da_xml_response = await agents.da_xml_agent(da_xml_initial_state)
+                    print("(app.py)", type(da_xml_response), da_xml_response)
+                    response["daXmlRequirements"] = da_xml_response
+
             else:
 
                 if request.darchRequirements:

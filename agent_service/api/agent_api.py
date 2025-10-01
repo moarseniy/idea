@@ -5,6 +5,7 @@ from datetime import datetime
 class AgentRequest(BaseModel):
     daRequirements: Optional[bool] = None
     daJsonRequirements: Optional[bool] = None
+    daXmlRequirements: Optional[bool] = None
     deRequirements: Optional[bool] = None
     darchRequirements: Optional[bool] = None
     needFix: Optional[bool] = None
@@ -16,6 +17,7 @@ class AgentRequest(BaseModel):
 class AgentResponse(BaseModel):
     daRequirements: Optional[str] = None
     daJsonRequirements: Optional[str] = None
+    daXmlRequirements: Optional[str] = None
     deRequirements: Optional[str] = None
     darchRequirements: Optional[str] = None
     message: Optional[str] = None

@@ -7,12 +7,13 @@ from langchain.schema import HumanMessage, AIMessage, SystemMessage
 from langchain.memory import ConversationBufferMemory, ChatMessageHistory
 
 class LangchainApp:
-    def __init__(self, da_requirements=False, da_json_requirements=False, de_requirements=False, darch_requirements=False):
+    def __init__(self, da_requirements=False, da_json_requirements=False, da_xml_requirements=False, de_requirements=False, darch_requirements=False):
         builder = LangChainBuilder()
         self.settings = AgentSettings()
         
         self.da_agent_chain = builder.create_da_chain()
         self.da_json_agent_chain = builder.create_da_json_chain()
+        self.da_xml_agent_chain = builder.create_da_xml_chain()
         self.de_agent_chain = builder.create_de_chain()
         self.darch_agent_chain = builder.create_darch_chain()
         
@@ -37,13 +38,17 @@ class LangchainApp:
         chat_memory = ChatMessageHistory(messages=prepared_messages)
         return ConversationBufferMemory(chat_memory=chat_memory, memory_key="chat_history")
 
+    async def da_agent(self, initial_state):
+        result = await self.da_agent_chain.ainvoke(initial_state)
+        return "daRequirements", result["result"]
+
     async def da_json_agent(self, initial_state):
         result = await self.da_json_agent_chain.ainvoke(initial_state)
         return "daJsonRequirements", result["result"]
 
-    async def da_agent(self, initial_state):
-        result = await self.da_agent_chain.ainvoke(initial_state)
-        return "daRequirements", result["result"]
+    async def da_xml_agent(self, initial_state):
+        result = await self.da_xml_agent_chain.ainvoke(initial_state)
+        return "daXmlRequirements", result["result"]
 
     async def de_agent(self, initial_state):
         result = await self.de_agent_chain.ainvoke(initial_state)

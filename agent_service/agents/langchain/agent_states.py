@@ -10,6 +10,11 @@ class DaJsonAgentState(TypedDict):
     messages: List
     result: str
 
+class DaXmlAgentState(TypedDict):
+    task: str
+    messages: List
+    result: str
+
 class DeAgentState(TypedDict):
     task: str
     messages: List
