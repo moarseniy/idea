@@ -27,12 +27,12 @@ def run_final_json_profile(profile, json_answer_patch):
 
 
 def json_get_clickhouse_ddl(final_prof):
-    ddl_ch = emit_ddl_ch(final_prof, types_yaml_path="config/types.yaml", database="mydb")  # database опционально
+    ddl_ch = emit_ddl_ch(final_prof, types_yaml_path="scripts/json_scripts/config/types.yaml", database="mydb")  # database опционально
     return ddl_ch
 
 
 def json_get_postgres_ddl(final_prof):
-    ddl_pg = emit_ddl_pg(final_prof, types_yaml_path="config/types.yaml")
+    ddl_pg = emit_ddl_pg(final_prof, types_yaml_path="scripts/json_scripts/config/types.yaml")
     return ddl_pg
 
 
