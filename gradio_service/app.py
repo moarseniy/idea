@@ -40,6 +40,8 @@ def run_web_interface():
 
         gr.Markdown(''' # ETL Assistant ''')
 
+        data_path = gr.State("")
+
         llm_agent_request = gr.State({
             "daRequirements": False,
             "daJsonRequirements": False,
@@ -124,28 +126,26 @@ def run_web_interface():
             return gr.update(visible=bool(conn and str(conn).strip()))
 
 
-        @analytic_btn.click(inputs=[start_choice, new_source_choice, upload_file_new, upload_file_new2, new_base_conn, existing_conn, log_display, info_box, llm_agent_request, chatbot_ui], 
-                            outputs=[create_connect_btn, log_display, info_box, ddl_preview, dag_preview, llm_agent_request, chatbot_ui, user_input, submit_button, md_download_button])
-        def on_analytic(start_choice_val, new_source_sel, upload_new_file, upload_new_file2, new_base_conn_val, existing_conn_val, log_text, info_text, llm_agent_request, chat_history):
-            
+        @analytic_btn.click(inputs=[start_choice, new_source_choice, upload_file_new, upload_file_new2, new_base_conn, existing_conn, log_display, info_box, llm_agent_request, data_path, chatbot_ui], 
+                            outputs=[create_connect_btn, log_display, info_box, ddl_preview, dag_preview, llm_agent_request, data_path, chatbot_ui, user_input, submit_button, md_download_button])
+        def on_analytic(start_choice_val, new_source_sel, upload_new_file, upload_new_file2, new_base_conn_val, existing_conn_val, log_text, info_text, llm_agent_request, data_path, chat_history):
             final_profile_json = None
 
             if "needFix" in llm_agent_request and llm_agent_request["needFix"]:
                 info_text = ""
             else:
-                source_desc = 'unknown'
-
-                if start_choice_val == 'Создать новое хранилище':
-                    if new_source_sel == 'Загрузить файлы (CSV/JSON/XML)':
-                        source_desc = upload_new_file[0] # TODO: read list of paths
-                    elif new_source_sel == 'Указать директорию':
-                        source_desc = upload_new_file2[0] # TODO: read list of paths
+                if not source_desc:
+                    if start_choice_val == 'Создать новое хранилище':
+                        if new_source_sel == 'Загрузить файлы (CSV/JSON/XML)':
+                            source_desc = upload_new_file[0] # TODO: read list of paths
+                        elif new_source_sel == 'Указать директорию':
+                            source_desc = upload_new_file2[0] # TODO: read list of paths
+                        else:
+                            source_desc = new_base_conn_val
                     else:
-                        source_desc = new_base_conn_val
-                else:
-                    source_desc = existing_conn_val
+                        source_desc = existing_conn_val
 
-                log_text += 'Данные успешно загружены.\n'
+                    log_text += 'Данные успешно загружены.\n'
 
                 # _LOGGER.info(f"PATH: {source_desc}")
                 log_text += f'Обрабатываем файл: {source_desc}\n'
@@ -372,7 +372,7 @@ def run_web_interface():
             # dag = generate_airflow_dag_from_pipeline('example_pipeline', '@hourly', [], rec['recommendation'])
             # log_text += 'DAG сгенерирован.\n'
 
-            return gr.update(visible=True), log_text, info_text, gr.update(value=ddl, visible=True), gr.update(value=dag, visible=True), gr.update(value=llm_agent_request), gr.update(value=chat_history, visible=True), gr.update(visible=True), gr.update(visible=True), gr.update(visible=True, value=md_file_path)
+            return gr.update(visible=True), log_text, info_text, gr.update(value=ddl, visible=True), gr.update(value=dag, visible=True), gr.update(value=llm_agent_request), gr.update(value=data_path), gr.update(value=chat_history, visible=True), gr.update(visible=True), gr.update(visible=True), gr.update(visible=True, value=md_file_path)
 
 
         @submit_button.click(inputs=[user_input, chatbot_ui, llm_agent_request], outputs=[chatbot_ui, user_input, llm_agent_request])
@@ -410,7 +410,6 @@ def run_web_interface():
                 log_text += "Подключение к хранилищу успешно выполнено.\n"
 
             return log_text
-
 
     return demo
 
