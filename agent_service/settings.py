@@ -63,6 +63,9 @@ class AgentSettings(Singleton):
         self.DA_JSON_TEMPLATE = self.__read_file("prompts/da_json/da_json_template.txt")
         self.DA_JSON_VALIDATOR_TEMPLATE = self.__read_file("prompts/da_json/da_json_validator_template.txt")
 
+        self.DA_XML_TEMPLATE = self.__read_file("prompts/da_xml/da_xml_template.txt")
+        self.DA_XML_VALIDATOR_TEMPLATE = self.__read_file("prompts/da_xml/da_xml_validator_template.txt")
+
         self.DE_TEMPLATE = self.__read_file("prompts/de/de_template.txt")
         self.DE_VALIDATOR_TEMPLATE = self.__read_file("prompts/de/de_validator_template.txt")
         self.DE_CORRECTOR_TEMPLATE = self.__read_file("prompts/de/de_corrector_template.txt")
@@ -79,6 +82,7 @@ class AgentSettings(Singleton):
         
         self.DA_INSTRUCTION = self.__read_file("instructions/da_instruction.md")
         self.DA_JSON_INSTRUCTION = self.__read_file("instructions/da_json_instruction.md")
+        self.DA_XML_INSTRUCTION = self.__read_file("instructions/da_xml_instruction.md")
         self.DE_INSTRUCTION = self.__read_file("instructions/de_instruction.md")
         self.DARCH_INSTRUCTION = self.__read_file("instructions/darch_instruction.md")
 
@@ -163,6 +167,15 @@ class AgentSettings(Singleton):
         return self.DA_JSON_VALIDATOR_TEMPLATE
 
     @property
+    def da_xml_template(self):
+        return self.DA_XML_TEMPLATE
+
+    @property
+    def da_xml_validator_prompt(self):
+        return self.DA_XML_VALIDATOR_TEMPLATE
+
+
+    @property
     def de_template(self):
         return self.DE_TEMPLATE
 
@@ -221,6 +234,10 @@ class AgentSettings(Singleton):
     @property
     def da_json_instruction(self):
         return self.DA_JSON_INSTRUCTION
+
+    @property
+    def da_xml_instruction(self):
+        return self.DA_XML_INSTRUCTION
 
     @property
     def de_instruction(self):

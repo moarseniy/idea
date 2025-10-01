@@ -220,7 +220,7 @@ def run_web_interface():
                     # answer = clean_json(str(response_json["daRequirements"]))
                     log_text += 'Получен ответ от LLM агентов...\n'
 
-                    final_json = response_json["daJsonRequirements"].replace("Отчет:", "")
+                    final_json = response_json["daXmlRequirements"].replace("Отчет:", "")
                     if "`" in final_json and "json" in final_json:
                         final_json = extract_json_data(final_json)
                     
