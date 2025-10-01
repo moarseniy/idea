@@ -1,5 +1,5 @@
 import gradio as gr
-import json, os, time, re
+import json, os, time, re, ast
 import datetime
 import requests
 
@@ -7,7 +7,9 @@ from gradio_utils import *
 
 # from scripts.profile_csv import profile_csv
 from scripts.analytic_pipeline import clean_json, run_build_analytic_prompt, run_build_final_prompt
-from scripts.json_analytic_pipeline import run_compute_json_profile, run_final_profile
+from scripts.json_analytic_pipeline import run_compute_json_profile, run_final_json_profile, json_get_postgres_ddl, json_get_clickhouse_ddl, json_get_dbml
+from scripts.xml_analytic_pipeline import run_compute_xml_profile, run_final_xml_profile, xml_get_postgres_ddl, xml_get_clickhouse_ddl, xml_get_dbml
+
 
 from modules import customLogger
 
@@ -41,6 +43,7 @@ def run_web_interface():
         llm_agent_request = gr.State({
             "daRequirements": False,
             "daJsonRequirements": False,
+            "daXmlRequirements": False,
             "deRequirements": False,
             "darchRequirements": False,
             "needFix": False,
@@ -124,6 +127,8 @@ def run_web_interface():
         @analytic_btn.click(inputs=[start_choice, new_source_choice, upload_file_new, upload_file_new2, new_base_conn, existing_conn, log_display, info_box, llm_agent_request, chatbot_ui], 
                             outputs=[create_connect_btn, log_display, info_box, ddl_preview, dag_preview, llm_agent_request, chatbot_ui, user_input, submit_button, md_download_button])
         def on_analytic(start_choice_val, new_source_sel, upload_new_file, upload_new_file2, new_base_conn_val, existing_conn_val, log_text, info_text, llm_agent_request, chat_history):
+            
+            final_profile_json = None
 
             if "needFix" in llm_agent_request and llm_agent_request["needFix"]:
                 info_text = ""
@@ -149,6 +154,10 @@ def run_web_interface():
                 if source_desc.endswith('.json') or source_desc.endswith('.JSON'):
                     profile_json = run_compute_json_profile(source_desc)
 
+                    if not isinstance(profile_json, dict):
+                        profile_json = ast.literal_eval(profile_json)
+
+
                     print("ПРОФИЛЬ JSON", profile_json)
 
                     llm_agent_request["task"] = f"{profile_json}"
@@ -165,10 +174,19 @@ def run_web_interface():
                     # answer = clean_json(str(response_json["daRequirements"]))
                     log_text += 'Получен ответ от LLM агентов...\n'
 
-                    final_profile_json = run_final_profile(profile_json, response_json["daJsonRequirements"])
+                    final_json = response_json["daJsonRequirements"].replace("Отчет:", "")
+                    if "`" in final_json and "json" in final_json:
+                        final_json = extract_json_data(final_json)
+                    
+                    print("final_json: ", final_json)
+                    
+                    if not isinstance(final_json, dict):
+                        final_json = ast.literal_eval(final_json)
+
+                    final_profile_json = run_final_json_profile(profile_json, final_json)
 
                     if "daJsonRequirements" in response_json and response_json["daJsonRequirements"]:
-                        info_text += response_json["daJsonRequirements"] + '\n'
+                        # info_text += response_json["daJsonRequirements"] + '\n'
                         llm_agent_request["history"]["daJsonRequirements"] = response_json["daJsonRequirements"]
 
                     log_text += 'Аналитика данных завершена.\n'
@@ -177,7 +195,54 @@ def run_web_interface():
 
                     # TODO: !!!! SAVE THIS PROMPT TO prev_context FOR NEXT corrector REQUESTS
                     llm_agent_request["daJsonRequirements"] = False
-                    llm_agent_request["task"] = f"{preview}\n{final_profile_json}\n"
+                    # TODO: ADD PREVIEW
+                    llm_agent_request["task"] = f"{final_profile_json}\n"
+
+                elif source_desc.endswith('.xml') or source_desc.endswith('.XML'): 
+                    profile_json = run_compute_xml_profile(source_desc)
+
+                    if not isinstance(profile_json, dict):
+                        profile_json = ast.literal_eval(profile_json)
+
+                    print("ПРОФИЛЬ XML", profile_json)
+
+                    llm_agent_request["task"] = f"{profile_json}"
+                    llm_agent_request["daXmlRequirements"] = True
+
+                    log_text += 'Отправляем запрос к LLM агенту...\n'
+                    headers = {"Content-Type": "application/json"}
+                    response = requests.post(llm_host, data=json.dumps(llm_agent_request), verify=False, headers=headers) #timeout=120)
+                    print(f"FIRST RESPONSE:\n{response}")
+                    # clean_response = clean_json(response)#.replace('json','').replace('````','')
+                    response_json = response.json()
+
+                    print("FINAL:", response_json, type(response_json["daXmlRequirements"]))
+                    # answer = clean_json(str(response_json["daRequirements"]))
+                    log_text += 'Получен ответ от LLM агентов...\n'
+
+                    final_json = response_json["daJsonRequirements"].replace("Отчет:", "")
+                    if "`" in final_json and "json" in final_json:
+                        final_json = extract_json_data(final_json)
+                    
+                    print("final_json: ", final_json)
+                    
+                    if not isinstance(final_json, dict):
+                        final_json = ast.literal_eval(final_json)
+
+                    final_profile_json = run_final_xml_profile(profile_json, final_json, source_desc)
+
+                    if "daXmlRequirements" in response_json and response_json["daXmlRequirements"]:
+                        # info_text += response_json["daXmlRequirements"] + '\n'
+                        llm_agent_request["history"]["daXmlRequirements"] = response_json["daXmlRequirements"]
+
+                    log_text += 'Аналитика данных завершена.\n'
+                    
+                    # print(f"RESULT: {result}")
+
+                    # TODO: !!!! SAVE THIS PROMPT TO prev_context FOR NEXT corrector REQUESTS
+                    llm_agent_request["daXmlRequirements"] = False
+                    # TODO: ADD PREVIEW
+                    llm_agent_request["task"] = f"{final_profile_json}\n"
 
 
                 elif source_desc.endswith('.csv') or source_desc.endswith('.CSV'):
@@ -201,7 +266,7 @@ def run_web_interface():
                                                             card_json)
 
                     if "daRequirements" in response_json and response_json["daRequirements"]:
-                        info_text += response_json["daRequirements"] + '\n'
+                        # info_text += response_json["daRequirements"] + '\n'
                         llm_agent_request["history"]["daRequirements"] = response_json["daRequirements"]
 
                     log_text += 'Аналитика данных завершена.\n'
@@ -246,25 +311,54 @@ def run_web_interface():
 
             # db_type = extract_db_type(response_json['darchRequirements']:50)
             # print("DB_TYPE: " + db_type)
+            if source_desc.endswith('.csv') or source_desc.endswith('.CSV'):
+                if sql_script:
+                    # clean_sql_script = clean_clickhouse_ddl(sql_script)
+                    tables = parse_create_tables(sql_script)
+                    clean_sql_script = to_dbml_with_refs(tables)
+                    print("(clean_clickhouse_ddl)", clean_sql_script)
+                    clean_sql_script_path = save_dbml_file(clean_sql_script)
+                    # clean_sql_script_path = save_sql_file(clean_sql_script)
+                    print("(save_dbml_file)", clean_sql_script_path)
+                    # dbml_path = convert_sql_to_dbml(clean_sql_script_path)
+                    # print(dbml_path)
+                    dbml_svg_path = convert_dbml_to_svg(clean_sql_script_path)
+                    print(dbml_svg_path)
 
-            if sql_script and 1 == 2:
-                
-                # clean_sql_script = clean_clickhouse_ddl(sql_script)
-                tables = parse_create_tables(sql_script)
-                clean_sql_script = to_dbml_with_refs(tables)
-                print("(clean_clickhouse_ddl)", clean_sql_script)
-                clean_sql_script_path = save_dbml_file(clean_sql_script)
-                # clean_sql_script_path = save_sql_file(clean_sql_script)
-                print("(save_dbml_file)", clean_sql_script_path)
-                # dbml_path = convert_sql_to_dbml(clean_sql_script_path)
-                # print(dbml_path)
-                dbml_svg_path = convert_dbml_to_svg(clean_sql_script_path)
-                print(dbml_svg_path)
+                    markdown_content = (
+                        f"# Результат в виде DBML схемы\n"
+                        f"<img src=\"data:image/svg+xml;base64,{image_to_base64(dbml_svg_path)}\" width=\"450\"/>\n"
+                    )
+
+                    info_text += markdown_content
+
+            elif source_desc.endswith('.json') or source_desc.endswith('.JSON'):
+                ddl_ch = json_get_clickhouse_ddl(final_profile_json) 
+                ddl_pg = json_get_postgres_ddl(final_profile_json)
+                dbml = json_get_dbml(final_profile_json)
+
+                dbml_path = save_dbml_file(dbml)
+                dbml_svg_path = convert_dbml_to_svg(dbml_path)
 
                 markdown_content = (
-                    f"# Результат в виде DBML схемы\n"
-                    f"<img src=\"data:image/svg+xml;base64,{image_to_base64(dbml_svg_path)}\" width=\"450\"/>\n"
-                )
+                        f"# Результат в виде DBML схемы\n"
+                        f"<img src=\"data:image/svg+xml;base64,{image_to_base64(dbml_svg_path)}\" width=\"450\"/>\n"
+                    )
+
+                info_text += markdown_content
+
+            elif source_desc.endswith('.xml') or source_desc.endswith('.XML'):
+                ddl_ch = xml_get_clickhouse_ddl(final_profile_json) 
+                ddl_pg = xml_get_postgres_ddl(final_profile_json)
+                dbml = xml_get_dbml(final_profile_json)
+
+                dbml_path = save_dbml_file(dbml)
+                dbml_svg_path = convert_dbml_to_svg(dbml_path)
+
+                markdown_content = (
+                        f"# Результат в виде DBML схемы\n"
+                        f"<img src=\"data:image/svg+xml;base64,{image_to_base64(dbml_svg_path)}\" width=\"450\"/>\n"
+                    )
 
                 info_text += markdown_content
 
