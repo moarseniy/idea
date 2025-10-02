@@ -203,16 +203,19 @@ def run_web_interface():
             return gr.update(visible=value)
 
 
-        @analytic_btn.click(inputs=[new_db_name, start_choice, new_source_choice, upload_file_new, existing_conn, log_display, info_box, llm_agent_request, data_path, chatbot_ui], 
+        @analytic_btn.click(inputs=[new_db_name, final_profile, start_choice, new_source_choice, upload_file_new, existing_conn, log_display, info_box, llm_agent_request, data_path, chatbot_ui], 
                             outputs=[final_profile, ddl_script, new_db_type, create_connect_btn, log_display, info_box, llm_agent_request, data_path, chatbot_ui, user_input, submit_button, md_download_button])
-        def on_analytic(db_address, start_choice_val, new_source_sel, upload_new_file, existing_conn_val, log_text, info_text, llm_agent_request, data_path, chat_history):
+        def on_analytic(db_address, final_profile_dict, start_choice_val, new_source_sel, upload_new_file, existing_conn_val, log_text, info_text, llm_agent_request, data_path, chat_history):
             # TODO: !
             # if not new_db_val:
             #     return gr.Info(f"Отсутствует информация про хранилище!")
 
-            final_profile_json = None
+            final_profile_json = final_profile_dict
             # TODO: replace somewhere to global level
             source_desc = ""
+            if start_choice_val == 'Создать новое хранилище':
+                if new_source_sel == 'Загрузить файлы (CSV/JSON/XML)':
+                    source_desc = upload_new_file[0]
 
             if "needFix" in llm_agent_request and llm_agent_request["needFix"]:
                 info_text = ""
@@ -393,6 +396,7 @@ def run_web_interface():
             ddl = ""
             db_type = extract_db_type(response_json['darchRequirements'][:50])
             print("DB_TYPE: " + db_type)
+            print("source_desc:", source_desc)
             
             if source_desc.endswith('.csv') or source_desc.endswith('.CSV'):
 
@@ -455,6 +459,7 @@ def run_web_interface():
             md_file_path = save_markdown_file(info_text)
 
             log_text += 'DDL сгенерирован.\n'
+            print("ARSENIY", ddl)
             log_text += 'Отчет готов.\n'
 
             return final_profile_json, ddl, db_type, gr.update(visible=True), log_text, info_text, gr.update(value=llm_agent_request), gr.update(value=data_path), gr.update(value=chat_history, visible=True), gr.update(visible=True), gr.update(visible=True), gr.update(visible=True, value=md_file_path)

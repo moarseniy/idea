@@ -21,6 +21,24 @@ from typing_extensions import TypedDict
 import warnings
 import os
 
+from langchain.agents import AgentOutputParser
+from langchain.schema import AgentFinish
+from typing import Any, Dict, Union
+
+class NoOpAgentOutputParser(AgentOutputParser):
+    """Простой парсер, который никогда не ломается и всегда возвращает сырой текст."""
+
+    def parse(self, text: str) -> AgentFinish:
+        # возвращаем всё как есть в виде "Final Answer"
+        return AgentFinish(
+            return_values={"output": text},
+            log=text
+        )
+
+    @property
+    def _type(self) -> str:
+        return "no_op"
+
 class CorrectionAgentBuilder(Singleton):
     def _setup(self):
         self.settings = AgentSettings()
@@ -31,13 +49,17 @@ class CorrectionAgentBuilder(Singleton):
 
         memory_de = ConversationBufferMemory(memory_key="chat_history")
         tools = []
+
+        agent_output_parser = NoOpAgentOutputParser()
+        
         de_agent = initialize_agent(
             tools=tools,
             llm=llm,
             memory=memory_de,
             agent=AgentType.CONVERSATIONAL_REACT_DESCRIPTION,
             verbose=True,
-            handle_parsing_errors=True
+            handle_parsing_errors=True,
+            agent_kwargs={"output_parser": agent_output_parser}
         )
         return de_agent
 

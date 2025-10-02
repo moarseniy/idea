@@ -9,7 +9,7 @@ from langchain_openai import ChatOpenAI as CH
 from agents.langchain.agent_responses import responses_types, hf_responses_types
 
 a_hf_token ="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"
-a_key = "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"
+a_key = ""
 
 os.environ["OPENAI_API_KEY"] = a_key
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = a_hf_token
@@ -90,12 +90,13 @@ class AgentSettings(Singleton):
         self.langchain_llm_max_name = "gpt-4.1-mini"
         self._temperature = 0.03
 
-        self.to_use_hf = False
-        self.to_use_local = False
+        self.to_use_hf = True
+        self.to_use_local = True
 
         self.hf_deepseek = "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B"
         self.hf_mistral = "mistralai/Mistral-7B-Instruct-v0.3"
         self.hf_shlyapa = "t-bank-ai/ruDialoGPT-small"
+        self.qwen = "RefalMachine/RuadaptQwen3-32B-Instruct"
 
         self.hf_model = self.hf_deepseek
 
@@ -113,7 +114,7 @@ class AgentSettings(Singleton):
     def select_model(self):
         if self.to_use_local and self.to_use_hf:
             return HuggingFacePipeline.from_model_id(
-                model_id="llm/T-pro-it-1.0",
+                model_id=self.qwen,
                 task="text-generation",
                 pipeline_kwargs={
                     "max_new_tokens": 2048,

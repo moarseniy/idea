@@ -23,7 +23,6 @@ from scripts.json_scripts.pg_introspect import (
 from scripts.json_scripts.pg_reset import drop_pg_tables_for_profile, recreate_and_load_pg
 from scripts.json_scripts.ddl_postgres import emit_ddl_pg
 from scripts.json_scripts.load_postgres import copy_into_pg
-
 # CSV #
 from scripts.analytic_tool.csv_copy_loaders_psycopg2 import csv_copy_into_pg
 # from scripts.analytic_tool.csv_loaders_conn import load_to_postgres_conn
@@ -173,7 +172,7 @@ def run_etl_pg(PG_URI, dbname, ddl, profile, data_path):
 
         with open(data_path) as f:
             records = json.load(f)
-        json_copy_into_pg(conn, profile, records, schema="public", batch_size=50_000)
+        copy_into_pg(conn, profile, records, schema="public", batch_size=50_000)
     
     elif data_path.endswith('.xml') or data_path.endswith('.XML'):
 
