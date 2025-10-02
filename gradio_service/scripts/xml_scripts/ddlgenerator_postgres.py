@@ -3,18 +3,12 @@
 
 """
 Генератор DDL для PostgreSQL из final_spec.
-Использование:
-    from ddlgenerator_postgres import generate_postgres_ddl
-    ddl_sql = generate_postgres_ddl(final_spec, schema="public", emit_unique=False)
 """
 
 from __future__ import annotations
 import os
 import re
-import json
 from typing import Dict, Any, List, Optional
-
-# --- типы ---
 
 def _load_types_yaml(path: Optional[str] = "config/types.yaml") -> Dict[str, Any]:
     default = {
@@ -44,35 +38,32 @@ def _load_types_yaml(path: Optional[str] = "config/types.yaml") -> Dict[str, Any
 
 _DEC_RE = re.compile(r"^decimal\((\d+),\s*(\d+)\)$", re.I)
 
-def _pg_type_for(canon_type: str, types_cfg: Dict[str, Any]) -> str:
+def _pg_type_for(canon_type: str, types_cfg: Dict[str, Any], decimal_min_precision: int) -> str:
     canon = canon_type.strip()
     m = _DEC_RE.match(canon)
     if m:
-        p, s = m.group(1), m.group(2)
+        p, s = int(m.group(1)), int(m.group(2))
+        p = max(p, decimal_min_precision)
         tpl = types_cfg["canonical"]["decimal(p,s)"]["pg"]
         return tpl.format(p=p, s=s)
-
     mapping = types_cfg["canonical"].get(canon)
     if mapping:
         return mapping["pg"]
-
-    # поддержка возможных «синонимов»
     syn = types_cfg.get("synonyms", {}).get(canon.lower())
     if syn and syn in types_cfg["canonical"]:
         return types_cfg["canonical"][syn]["pg"]
-
-    # запасной вариант
     return "text"
 
-# --- утилиты ---
-
 def _qident(*parts: str) -> str:
-    """schema, table -> schema.table без кавычек (имена уже snake_case)."""
     return ".".join(parts)
 
-def _column_line(col: Dict[str, Any], tcfg: Dict[str, Any]) -> str:
-    typ = _pg_type_for(col["type"], tcfg)
-    nn = "" if col.get("nullable", True) else " NOT NULL"
+def _column_line(col: Dict[str, Any], tcfg: Dict[str, Any], decimal_min_precision: int, force_nullable: bool) -> str:
+    typ = _pg_type_for(col["type"], tcfg, decimal_min_precision)
+    role = col.get("role")
+    if role in ("pk_surrogate", "fk_parent", "sequence_within_parent"):
+        nn = " NOT NULL"
+    else:
+        nn = "" if (force_nullable or col.get("nullable", True)) else " NOT NULL"
     return f'    {col["name"]} {typ}{nn}'
 
 def _primary_key_clause(table: Dict[str, Any]) -> str:
@@ -91,7 +82,8 @@ def _fk_clauses(table: Dict[str, Any], schema: str) -> List[str]:
             ref_col = col.get("ref_column", "id")
             out.append(
                 f"    CONSTRAINT fk_{table['table']}_{fkcol} "
-                f"FOREIGN KEY ({fkcol}) REFERENCES {_qident(schema, ref_table)}({ref_col})"
+                f"FOREIGN KEY ({fkcol}) REFERENCES {_qident(schema, ref_table)}({ref_col}) "
+                f"DEFERRABLE INITIALLY DEFERRED"
             )
     return out
 
@@ -119,53 +111,37 @@ def _unique_clauses(table: Dict[str, Any]) -> List[str]:
 def _table_by_name(spec: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
     return {t["table"]: t for t in spec["tables"]}
 
-# --- основной генератор ---
-
 def generate_postgres_ddl(
     final_spec: Dict[str, Any],
     schema: str = "public",
     emit_unique: bool = False,
-    types_yaml_path: Optional[str] = "config/types.yaml"
+    types_yaml_path: Optional[str] = "config/types.yaml",
+    decimal_min_precision: int = 18,
+    force_nullable: bool = True,
 ) -> str:
-    """
-    Генерирует SQL DDL для PostgreSQL. Возвращает строку.
-    - emit_unique=False -> НЕ выводить UNIQUE-ограничения (по просьбе :)
-    """
     tcfg = _load_types_yaml(types_yaml_path)
     by_name = _table_by_name(final_spec)
 
     lines: List[str] = []
     lines.append(f"CREATE SCHEMA IF NOT EXISTS {schema};")
 
-    # соблюдать порядок (для FK)
     order = final_spec.get("load_order") or [t["table"] for t in final_spec["tables"]]
-
     for tname in order:
         table = by_name[tname]
         fq = _qident(schema, table["table"])
 
-        col_lines = []
-        for col in table["columns"]:
-            col_lines.append(_column_line(col, tcfg))
+        col_lines = [_column_line(c, tcfg, decimal_min_precision, force_nullable) for c in table["columns"]]
 
-        # constraints
         cons: List[str] = []
         pk = _primary_key_clause(table)
         if pk:
             cons.append(pk)
-
         if emit_unique:
             cons.extend(_unique_clauses(table))
-
         cons.extend(_fk_clauses(table, schema))
 
-        # объединяем в CREATE TABLE
-        all_lines = col_lines + ([""] if cons else []) + cons
-        body = ",\n".join(all_lines)
-
+        body = ",\n".join(col_lines + cons)
         lines.append(f"CREATE TABLE IF NOT EXISTS {fq} (\n{body}\n);")
-
-        # FK индексы
         lines.extend(_fk_indexes(table, schema))
 
     return "\n".join(lines)

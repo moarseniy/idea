@@ -1,12 +1,50 @@
 version: '3.8'
 
 services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypass
+      POSTGRES_DB: postgres   # служебная БД для админ-подключений
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    ports:
+      - "8123:8123"   # HTTP (REST / for HTTP clients / admin)
+      - "9000:9000"   # Native TCP protocol (for drivers like clickhouse-driver)
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+    healthcheck:
+      test: ["CMD", "clickhouse-client", "-q", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
   gradio_app:
     build:
       context: ./gradio_service
     ports:
       - "7862:7862"
     restart: always
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PG_ADMIN_URI=postgresql://myuser:mypass@db:5432/postgres
+    depends_on:
+      db:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
 
   agent_app:
     build:
@@ -14,3 +52,12 @@ services:
     ports:
       - "7861:7861"
     restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  clickhouse_data:

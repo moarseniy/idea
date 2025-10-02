@@ -1,8 +1,9 @@
 # ch_reset.py
 from typing import Any, Dict, Optional
-from ddl_clickhouse import emit_ddl_ch
-from load_clickhouse import insert_into_ch
-from ch_exec import ch_exec_many
+
+from scripts.json_scripts.ddl_clickhouse import emit_ddl_ch
+from scripts.json_scripts.load_clickhouse import insert_into_ch
+from scripts.json_scripts.ch_exec import ch_exec_many
 
 def drop_ch_tables_for_profile(http_url: str, profile: Dict[str, Any], database: str,
                                user: Optional[str] = None, password: Optional[str] = None,

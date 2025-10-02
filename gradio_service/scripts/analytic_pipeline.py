@@ -8,6 +8,13 @@ from scripts.analytic_tool.entity_rebalancer import reorganize_entities
 from scripts.analytic_tool.grain_module import analyze_and_format, format_grain_report
 from scripts.analytic_tool.colcomp import estimate_parquet_ratio
 
+from scripts.analytic_tool.csv_full_profiler import profile_csv_to_json
+from scripts.analytic_tool.schema_builders import (
+    ddl_clickhouse_from_profile,
+    ddl_postgres_from_profile,
+    dbml_from_profile,
+)
+
 def run_compute_profile(path):
     card_json, types_json = compute_csv_profile(
         path,
@@ -69,3 +76,42 @@ def run_build_final_prompt(json_answer, card_json):
     txt_report = format_grain_report(result, list_source="columns", include_entity_name=False) 
 
     return txt_report
+
+
+def csv_profile2json(csv_path):
+    profile = profile_csv_to_json(
+        csv_path,
+        entity_name="__FILL_ME__",        # потом подставите своё имя сущности
+        types_yaml_path="config/types.yaml",
+        chunk_rows=200_000                 # можно увеличить/уменьшить
+    )
+    return profile
+
+
+def csv_get_postgres_ddl(profile):
+    # profile: dict или JSON-строка
+    pg_sql = ddl_postgres_from_profile(
+        profile,
+        schema="public",
+        table="my_table",
+    )
+    return pg_sql
+
+
+def csv_get_clickhouse_ddl(profile):
+    # profile: dict или JSON-строка
+    ch_sql = ddl_clickhouse_from_profile(
+        profile,
+        database="raw",
+        table="my_table",
+        order_by="tuple",                 # или "auto", или ["ticket_id","created"]
+        partition_by=None,                # либо ["valid_to"], либо "toYYYYMM(created)"
+        coerce_timestamp64=True,          # единая точность времени в CH
+    )
+    return ch_sql
+
+
+def csv_get_dbml(profile):
+    # profile: dict или JSON-строка
+    dbml = dbml_from_profile(profile, table="my_table")
+    return dbml

@@ -5,7 +5,7 @@ import io, csv
 from typing import Any, Dict, Iterable, List, Tuple
 import psycopg2  # pip install psycopg2-binary
 
-from row_iterator import iter_rows, get_table_columns  # из модуля, что мы сделали ранее
+from scripts.json_scripts.row_iterator import iter_rows, get_table_columns  # из модуля, что мы сделали ранее
 
 def copy_into_pg(conn, profile: Dict[str, Any], records: Iterable[Dict[str, Any]],
                  schema: str = "public", batch_size: int = 50_000) -> None:

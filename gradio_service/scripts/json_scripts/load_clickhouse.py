@@ -6,7 +6,7 @@ from typing import Any, Dict, Iterable, List, Tuple, Optional
 import requests
 from datetime import datetime, timezone
 
-from row_iterator import iter_rows, get_table_columns
+from scripts.json_scripts.row_iterator import iter_rows, get_table_columns
 
 # ---------- небольшие хелперы ----------
 

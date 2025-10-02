@@ -1,7 +1,8 @@
 # pg_reset.py
 from typing import Any, Dict
-from ddl_postgres import emit_ddl_pg
-from load_postgres import copy_into_pg
+
+from scripts.json_scripts.ddl_postgres import emit_ddl_pg
+from scripts.json_scripts.load_postgres import copy_into_pg
 
 def drop_pg_tables_for_profile(conn, profile: Dict[str, Any], schema: str = "public") -> None:
     """Дроп таблиц профиля: дети -> родитель. ВАЖНО: IF EXISTS (без NOT)."""
