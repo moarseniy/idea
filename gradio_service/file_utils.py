@@ -13,6 +13,16 @@ def image_to_base64(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode('utf-8')
 
+def md_code_chunk_from_escaped(s: str, lang: str = "sql") -> str:
+    # превращаем литералы \r\n / \n / \r в реальные переводы строк
+    normalized = (s.replace("\\r\\n", "\n")
+                   .replace("\\n", "\n")
+                   .replace("\\r", "\n"))
+    # если внутри встречаются ``` — увеличим «забор»
+    fence = "````" if "```" in normalized else "```"
+    return f"{fence}{lang}\n{normalized}\n{fence}\n"
+    
+
 def extract_db_type(content: str) -> str:
     match = re.search(r"\*(.*?)\*", content)
     return(match.group(1))

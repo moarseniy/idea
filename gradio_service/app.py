@@ -5,11 +5,11 @@ import requests
 
 from gradio_utils import *
 
-from scripts.analytic_pipeline import csv_profile2json, clean_json, run_build_analytic_prompt, run_build_final_prompt
+from scripts.analytic_pipeline import csv_profile2json, clean_json, run_build_analytic_prompt, run_build_final_prompt, csv_get_postgres_ddl, csv_get_clickhouse_ddl, csv_get_dbml
 from scripts.json_analytic_pipeline import run_compute_json_profile, run_final_json_profile, json_get_postgres_ddl, json_get_clickhouse_ddl, json_get_dbml
 from scripts.xml_analytic_pipeline import run_compute_xml_profile, run_final_xml_profile, xml_get_postgres_ddl, xml_get_clickhouse_ddl, xml_get_dbml
 
-from scripts.run_etl import run_etl_pg, drop_db_pg, drop_database_pg, check_db_pg
+from scripts.run_etl import run_etl_pg, run_etl_ch, drop_db_pg, drop_database_pg, check_db_pg
 
 from modules import customLogger
 
@@ -39,11 +39,12 @@ def log_execution_time(func):
 def run_web_interface():
     with gr.Blocks(title='MVP: Цифровой инженер данных') as demo:
 
-        gr.Markdown(''' # ETL Assistant ''')
+        gr.Markdown(''' # IDEA! - Intelligent Data Engineering Assistant (Команда JaJaBinx) ''')
 
         data_path = gr.State("")
+        new_db_type = gr.State("")
         ddl_script = gr.State("")
-        bd_list = gr.State(["postgresql://myuser:mypass@db:5432/analytics"])
+        bd_list = gr.State([])
         final_profile = gr.State(dict())
 
         llm_agent_request = gr.State({
@@ -60,18 +61,24 @@ def run_web_interface():
 
         with gr.Row():
             with gr.Column(scale=1):
-                start_choice = gr.Radio(choices=['Создать новое хранилище','Подключиться к существующему хранилищу'], value=None, label='Что вы хотите сделать?')
-                new_source_choice = gr.Dropdown(choices=['Загрузить файлы (CSV/JSON/XML)','Указать директорию','На основе существующего хранилища (указать ссылку)'], value='Загрузить файлы (CSV/JSON/XML)', label='Источник:', visible=False)
-                
+                with gr.Row():
+                    gr.Image(
+                        value="logo.jpg",       
+                        show_download_button=False,
+                        show_label=False,
+                        type="filepath" # можно "numpy" или "pil"
+                    )
+                    with gr.Column():
+                        start_choice = gr.Radio(choices=['Создать новое хранилище'], value=None, label='Что вы хотите сделать?')
+                        new_source_choice = gr.Dropdown(choices=['Загрузить файлы (CSV/JSON/XML)'], value='Загрузить файлы (CSV/JSON/XML)', label='Источник:', visible=False)
+                    
                 upload_file_new = gr.File(label='Перенесите файлы мышкой или выберите в открывшемся окне.', file_count='multiple', visible=False)
-                upload_file_new2 = gr.Textbox(label='Путь до директории с CSV/JSON/XML файлами', placeholder='Например: C:\\Users\\1\\data\\', visible=False)
-                new_base_conn = gr.Textbox(label='Ссылка на существующее хранилище (для создания на его основе)', placeholder='Например: postgres://user:pass@host:5432/db', visible=False)
 
                 existing_conn = gr.Textbox(label='Connection string для подключения к существующему хранилищу', placeholder='postgres://user:pass@host:5432/db', visible=False)
                 
-                with gr.Row():
-                    new_db_address = gr.Textbox(label='Адрес', placeholder='localhost', visible=False)
-                    new_db_port = gr.Textbox(label='Порт', placeholder='5432', visible=False)
+                # with gr.Row():
+                #     new_db_address = gr.Textbox(label='Адрес', placeholder='localhost', visible=False)
+                #     new_db_port = gr.Textbox(label='Порт', placeholder='5432', visible=False)
                 
                 with gr.Row():
                     new_db_user = gr.Textbox(label='Имя пользователя', placeholder='arseniy', visible=False)
@@ -87,7 +94,7 @@ def run_web_interface():
                             submit_button = gr.Button(scale=1, value="➤", elem_id="submit_button", visible=False)
 
                 analytic_btn = gr.Button('Загрузить данные, сделать аналитику', visible=False)
-                create_connect_btn = gr.Button('Создать', visible=False)
+                create_connect_btn = gr.Button('Создать хранилище (загрузить данные)', visible=False)
 
             with gr.Column(scale=1):
                 with gr.Row():
@@ -125,9 +132,9 @@ def run_web_interface():
         def select_item():
             return gr.update(visible=True), gr.update(visible=True)
         
-        @connect_btn.click(inputs=[listbox, log_display, final_profile], 
+        @connect_btn.click(inputs=[listbox, log_display], 
                             outputs=[log_display])
-        def connect_to_bd(bd_name, info_text, final_profile_json):
+        def connect_to_bd(bd_name, info_text):
             
             info = check_db_pg(bd_name)#, final_profile_json)
             info_text += "Подключено: " + bd_name + '\n'
@@ -135,45 +142,41 @@ def run_web_interface():
 
             return info_text
 
-        @drop_btn.click(inputs=[listbox, bd_list, final_profile], outputs=[log_display, listbox])
+        @drop_btn.click(inputs=[listbox, bd_list, final_profile], 
+                        outputs=[log_display, listbox])
         def delete_bd(bd_name, bd_list, final_profile_json):
             # TODO: change to variable
-            drop_database_pg("analytics") 
+            drop_database_pg(bd_name) 
             # drop_db_pg(bd_name, final_profile_json)
             bd_list.remove(bd_name)
             info_text = "Удалено: " + bd_name + '\n'
             return info_text, gr.update(choices=bd_list, value=None)
 
         @start_choice.change(inputs=[start_choice], 
-                            outputs=[new_source_choice, upload_file_new, upload_file_new2, existing_conn])
+                            outputs=[new_source_choice, upload_file_new, existing_conn])
         def on_start(choice):
             if choice == 'Создать новое хранилище':
-                return gr.update(visible=True), gr.update(visible=True), gr.update(visible=False), gr.update(visible=False)
-            elif choice == 'Подключиться к существующему хранилищу':
-                return gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=True)
+                return gr.update(visible=True), gr.update(visible=True), gr.update(visible=False)
+            # elif choice == 'Подключиться к существующему хранилищу':
+            #     return gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=True)
             else:
-                return [gr.update(visible=False)]*4
+                return [gr.update(visible=False)]*3
 
         
         @new_source_choice.change(inputs=[new_source_choice], 
-                                 outputs=[upload_file_new, upload_file_new2, new_base_conn, analytic_btn])
+                                 outputs=[upload_file_new, analytic_btn])
         def on_new_source_change(sel):
             if sel == 'Загрузить файлы (CSV/JSON/XML)':
-                return gr.update(visible=True), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False)
-            if sel == 'Указать директорию':
-                return gr.update(visible=False), gr.update(visible=True), gr.update(visible=False), gr.update(visible=False)
-            return gr.update(visible=False), gr.update(visible=False), gr.update(visible=True), gr.update(visible=False)
+                return gr.update(visible=True), gr.update(visible=False)
+            # if sel == 'Указать директорию':
+            #     return gr.update(visible=False), gr.update(visible=True), gr.update(visible=False), gr.update(visible=False)
+            # return gr.update(visible=False), gr.update(visible=False), gr.update(visible=True), gr.update(visible=False)
 
 
         @upload_file_new.change(inputs=[upload_file_new],
-                                outputs=[new_db_address, new_db_port, new_db_user, new_db_password, new_db_name])
+                                outputs=[new_db_user, new_db_password, new_db_name])
         def upload_files(files):
-            return [gr.update(visible=True)]*5
-
-        @upload_file_new2.change(inputs=[upload_file_new2], 
-                                outputs=[analytic_btn])
-        def upload_files2(dir_path):
-            return gr.update(visible=True)
+            return [gr.update(visible=True)]*3
 
 
         @existing_conn.change(inputs=[existing_conn], 
@@ -181,41 +184,28 @@ def run_web_interface():
         def on_existing_conn_change(conn):
             return gr.update(visible=bool(conn and str(conn).strip()))
 
-
-        @new_db_address.change(inputs=[new_db_address, new_db_port, new_db_user, new_db_password, new_db_name], 
+        @new_db_user.change(inputs=[new_db_user, new_db_password, new_db_name], 
                                 outputs=[analytic_btn])
-        def on_new_db_address_change(address, port, user, password, db_name):
-            value = bool(address and port and user and password and db_name and str(address).strip())
+        def on_new_db_user_change(user, password, db_name):
+            value = bool(user and password and db_name and str(user).strip())
             return gr.update(visible=value)
 
-        @new_db_port.change(inputs=[new_db_address, new_db_port, new_db_user, new_db_password, new_db_name], 
+        @new_db_password.change(inputs=[new_db_user, new_db_password, new_db_name], 
                                 outputs=[analytic_btn])
-        def on_new_db_port_change(address, port, user, password, db_name):
-            value = bool(address and port and user and password and db_name and str(port).strip())
+        def on_new_db_password_change(user, password, db_name):
+            value = bool(user and password and db_name and str(password).strip())
             return gr.update(visible=value)
 
-        @new_db_user.change(inputs=[new_db_address, new_db_port, new_db_user, new_db_password, new_db_name], 
+        @new_db_name.change(inputs=[new_db_user, new_db_password, new_db_name], 
                                 outputs=[analytic_btn])
-        def on_new_db_user_change(address, port, user, password, db_name):
-            value = bool(address and port and user and password and db_name and str(user).strip())
-            return gr.update(visible=value)
-
-        @new_db_password.change(inputs=[new_db_address, new_db_port, new_db_user, new_db_password, new_db_name], 
-                                outputs=[analytic_btn])
-        def on_new_db_password_change(address, port, user, password, db_name):
-            value = bool(address and port and user and password and db_name and str(password).strip())
-            return gr.update(visible=value)
-
-        @new_db_name.change(inputs=[new_db_address, new_db_port, new_db_user, new_db_password, new_db_name], 
-                                outputs=[analytic_btn])
-        def on_new_db_name_change(address, port, user, password, db_name):
-            value = bool(address and port and user and password and db_name and str(db_name).strip())
+        def on_new_db_name_change(user, password, db_name):
+            value = bool(user and password and db_name and str(db_name).strip())
             return gr.update(visible=value)
 
 
-        @analytic_btn.click(inputs=[new_db_address, start_choice, new_source_choice, upload_file_new, upload_file_new2, new_base_conn, existing_conn, log_display, info_box, llm_agent_request, data_path, chatbot_ui], 
-                            outputs=[final_profile, ddl_script, create_connect_btn, log_display, info_box, llm_agent_request, data_path, chatbot_ui, user_input, submit_button, md_download_button])
-        def on_analytic(db_address, start_choice_val, new_source_sel, upload_new_file, upload_new_file2, new_base_conn_val, existing_conn_val, log_text, info_text, llm_agent_request, data_path, chat_history):
+        @analytic_btn.click(inputs=[new_db_name, start_choice, new_source_choice, upload_file_new, existing_conn, log_display, info_box, llm_agent_request, data_path, chatbot_ui], 
+                            outputs=[final_profile, ddl_script, new_db_type, create_connect_btn, log_display, info_box, llm_agent_request, data_path, chatbot_ui, user_input, submit_button, md_download_button])
+        def on_analytic(db_address, start_choice_val, new_source_sel, upload_new_file, existing_conn_val, log_text, info_text, llm_agent_request, data_path, chat_history):
             # TODO: !
             # if not new_db_val:
             #     return gr.Info(f"Отсутствует информация про хранилище!")
@@ -231,12 +221,12 @@ def run_web_interface():
                     if start_choice_val == 'Создать новое хранилище':
                         if new_source_sel == 'Загрузить файлы (CSV/JSON/XML)':
                             source_desc = upload_new_file[0] # TODO: read list of paths
-                        elif new_source_sel == 'Указать директорию':
-                            source_desc = upload_new_file2[0] # TODO: read list of paths
-                        else:
-                            source_desc = new_base_conn_val
-                    else:
-                        source_desc = existing_conn_val
+                        # elif new_source_sel == 'Указать директорию':
+                        #     source_desc = upload_new_file2[0] # TODO: read list of paths
+                        # else:
+                        #     source_desc = new_base_conn_val
+                    # else:
+                    #     source_desc = existing_conn_val
 
                     log_text += 'Данные успешно загружены.\n'
 
@@ -275,7 +265,7 @@ def run_web_interface():
                     if not isinstance(final_json, dict):
                         final_json = ast.literal_eval(final_json)
 
-                    final_profile = run_final_json_profile(profile_json, final_json)
+                    final_profile_json = run_final_json_profile(profile_json, final_json)
 
                     if "daJsonRequirements" in response_json and response_json["daJsonRequirements"]:
                         # info_text += response_json["daJsonRequirements"] + '\n'
@@ -289,9 +279,7 @@ def run_web_interface():
                     llm_agent_request["daJsonRequirements"] = False
 
                     # TODO: ADD PREVIEW
-                    llm_agent_request["task"] = f"{final_profile}\n"
-
-                    final_profile_json = csv_profile2json(source_desc)
+                    llm_agent_request["task"] = f"{final_profile_json}\n"
 
                 elif source_desc.endswith('.xml') or source_desc.endswith('.XML'): 
                     profile_json = run_compute_xml_profile(source_desc)
@@ -357,8 +345,8 @@ def run_web_interface():
                     # answer = clean_json(str(response_json["daRequirements"]))
                     log_text += 'Получен ответ от LLM агентов...\n'
 
-                    final_profile_json = run_build_final_prompt(response_json["daRequirements"], 
-                                                                card_json)
+                    final_profile2 = run_build_final_prompt(response_json["daRequirements"], 
+                                                            card_json)
 
                     if "daRequirements" in response_json and response_json["daRequirements"]:
                         # info_text += response_json["daRequirements"] + '\n'
@@ -370,8 +358,10 @@ def run_web_interface():
 
                     # TODO: !!!! SAVE THIS PROMPT TO prev_context FOR NEXT corrector REQUESTS
                     llm_agent_request["daRequirements"] = False
-                    llm_agent_request["task"] = f"{preview}'\n'{final_profile_json}'\n'{cardinality_text}'\n'{parquet_report}'\n'{str(types_json)}'\n'"
+                    llm_agent_request["task"] = f"{preview}'\n'{final_profile2}'\n'{cardinality_text}'\n'{parquet_report}'\n'{str(types_json)}'\n'"
 
+                    final_profile_json = csv_profile2json(source_desc)
+                    print("VOVA:", final_profile_json, type(final_profile_json))
 
             llm_agent_request["darchRequirements"] = True
             print(f"SECOND REQUEST:\n{json.dumps(llm_agent_request)}")
@@ -401,52 +391,36 @@ def run_web_interface():
                 llm_agent_request["needFix"] = True
 
             ddl = ""
-
-            # TODO: Это полная жопа, либо упростить, либо завернуть в try-catch
-            sql_script = ""#extract_sql_data(response_json['darchRequirements'])
-            # print("(extract_sql_data)", sql_script)
-
-            # db_type = extract_db_type(response_json['darchRequirements'][:50])
-            # print("DB_TYPE: " + db_type)
+            db_type = extract_db_type(response_json['darchRequirements'][:50])
+            print("DB_TYPE: " + db_type)
+            
             if source_desc.endswith('.csv') or source_desc.endswith('.CSV'):
 
-                # TODO: add condition
-                ddl_ch = csv_get_clickhouse_ddl(final_profile_json) 
-                ddl_pg = csv_get_postgres_ddl(final_profile_json)
-
-                ddl = ddl_pg
+                if db_type == "PostgreSQL":
+                    ddl = csv_get_postgres_ddl(final_profile_json)
+                elif db_type == "ClickHouse":
+                    ddl = csv_get_clickhouse_ddl(final_profile_json) 
 
                 dbml = csv_get_dbml(final_profile_json)
                 dbml_path = save_dbml_file(dbml)
                 dbml_svg_path = convert_dbml_to_svg(dbml_path)
 
-                # if sql_script:
-                # clean_sql_script = clean_clickhouse_ddl(sql_script)
-                # tables = parse_create_tables(sql_script)
-                # clean_sql_script = to_dbml_with_refs(tables)
-                # print("(clean_clickhouse_ddl)", clean_sql_script)
-                # clean_sql_script_path = save_dbml_file(clean_sql_script)
-                # clean_sql_script_path = save_sql_file(clean_sql_script)
-                # print("(save_dbml_file)", clean_sql_script_path)
-                # dbml_path = convert_sql_to_dbml(clean_sql_script_path)
-                # print(dbml_path)
-                # dbml_svg_path = convert_dbml_to_svg(clean_sql_script_path)
-                # print(dbml_svg_path)
 
                 markdown_content = (
                     f"# Результат в виде DBML схемы\n"
                     f"<img src=\"data:image/svg+xml;base64,{image_to_base64(dbml_svg_path)}\" width=\"450\"/>\n"
                 )
 
+                info_text += "# Итоговый DDL скрипт\n" + md_code_chunk_from_escaped(ddl) + "\n\n"
                 info_text += markdown_content
 
             elif source_desc.endswith('.json') or source_desc.endswith('.JSON'):
-
-                # TODO: add condition
-                ddl_ch = json_get_clickhouse_ddl(final_profile_json) 
-                ddl_pg = json_get_postgres_ddl(final_profile_json)
-                ddl = ddl_pg
-
+                
+                if db_type == "PostgreSQL": 
+                    ddl = json_get_postgres_ddl(final_profile_json)
+                elif db_type == "ClickHouse":
+                    ddl_ch = json_get_clickhouse_ddl(final_profile_json)
+                
                 dbml = json_get_dbml(final_profile_json)
                 dbml_path = save_dbml_file(dbml)
                 dbml_svg_path = convert_dbml_to_svg(dbml_path)
@@ -456,15 +430,15 @@ def run_web_interface():
                     f"<img src=\"data:image/svg+xml;base64,{image_to_base64(dbml_svg_path)}\" width=\"450\"/>\n"
                 )
 
-                info_text += "# Итоговый DDL скрипт\nsql```\n" + ddl + "\n```\n\n"
+                info_text += "# Итоговый DDL скрипт\n" + md_code_chunk_from_escaped(ddl) + "\n\n"
                 info_text += markdown_content
 
             elif source_desc.endswith('.xml') or source_desc.endswith('.XML'):
                 
-                # TODO: add condition
-                ddl_ch = xml_get_clickhouse_ddl(final_profile_json) 
-                ddl_pg = xml_get_postgres_ddl(final_profile_json)
-                ddl = ddl_ch
+                if db_type == "PostgreSQL": 
+                    ddl = xml_get_postgres_ddl(final_profile_json)
+                elif db_type == "ClickHouse":
+                    ddl = xml_get_clickhouse_ddl(final_profile_json)
 
                 dbml = xml_get_dbml(final_profile_json)
                 dbml_path = save_dbml_file(dbml)
@@ -475,7 +449,7 @@ def run_web_interface():
                     f"<img src=\"data:image/svg+xml;base64,{image_to_base64(dbml_svg_path)}\" width=\"450\"/>\n"
                 )
 
-                info_text += "# Итоговый DDL скрипт\nsql```\n" + ddl + "\n```\n\n"
+                info_text += "# Итоговый DDL скрипт\n" + md_code_chunk_from_escaped(ddl) + "\n\n"
                 info_text += markdown_content
 
             md_file_path = save_markdown_file(info_text)
@@ -483,7 +457,7 @@ def run_web_interface():
             log_text += 'DDL сгенерирован.\n'
             log_text += 'Отчет готов.\n'
 
-            return gr.update(value=final_profile_json), ddl, gr.update(visible=True), log_text, info_text, gr.update(value=llm_agent_request), gr.update(value=data_path), gr.update(value=chat_history, visible=True), gr.update(visible=True), gr.update(visible=True), gr.update(visible=True, value=md_file_path)
+            return final_profile_json, ddl, db_type, gr.update(visible=True), log_text, info_text, gr.update(value=llm_agent_request), gr.update(value=data_path), gr.update(value=chat_history, visible=True), gr.update(visible=True), gr.update(visible=True), gr.update(visible=True, value=md_file_path)
 
 
         @submit_button.click(inputs=[user_input, chatbot_ui, llm_agent_request], outputs=[chatbot_ui, user_input, llm_agent_request])
@@ -498,32 +472,38 @@ def run_web_interface():
             return chat_history, "", gr.update(value=llm_agent_request)
         
 
-        @create_connect_btn.click(inputs=[ddl_script, bd_list, final_profile, start_choice, new_source_choice, upload_file_new, upload_file_new2, new_base_conn, existing_conn, log_display, info_box],
-                                 outputs=[log_display, bd_list])
-        def on_create_connect(ddl, bd_list, profile, start_choice_val, new_source_sel, upload_new_file, upload_new_file2, new_base_conn_val, existing_conn_val, log_text, info_text):
+        @create_connect_btn.click(inputs=[new_db_type, new_db_name, ddl_script, bd_list, final_profile, start_choice, new_source_choice, upload_file_new, existing_conn, log_display, info_box],
+                                 outputs=[log_display, bd_list, listbox])
+        def on_create_connect(db_type, db_name, ddl, bd_list_ui, profile, start_choice_val, new_source_sel, upload_new_file, existing_conn_val, log_text, info_text):
             source_desc = 'unknown'
             if start_choice_val == 'Создать новое хранилище':
                 if new_source_sel == 'Загрузить файлы (CSV/JSON/XML)':
                     source_desc = upload_new_file[0] # TODO: read list of paths
-                elif new_source_sel == 'Указать директорию':
-                    source_desc = upload_new_file2[0] # TODO: read list of paths
-                else:
-                    source_desc = new_base_conn_val
-            else:
-                source_desc = existing_conn_val
+            #     elif new_source_sel == 'Указать директорию':
+            #         source_desc = upload_new_file2[0] # TODO: read list of paths
+            #     else:
+            #         source_desc = new_base_conn_val
+            # else:
+            #     source_desc = existing_conn_val
                 
-                # TODO: connect to bd
                 # log_text += "Подключение к хранилищу успешно выполнено.\n"
-            print("(on_create_connect)", ddl)
-            # TODO: build link with fields
-            DEFAULT_PG_URI = "postgresql://myuser:mypass@db:5432/analytics"
-            # TODO: NOW WORKS ONLY FOR JSON
-            run_etl_pg(DEFAULT_PG_URI, ddl, profile, source_desc)
-            log_text += "Успешно создано хранилище: " + DEFAULT_PG_URI + "\n"
             
-            bd_list.append(DEFAULT_PG_URI)
+            print("(on_create_connect)", ddl, profile)
 
-            return log_text, gr.update(value=bd_list)
+            URI = ""
+            if db_type == "PostgreSQL":
+                URI = f"postgresql://myuser:mypass@db:5432/{db_name}"
+                run_etl_pg(URI, db_name, ddl, profile, source_desc)
+            elif db_type == "ClickHouse":
+                URI = f"http://127.0.0.1:8123/{db_name}"    
+                run_etl_ch(db_name, ddl, profile, source_desc)
+
+            log_text += "Успешно создано хранилище: " + URI + "\n"
+            
+            # bd_list_ui.append(URI)
+            new_bd_list = bd_list_ui + [URI]
+
+            return log_text, new_bd_list, gr.update(choices=new_bd_list)
 
 
     return demo

@@ -18,7 +18,7 @@ from scripts.analytic_tool.schema_builders import (
 def run_compute_profile(path):
     card_json, types_json = compute_csv_profile(
         path,
-        types_yaml_path="scripts/analytic_tool/configs/types.yaml",  # ваш файл с каноническими типами
+        types_yaml_path="scripts/analytic_tool/config/types.yaml",  # ваш файл с каноническими типами
         chunksize=200_000,                     # размер чанка
         type_sample_rows=50_000,               # сколько строк брать для типизации
         lowcard_ratio=0.10, lowcard_max=5000,  # пороги для lowcard_string
@@ -65,8 +65,10 @@ def run_build_analytic_prompt(path):
 
     return preview, cardinality_text, card_json, types_json, parquet_report
 
+
 def clean_json(json_str):
     return parse_json_from_url_or_obj(json_str)[0]
+
 
 def run_build_final_prompt(json_answer, card_json):
 
@@ -82,7 +84,7 @@ def csv_profile2json(csv_path):
     profile = profile_csv_to_json(
         csv_path,
         entity_name="__FILL_ME__",        # потом подставите своё имя сущности
-        types_yaml_path="config/types.yaml",
+        types_yaml_path="scripts/analytic_tool/config/types.yaml",
         chunk_rows=200_000                 # можно увеличить/уменьшить
     )
     return profile
@@ -92,6 +94,7 @@ def csv_get_postgres_ddl(profile):
     # profile: dict или JSON-строка
     pg_sql = ddl_postgres_from_profile(
         profile,
+        types_yaml_path="scripts/analytic_tool/config/types.yaml",
         schema="public",
         table="my_table",
     )
@@ -102,6 +105,7 @@ def csv_get_clickhouse_ddl(profile):
     # profile: dict или JSON-строка
     ch_sql = ddl_clickhouse_from_profile(
         profile,
+        types_yaml_path="scripts/analytic_tool/config/types.yaml",
         database="raw",
         table="my_table",
         order_by="tuple",                 # или "auto", или ["ticket_id","created"]

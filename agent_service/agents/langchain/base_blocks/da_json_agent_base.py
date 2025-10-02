@@ -46,6 +46,23 @@ def extract_json_data(text: str):
     matches = re.findall(pattern, text, re.DOTALL | re.IGNORECASE)
     return "\n\n".join(m.strip() for m in matches)#[m.strip() for m in matches]
 
+def clean_and_parse_json(text: str):
+    # убираем префиксы вроде "Отчет:"
+    text = text.strip().replace("Отчет:", "").strip()
+
+    # если есть блок ```json ... ```
+    match = re.search(r"```json\s*(.*?)```", text, re.DOTALL | re.IGNORECASE)
+    if match:
+        text = match.group(1).strip()
+
+    # убираем случайные бэктики
+    text = text.replace("`", "").strip()
+
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError as e:
+        raise ValueError(f"LLM вернул невалидный JSON: {e}\nТекст: {text[:200]}...")
+
 class DaJsonAgentBuilder(Singleton):
     def _setup(self):
         self.settings = AgentSettings()
@@ -139,6 +156,9 @@ class DaJsonAgentBuilder(Singleton):
             
             if not isinstance(task_json, dict):
                 task_json = ast.literal_eval(task_json)
+
+            # task_json = clean_and_parse_json(state["result"])
+            # profile_json = clean_and_parse_json(state["task"])
 
             profile_json = state["task"]
             if not isinstance(profile_json, dict):

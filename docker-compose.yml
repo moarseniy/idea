@@ -22,6 +22,11 @@ services:
     ports:
       - "8123:8123"   # HTTP (REST / for HTTP clients / admin)
       - "9000:9000"   # Native TCP protocol (for drivers like clickhouse-driver)
+    environment:
+      - CLICKHOUSE_DB=default
+      - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASSWORD=
     volumes:
       - clickhouse_data:/var/lib/clickhouse
     healthcheck:
